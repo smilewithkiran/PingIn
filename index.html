@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>PingIN — India's AI Talent Search Engine</title>
+<meta name="description" content="India's most powerful AI recruiter Chrome Extension. Smart Search, Clone Search, JD Parsing, Developer Search on GitHub & Stack Overflow, Smart Outreach campaigns. Find candidates 25× faster.">
+<link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/main.css">
+<style>
+.hero{padding:120px 0 80px;text-align:center;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 55% at 50% -5%,rgba(0,119,181,.2) 0%,transparent 70%);pointer-events:none;}
+.hero-inner{max-width:880px;margin:0 auto;padding:0 clamp(20px,4vw,48px);}
+.hero-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(0,212,170,.08);border:1px solid rgba(0,212,170,.25);border-radius:100px;padding:6px 18px;font-size:12px;color:#00D4AA;font-weight:600;margin-bottom:32px;letter-spacing:.05em;}
+.hero-tag-dot{width:7px;height:7px;border-radius:50%;background:#00D4AA;animation:blink 2s ease-in-out infinite;flex-shrink:0;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+.hero-title{font-family:'Syne',sans-serif;font-size:clamp(40px,7vw,84px);font-weight:900;letter-spacing:-.035em;line-height:1.04;color:#F0F2F8;margin-bottom:26px;}
+.grad{background:linear-gradient(135deg,#1A9ADE 0%,#00D4AA 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero-sub{font-size:clamp(15px,2vw,19px);color:#8B8FA8;line-height:1.75;max-width:620px;margin:0 auto 40px;}
+.hero-actions{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:20px;}
+.hero-trust{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;font-size:12px;color:#4A4E62;margin-bottom:56px;}
+.hero-trust strong{color:#8B8FA8;}
+.hero-stats{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid rgba(255,255,255,.07);border-radius:18px;overflow:hidden;max-width:660px;margin:0 auto;background:rgba(17,19,24,.8);}
+.hs{padding:22px 16px;text-align:center;border-right:1px solid rgba(255,255,255,.06);}
+.hs:last-child{border-right:none;}
+.hs-n{font-family:'Syne',sans-serif;font-size:30px;font-weight:900;color:#F0F2F8;line-height:1;margin-bottom:5px;}
+.hs-l{font-size:11px;color:#4A4E62;line-height:1.4;}
+
+.new-strip{background:linear-gradient(135deg,rgba(0,119,181,.1),rgba(0,212,170,.06));border-top:1px solid rgba(0,119,181,.2);border-bottom:1px solid rgba(0,119,181,.15);padding:16px 0;overflow:hidden;}
+.new-strip-inner{display:flex;gap:28px;align-items:center;justify-content:center;flex-wrap:wrap;padding:0 clamp(20px,4vw,48px);}
+.ns-item{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:600;color:#1A9ADE;white-space:nowrap;}
+.ns-dot{width:5px;height:5px;border-radius:50%;background:#00D4AA;flex-shrink:0;}
+
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+@media(max-width:900px){.features-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:560px){.features-grid{grid-template-columns:1fr;}}
+.feat-card{background:var(--surf);border:1px solid var(--border);border-radius:16px;padding:24px 22px;transition:border-color .2s,transform .2s;}
+.feat-card:hover{border-color:rgba(0,119,181,.3);transform:translateY(-2px);}
+.feat-card.hl{border-color:rgba(0,212,170,.25);background:linear-gradient(135deg,rgba(0,212,170,.05) 0%,var(--surf) 70%);}
+.feat-card.hl2{border-color:rgba(124,58,237,.25);background:linear-gradient(135deg,rgba(124,58,237,.05) 0%,var(--surf) 70%);}
+.feat-icon{font-size:26px;margin-bottom:12px;line-height:1;}
+.feat-title{font-size:15px;font-weight:700;color:#F0F2F8;margin-bottom:8px;display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
+.feat-badge{font-size:9px;background:rgba(0,212,170,.15);color:#00D4AA;border:1px solid rgba(0,212,170,.25);border-radius:4px;padding:2px 7px;font-weight:700;}
+.feat-badge.p{background:rgba(124,58,237,.15);color:#A78BFA;border-color:rgba(124,58,237,.25);}
+.feat-desc{font-size:13px;color:#8B8FA8;line-height:1.65;}
+
+.how-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;max-width:960px;margin:0 auto;}
+@media(max-width:800px){.how-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:480px){.how-grid{grid-template-columns:1fr;}}
+.how-step{text-align:center;padding:24px 16px;}
+.how-num{width:50px;height:50px;border-radius:50%;background:rgba(0,119,181,.12);color:#1A9ADE;font-size:21px;font-weight:900;font-family:'Syne',sans-serif;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;border:1px solid rgba(0,119,181,.2);}
+.how-title{font-size:15px;font-weight:700;color:#F0F2F8;margin-bottom:8px;}
+.how-desc{font-size:13px;color:#8B8FA8;line-height:1.65;}
+
+.dev-section{background:linear-gradient(135deg,rgba(124,58,237,.08),rgba(0,119,181,.06),var(--surf));border-top:1px solid rgba(124,58,237,.15);border-bottom:1px solid rgba(0,119,181,.12);}
+.dev-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;max-width:1000px;margin:0 auto;}
+@media(max-width:700px){.dev-grid{grid-template-columns:1fr;}}
+.dev-plat{background:rgba(17,19,24,.8);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+.dev-plat-icon{font-size:22px;flex-shrink:0;}
+.dev-plat-name{font-size:13px;font-weight:700;color:#F0F2F8;}
+.dev-plat-desc{font-size:11px;color:#4A4E62;margin-top:2px;}
+.dp-badge{margin-left:auto;font-size:9px;font-weight:700;padding:2px 8px;border-radius:4px;flex-shrink:0;}
+.dp-g{background:rgba(0,212,170,.1);color:#00D4AA;border:1px solid rgba(0,212,170,.2);}
+.dp-b{background:rgba(0,119,181,.1);color:#5BB5FF;border:1px solid rgba(0,119,181,.2);}
+
+.ov-wrap{background:var(--surf2);border:1px solid var(--border2);border-radius:16px;padding:20px;max-width:360px;}
+.ov-hdr{display:flex;align-items:center;gap:8px;margin-bottom:14px;}
+.ov-logo{font-size:12px;font-weight:800;color:#F0F2F8;}
+.ov-logo b{background:linear-gradient(90deg,#5BB5FF,#00C49A);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.ov-live{display:flex;align-items:center;gap:5px;font-size:10px;color:#00D4AA;margin-left:auto;}
+.ov-live-dot{width:6px;height:6px;border-radius:50%;background:#00D4AA;animation:blink 1.5s infinite;}
+.ov-progress{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:12px 14px;margin-bottom:10px;}
+.ov-label{font-size:9px;color:#4A4E62;margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em;}
+.ov-bar{height:5px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden;margin-bottom:8px;}
+.ov-fill{height:100%;background:linear-gradient(90deg,#0077B5,#00D4AA);border-radius:3px;width:62%;}
+.ov-stats{display:flex;gap:16px;}
+.ov-sn{font-size:18px;font-weight:900;color:#F0F2F8;font-family:'Syne',sans-serif;line-height:1;}
+.ov-sl{font-size:9px;color:#4A4E62;text-transform:uppercase;margin-top:2px;}
+.ov-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:8px 10px;display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.ov-av{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;flex-shrink:0;}
+.ov-nm{font-size:11px;font-weight:600;color:#E0E4F0;flex:1;}
+.ov-st{font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;}
+.st-sent{background:rgba(0,212,170,.1);color:#00D4AA;border:1px solid rgba(0,212,170,.2);}
+.st-go{background:rgba(0,119,181,.12);color:#5BB5FF;border:1px solid rgba(0,119,181,.2);}
+.st-q{background:rgba(255,255,255,.05);color:#4A4E62;border:1px solid rgba(255,255,255,.08);}
+
+.pricing-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;align-items:start;}
+@media(max-width:1000px){.pricing-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:560px){.pricing-grid{grid-template-columns:1fr;}}
+
+.trust-row{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;}
+.trust-card{background:var(--surf);border:1px solid var(--border);border-radius:14px;padding:20px 22px;flex:1;min-width:240px;max-width:320px;}
+.trust-stars{color:#F59E0B;font-size:14px;margin-bottom:10px;}
+.trust-text{font-size:13px;color:#8B8FA8;line-height:1.7;margin-bottom:12px;font-style:italic;}
+.trust-author{font-size:12px;font-weight:600;color:#F0F2F8;}
+.trust-role{font-size:11px;color:#4A4E62;}
+
+.section{padding:80px clamp(20px,4vw,48px);}
+.section-center{text-align:center;max-width:700px;margin:0 auto 52px;}
+.section-tag{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#00D4AA;margin-bottom:12px;}
+.section-title{font-family:'Syne',sans-serif;font-size:clamp(28px,4vw,46px);font-weight:800;letter-spacing:-.02em;color:#F0F2F8;margin-bottom:16px;}
+.section-sub{font-size:15px;color:#8B8FA8;line-height:1.7;}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .6s,transform .6s;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav scrolled" id="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="logo" style="flex-direction:column;align-items:flex-start;gap:2px;">
+      <div style="display:flex;align-items:center;gap:9px;">
+        <img src="images/logo-mark.svg" style="width:30px;height:30px;border-radius:8px;" alt="PingIN">
+        <span class="logo-text">Ping<span style="background:linear-gradient(90deg,#1A9ADE,#00D4AA);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IN</span></span>
+      </div>
+      <span style="font-size:9px;color:#8B8FA8;letter-spacing:.08em;text-transform:uppercase;padding-left:39px;line-height:1;">India's AI Talent Search Engine</span>
+    </a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="extension.html">Extension</a>
+    </div>
+    <div class="nav-cta" id="nav-cta">
+      <a href="login.html" class="btn-ghost-sm">Sign in</a>
+      <a href="login.html" class="btn-primary-sm">Start Free →</a>
+    </div>
+    <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+  </div>
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="#features">Features</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="extension.html">Extension</a>
+    <a href="login.html">Sign in</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag"><span class="hero-tag-dot"></span>Now with GitHub & Stack Overflow · Developer Search · v2.8.4</div>
+    <h1 class="hero-title">Stop Searching.<br>Start <span class="grad">Finding.</span></h1>
+    <p class="hero-sub">India's most powerful AI recruiter Chrome Extension. Smart Search, Clone Search, JD Parsing, Developer Search on GitHub & Stack Overflow — plus automated Smart Outreach campaigns. Find the right candidate in minutes, not days.</p>
+    <div class="hero-actions">
+      <a href="login.html" class="btn-primary btn-lg" style="background:linear-gradient(135deg,#0055CC,#00A890);border:none;">Get Started Free — No Card Needed →</a>
+      <a href="extension.html" class="btn-outline btn-lg">Download Extension</a>
+    </div>
+    <div class="hero-trust">
+      <span><strong>✓</strong> 5-day free trial</span>
+      <span><strong>✓</strong> No credit card</span>
+      <span><strong>✓</strong> Pay via UPI</span>
+      <span><strong>✓</strong> Built for India 🇮🇳</span>
+      <span><strong>✓</strong> 20× cheaper than LinkedIn Recruiter</span>
+    </div>
+    <div class="hero-stats">
+      <div class="hs"><div class="hs-n"><span class="grad">886+</span></div><div class="hs-l">Indian Companies</div></div>
+      <div class="hs"><div class="hs-n"><span class="grad">60+</span></div><div class="hs-l">Premium Colleges</div></div>
+      <div class="hs"><div class="hs-n"><span class="grad">6</span></div><div class="hs-l">AI Search Modes</div></div>
+      <div class="hs"><div class="hs-n"><span class="grad">20×</span></div><div class="hs-l">Cheaper than LI Recruiter</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- NEW FEATURES STRIP -->
+<div class="new-strip">
+  <div class="new-strip-inner">
+    <div class="ns-item"><span class="ns-dot"></span>🐙 GitHub Developer Search</div>
+    <div class="ns-item"><span class="ns-dot"></span>📚 Stack Overflow Top Experts</div>
+    <div class="ns-item"><span class="ns-dot"></span>🔍 Multi-Skill GitHub Search (1-3 skills)</div>
+    <div class="ns-item"><span class="ns-dot"></span>📤 Smart Outreach Campaigns</div>
+    <div class="ns-item"><span class="ns-dot"></span>📝 Candidate Notes</div>
+    <div class="ns-item"><span class="ns-dot"></span>📁 JD Library</div>
+    <div class="ns-item"><span class="ns-dot"></span>⚡ Boolean Builder</div>
+    <div class="ns-item"><span class="ns-dot"></span>🕐 Search History</div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="section" id="features" style="background:var(--surf);border-top:1px solid var(--border);">
+  <div class="container">
+    <div class="section-center reveal">
+      <div class="section-tag">Everything you need</div>
+      <h2 class="section-title">Built for Indian recruiters.<br>Powered by AI.</h2>
+      <p class="section-sub">Every feature designed for the Indian market — IIT/IIM filters, 886+ companies, 11 cities, GitHub developer search. One Chrome Extension replaces 5 tools.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feat-card hl reveal">
+        <div class="feat-icon">📤</div>
+        <div class="feat-title">Smart Outreach <span class="feat-badge">NEW</span></div>
+        <div class="feat-desc">Collect candidates from any search — launch personalised connection campaigns. PingIN navigates your LinkedIn tab automatically, sends messages, tracks every send. Up to 50/day, zero duplicates, persistent state.</div>
+      </div>
+      <div class="feat-card hl2 reveal">
+        <div class="feat-icon">🐙</div>
+        <div class="feat-title">Developer Search <span class="feat-badge p">NEW</span></div>
+        <div class="feat-desc">Search GitHub by language + location + followers. Find Stack Overflow's top-ranked experts by skill tag. Auto-detect LinkedIn URL from any GitHub profile. Find developers nobody else is sourcing.</div>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-icon">🧬</div>
+        <div class="feat-title">AI Clone Search</div>
+        <div class="feat-desc">Paste any LinkedIn profile URL — Claude AI finds 100+ similar candidates instantly. No Boolean needed. One great profile is all it takes.</div>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-icon">📄</div>
+        <div class="feat-title">AI JD Parsing + JD Library <span class="feat-badge">NEW</span></div>
+        <div class="feat-desc">Paste or fetch a job description — Claude AI extracts role, skills, experience and location. Save up to 10 JDs in your personal library for instant one-click re-runs.</div>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-icon">🎯</div>
+        <div class="feat-title">Predictive Sourcing</div>
+        <div class="feat-desc">Find passive candidates before they apply — using signals like job tenure, recent promotions, new certifications and layoff activity. Reach them first.</div>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-icon">⚡</div>
+        <div class="feat-title">Boolean Builder <span class="feat-badge">NEW</span></div>
+        <div class="feat-desc">Add skills as chips, choose OR or AND logic, click Apply — PingIN builds the perfect Boolean string automatically. No experience needed.</div>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-icon">📝</div>
+        <div class="feat-title">Candidate Notes <span class="feat-badge">NEW</span></div>
+        <div class="feat-desc">Add private notes to every candidate. Notes preview shows on the profile card. Persists across sessions. Never lose context on a candidate again.</div>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-icon">🕐</div>
+        <div class="feat-title">Search History <span class="feat-badge">NEW</span></div>
+        <div class="feat-desc">Every search is saved automatically. Click any past search to instantly re-run it — fills all fields and launches. Never type the same search twice.</div>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-icon">⭐</div>
+        <div class="feat-title">Profile Scoring 0–100</div>
+        <div class="feat-desc">Every profile auto-scored: role match, Open to Work, company tier, connection degree, city. 🔥 90+ = Hot. ⭐ 75+ = Strong. ✅ 60+ = Good.</div>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-icon">🎓</div>
+        <div class="feat-title">College + Degree Filter</div>
+        <div class="feat-desc">Filter by 60+ premium colleges — IIT, NIT, IIM, IIIT, BITS, ISB, XLRI. Full branch filter: CSE, MBA Finance, Mechanical and more.</div>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-icon">🏢</div>
+        <div class="feat-title">886+ Company Database</div>
+        <div class="feat-desc">Live search across TCS, Google India, Swiggy, Goldman Sachs, GCCs, banks, funded startups. 18 categories. Filter as you type.</div>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-icon">💳</div>
+        <div class="feat-title">Pay via UPI — No Card Needed</div>
+        <div class="feat-desc">GPay, PhonePe, Paytm, BHIM — zero forex, zero paperwork. Plans from ₹650 for 15 days. 20× cheaper than LinkedIn Recruiter.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEVELOPER SECTION -->
+<section class="section dev-section">
+  <div class="container">
+    <div class="dev-grid">
+      <div class="reveal">
+        <div class="section-tag">🐙 Developer Search</div>
+        <h2 class="section-title" style="font-size:clamp(24px,3.5vw,38px);margin-bottom:16px;">Find developers where they actually live.</h2>
+        <p style="font-size:15px;color:#8B8FA8;line-height:1.7;margin-bottom:24px;">LinkedIn profiles show what developers claim. GitHub shows what they actually do. PingIN searches both — verified skills, real commits, actual reputation.</p>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="display:flex;gap:10px;font-size:13px;color:#8B8FA8;"><span style="color:#00D4AA;font-weight:700;flex-shrink:0;">✓</span>GitHub Smart Search — language, location, followers &amp; repos filters</div>
+          <div style="display:flex;gap:10px;font-size:13px;color:#8B8FA8;"><span style="color:#00D4AA;font-weight:700;flex-shrink:0;">✓</span>Stack Overflow Top Experts — ranked by reputation for any skill tag</div>
+          <div style="display:flex;gap:10px;font-size:13px;color:#8B8FA8;"><span style="color:#00D4AA;font-weight:700;flex-shrink:0;">✓</span>GitHub → LinkedIn Extractor — reads profile bio for LinkedIn link</div>
+          <div style="display:flex;gap:10px;font-size:13px;color:#8B8FA8;"><span style="color:#00D4AA;font-weight:700;flex-shrink:0;">✓</span>PingIN floating panel on every github.com/username page</div>
+          <div style="display:flex;gap:10px;font-size:13px;color:#8B8FA8;"><span style="color:#00D4AA;font-weight:700;flex-shrink:0;">✓</span>No login needed — GitHub &amp; Stack Overflow are fully public</div>
+        </div>
+      </div>
+      <div class="reveal">
+        <div class="dev-plat"><div class="dev-plat-icon">🐙</div><div><div class="dev-plat-name">GitHub Smart Search</div><div class="dev-plat-desc">language:Python location:Bangalore followers:>=100</div></div><div class="dp-badge dp-g">FREE</div></div>
+        <div class="dev-plat"><div class="dev-plat-icon">📚</div><div><div class="dev-plat-name">Stack Overflow Top Users</div><div class="dev-plat-desc">stackoverflow.com/tags/react/topusers — top experts</div></div><div class="dp-badge dp-g">FREE</div></div>
+        <div class="dev-plat"><div class="dev-plat-icon">🔗</div><div><div class="dev-plat-name">GitHub → LinkedIn Extractor</div><div class="dev-plat-desc">Auto-reads LinkedIn URL from any GitHub profile</div></div><div class="dp-badge dp-b">INSTANT</div></div>
+        <div class="dev-plat" style="border-color:rgba(0,212,170,.2);background:rgba(0,212,170,.04);"><div class="dev-plat-icon">🐙</div><div><div class="dev-plat-name">GitHub Profile Banner</div><div class="dev-plat-desc">PingIN panel appears on every github.com/username page</div></div><div class="dp-badge dp-g">AUTO</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SMART OUTREACH SECTION -->
+<section class="section" style="background:var(--surf);border-top:1px solid var(--border);">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;max-width:980px;margin:0 auto;">
+      <div class="reveal">
+        <div class="ov-wrap">
+          <div class="ov-hdr">
+            <div class="ov-logo">Ping<b>IN</b></div>
+            <div class="ov-live"><span class="ov-live-dot"></span>Campaign Running</div>
+          </div>
+          <div class="ov-progress">
+            <div class="ov-label">Smart Outreach Progress</div>
+            <div class="ov-bar"><div class="ov-fill"></div></div>
+            <div class="ov-stats">
+              <div><div class="ov-sn">13</div><div class="ov-sl">Sent</div></div>
+              <div><div class="ov-sn">7</div><div class="ov-sl">Pending</div></div>
+              <div><div class="ov-sn">0</div><div class="ov-sl">Failed</div></div>
+            </div>
+          </div>
+          <div class="ov-card"><div class="ov-av" style="background:rgba(0,119,181,.25);color:#5BB5FF;">SR</div><div class="ov-nm">Siddharth Rao · Razorpay</div><div class="ov-st st-sent">✓ Sent</div></div>
+          <div class="ov-card" style="border-color:rgba(0,119,181,.2);background:rgba(0,119,181,.04);"><div class="ov-av" style="background:rgba(0,212,170,.2);color:#00C49A;">PV</div><div class="ov-nm">Priya Venkat · PhonePe</div><div class="ov-st st-go">▶ Sending</div></div>
+          <div class="ov-card"><div class="ov-av" style="background:rgba(124,58,237,.2);color:#C084FC;">AK</div><div class="ov-nm">Arjun Kumar · Swiggy</div><div class="ov-st st-q">Queued</div></div>
+        </div>
+      </div>
+      <div class="reveal">
+        <div class="section-tag">📤 Smart Outreach</div>
+        <h2 class="section-title" style="font-size:clamp(24px,3.5vw,38px);margin-bottom:16px;">Automated outreach that actually works.</h2>
+        <p style="font-size:15px;color:#8B8FA8;line-height:1.7;margin-bottom:24px;">PingIN navigates your LinkedIn tab — no popups, no new windows. Sends personalised connection requests while you work on something else. Full tracking, persistent state, zero duplicates.</p>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="display:flex;gap:10px;font-size:13px;color:#8B8FA8;"><span style="color:#00D4AA;font-weight:700;flex-shrink:0;">✓</span>Navigates existing LinkedIn tab — fast and natural</div>
+          <div style="display:flex;gap:10px;font-size:13px;color:#8B8FA8;"><span style="color:#00D4AA;font-weight:700;flex-shrink:0;">✓</span>Campaign survives popup close — reopen PingIN anytime</div>
+          <div style="display:flex;gap:10px;font-size:13px;color:#8B8FA8;"><span style="color:#00D4AA;font-weight:700;flex-shrink:0;">✓</span>Zero duplicate sends — URL tracking across all sessions</div>
+          <div style="display:flex;gap:10px;font-size:13px;color:#8B8FA8;"><span style="color:#00D4AA;font-weight:700;flex-shrink:0;">✓</span>GitHub-specific template for developer outreach</div>
+          <div style="display:flex;gap:10px;font-size:13px;color:#8B8FA8;"><span style="color:#00D4AA;font-weight:700;flex-shrink:0;">✓</span>Safe daily limits — up to 50/day within LinkedIn limits</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section">
+  <div class="container">
+    <div class="section-center reveal">
+      <div class="section-tag">How it works</div>
+      <h2 class="section-title">From search to hire in 4 steps</h2>
+    </div>
+    <div class="how-grid">
+      <div class="how-step reveal"><div class="how-num">1</div><div class="how-title">Install in 2 minutes</div><div class="how-desc">Download PingIN, add to Chrome. Open LinkedIn — the extension activates automatically. No setup required.</div></div>
+      <div class="how-step reveal"><div class="how-num">2</div><div class="how-title">Search with AI</div><div class="how-desc">Choose Smart, Clone, JD, Developer or Predictive mode. PingIN builds and runs the perfect search instantly.</div></div>
+      <div class="how-step reveal"><div class="how-num">3</div><div class="how-title">Score &amp; Filter</div><div class="how-desc">Profiles auto-scored 0–100. Add notes, filter top picks, export to CSV or Excel. Your shortlist builds itself.</div></div>
+      <div class="how-step reveal"><div class="how-num">4</div><div class="how-title">Launch Outreach</div><div class="how-desc">Start a Smart Outreach campaign — PingIN sends personalised connection requests while you focus on interviews.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section" style="background:var(--surf);border-top:1px solid var(--border);">
+  <div class="container">
+    <div class="section-center reveal">
+      <div class="section-tag">Trusted by Recruiters</div>
+      <h2 class="section-title">What recruiters say</h2>
+    </div>
+    <div class="trust-row reveal">
+      <div class="trust-card">
+        <div class="trust-stars">★★★★★</div>
+        <div class="trust-text">"Found 3 senior React developers in Bangalore in under 20 minutes. The GitHub search found profiles I would never have found on LinkedIn alone."</div>
+        <div class="trust-author">Priyanka S.</div>
+        <div class="trust-role">Tech Recruiter · Hyderabad</div>
+      </div>
+      <div class="trust-card">
+        <div class="trust-stars">★★★★★</div>
+        <div class="trust-text">"Smart Outreach is a game changer. I set it up, went for lunch and came back to 18 connection requests sent automatically. Campaign still running."</div>
+        <div class="trust-author">Rohit M.</div>
+        <div class="trust-role">HR Lead · Bengaluru</div>
+      </div>
+      <div class="trust-card">
+        <div class="trust-stars">★★★★★</div>
+        <div class="trust-text">"The JD Library and Search History save me 30+ minutes every day. I hired 4 people last month at a fraction of LinkedIn Recruiter's cost."</div>
+        <div class="trust-author">Anitha K.</div>
+        <div class="trust-role">Talent Acquisition · Pune</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING PREVIEW -->
+<section class="section">
+  <div class="container">
+    <div class="section-center reveal">
+      <div class="section-tag">Pricing</div>
+      <h2 class="section-title">Simple, honest pricing 🇮🇳</h2>
+      <p class="section-sub">Pay via UPI. No credit card. No subscription traps. Start free for 5 days.</p>
+      <div style="display:inline-block;background:rgba(226,75,74,.1);border:1px solid rgba(226,75,74,.2);color:#F09595;font-size:11px;font-weight:700;padding:4px 14px;border-radius:100px;margin-top:8px;">⏰ Limited-time pricing — Lock in now before prices increase</div>
+    </div>
+    <div class="pricing-grid">
+      <div class="price-card reveal"><div class="price-name">Free Trial</div><div class="price-amt">₹0</div><div class="price-period">5 days · no card needed</div><button class="price-btn outline" onclick="location.href='login.html'">Start Free Trial</button><div class="price-feats"><div class="pf">Smart Search</div><div class="pf">~10 profiles/search</div><div class="pf">Profile Scoring 0–100</div><div class="pf">Boolean Builder ⚡</div><div class="pf">Search History 🕐</div><div class="pf">Candidate Notes 📝</div><div class="pf">Outreach — 5/day</div><div class="pf no">AI modes</div></div></div>
+      <div class="price-card reveal"><div class="price-name">Starter</div><div class="price-amt">₹650</div><div class="price-period">15 days · ~₹43/day</div><button class="price-btn outline" onclick="checkAuthThenPay('starter')">Get Starter</button><div class="price-feats"><div class="pf">Smart + Developer Search</div><div class="pf">~50 profiles/search</div><div class="pf">JD Library 📁</div><div class="pf">Boolean Builder ⚡</div><div class="pf">Search History 🕐</div><div class="pf">Outreach — 50/day</div><div class="pf no">AI Clone / JD / Predictive</div></div></div>
+      <div class="price-card featured reveal"><div class="price-badge">🔥 Most Popular</div><div class="price-name">Pro</div><div class="price-amt">₹1,200</div><div class="price-period">per month · ~₹40/day</div><button class="price-btn primary" onclick="checkAuthThenPay('pro')">Start Pro</button><div class="price-feats"><div class="pf"><strong>All 6 search modes + AI</strong></div><div class="pf">Unlimited profiles</div><div class="pf">AI Clone + JD + Predictive</div><div class="pf">Developer Search (GitHub + SO)</div><div class="pf">Outreach — 50/day</div><div class="pf">JD Library + Notes + History</div></div></div>
+      <div class="price-card reveal" style="border-color:rgba(0,212,170,.3);"><div class="price-badge" style="background:linear-gradient(90deg,#009B7D,#00D4AA);">🏆 Best Value</div><div class="price-name">Annual</div><div class="price-amt" style="font-size:30px;">₹10,000</div><div class="price-period">365 days · ~₹27/day</div><button class="price-btn primary" style="background:linear-gradient(90deg,#0099CC,#00D4AA);" onclick="checkAuthThenPay('annual')">Get Annual</button><div class="price-feats"><div class="pf">Everything in Pro</div><div class="pf">All features · all year</div><div class="pf">Sequence campaigns</div><div class="pf">Save ₹4,400 vs monthly</div></div></div>
+    </div>
+    <div style="text-align:center;margin-top:20px;"><a href="pricing.html" style="font-size:13px;color:#1A9ADE;font-weight:600;">View full comparison →</a></div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section" style="background:var(--surf);border-top:1px solid var(--border);">
+  <div class="container">
+    <div style="background:linear-gradient(135deg,rgba(0,55,204,.18),rgba(0,168,144,.1));border:1px solid rgba(0,85,204,.25);border-radius:22px;padding:60px 40px;text-align:center;" class="reveal">
+      <div style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#00D4AA;margin-bottom:14px;">Start today — free</div>
+      <h2 style="font-family:'Syne',sans-serif;font-size:clamp(24px,4vw,44px);color:#F0F2F8;margin-bottom:14px;letter-spacing:-.02em;">Your next great hire is on LinkedIn.<br>PingIN will find them.</h2>
+      <p style="font-size:16px;color:#8B8FA8;margin-bottom:32px;max-width:480px;margin-left:auto;margin-right:auto;line-height:1.7;">5-day free trial · No credit card · GitHub + LinkedIn + Stack Overflow · Built for India 🇮🇳</p>
+      <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+        <a href="login.html" class="btn-primary btn-lg" style="background:linear-gradient(135deg,#0055CC,#00A890);border:none;">Start Free Trial →</a>
+        <a href="extension.html" class="btn-outline btn-lg">Download Extension</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="logo" style="flex-direction:column;align-items:flex-start;gap:3px;">
+          <div style="display:flex;align-items:center;gap:9px;"><img src="images/logo-mark.svg" style="width:30px;height:30px;border-radius:8px;" alt="PingIN"><span class="logo-text">Ping<span style="background:linear-gradient(90deg,#1A9ADE,#00D4AA);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IN</span></span></div>
+          <span style="font-size:10px;color:#8B8FA8;letter-spacing:.06em;text-transform:uppercase;padding-left:39px;">India's AI Talent Search Engine</span>
+        </a>
+        <p style="margin-top:12px;font-size:13px;color:#8B8FA8;line-height:1.7;">Find candidates 25× faster.<br>Built for India 🇮🇳 · Made in Hyderabad.</p>
+      </div>
+      <div class="footer-col"><div class="fc-title">Product</div><a href="extension.html">Chrome Extension</a><a href="pricing.html">Pricing</a><a href="dashboard.html">Dashboard</a></div>
+      <div class="footer-col"><div class="fc-title">Legal</div><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms of Service</a></div>
+      <div class="footer-col"><div class="fc-title">Support</div><a href="contact.html">Contact Us</a><a href="mailto:support@pingin.in">support@pingin.in</a></div>
+    </div>
+    <div class="footer-bottom"><span>© 2026 PingIN · All rights reserved</span><span>Made with ❤️ in Hyderabad 🇮🇳</span></div>
+  </div>
+</footer>
+
+<script src="js/pingin.js"></script>
+<script src="js/nav.js"></script>
+<script>
+const obs = new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}});},{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+<script>
+function checkAuthThenPay(plan) {
+  try {
+    var s = JSON.parse(localStorage.getItem('pingin_session') || 'null');
+    if (s && s.email && s.loginAt) { window.location.href = 'payment.html?plan=' + plan; return; }
+  } catch(e) {}
+  window.location.href = 'login.html?plan=' + plan;
+}
+</script>
+</body>
+</html>
