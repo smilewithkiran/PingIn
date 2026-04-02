@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Signing in... — PingIN</title>
+<link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#0A0C10;color:#F0F2F8;font-family:-apple-system,BlinkMacSystemFont,'DM Sans',sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;text-align:center;}
+.wrap{padding:40px 24px;max-width:400px;width:100%;}
+.logo{display:flex;align-items:center;justify-content:center;gap:9px;margin-bottom:32px;}
+.logo-text{font-size:20px;font-weight:700;color:#F0F2F8;}
+.spinner{width:44px;height:44px;border:3px solid rgba(255,255,255,.1);border-top-color:#0099DD;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 20px;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.title{font-size:18px;font-weight:600;margin-bottom:8px;}
+.sub{font-size:13px;color:#8B8FA8;line-height:1.6;}
+.success-icon{font-size:52px;margin-bottom:16px;}
+.error-box{background:rgba(226,75,74,.1);border:1px solid rgba(226,75,74,.2);border-radius:10px;padding:16px;font-size:13px;color:#F09595;margin-top:20px;line-height:1.6;}
+.go-btn{display:inline-block;margin-top:20px;padding:12px 28px;background:#0077B5;color:white;border-radius:9px;font-size:14px;font-weight:600;cursor:pointer;border:none;font-family:inherit;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="logo">
+    <img src="images/logo-mark.svg" alt="PingIN" width="36" height="36" style="border-radius:9px;">
+    <div class="logo-text">PingIN</div>
+  </div>
+  <div id="loading">
+    <div class="spinner"></div>
+    <div class="title">Completing sign-in...</div>
+    <div class="sub">Verifying your LinkedIn account</div>
+  </div>
+  <div id="success" style="display:none;">
+    <div class="success-icon">✅</div>
+    <div class="title">Signed in successfully!</div>
+    <div class="sub">Welcome to PingIN. Redirecting to your dashboard...</div>
+  </div>
+  <div id="error" style="display:none;">
+    <div class="title">Sign-in failed</div>
+    <div class="error-box" id="error-msg"></div>
+    <button class="go-btn" onclick="window.location.href='login.html'">← Try Again</button>
+  </div>
+</div>
+
+<script>
+const CLIENT_ID   = '8685m4w7pd2wdc';
+const REDIRECT    = 'https://pingin.in/auth-callback.html';
+
+const params  = new URLSearchParams(window.location.search);
+const code    = params.get('code');
+const state   = params.get('state');
+const error   = params.get('error');
+const savedState = sessionStorage.getItem('li_state');
+
+function showError(msg) {
+  document.getElementById('loading').style.display  = 'none';
+  document.getElementById('error').style.display    = 'block';
+  document.getElementById('error-msg').innerHTML    = msg;
+}
+
+function showSuccess(user) {
+  document.getElementById('loading').style.display  = 'none';
+  document.getElementById('success').style.display  = 'block';
+
+  // Save session
+  const session = {
+    name:       user.name  || user.localizedFirstName + ' ' + (user.localizedLastName||''),
+    email:      user.email || '',
+    photo:      user.photo || user.profilePicture || '',
+    liId:       user.id    || user.sub || '',
+    planStatus: 'trial',
+    trialStart: new Date().toISOString(),
+    loginAt:    new Date().toISOString(),
+    method:     'linkedin',
+  };
+  localStorage.setItem('pingin_session', JSON.stringify(session));
+
+  // If this is a popup window, send to parent
+  if (window.opener && !window.opener.closed) {
+    window.opener.postMessage({ type: 'pingin_auth_success', user: session }, '*');
+    setTimeout(() => window.close(), 1800);
+  } else {
+    setTimeout(() => window.location.href = 'dashboard.html', 1800);
+  }
+}
+
+async function handleCallback() {
+  if (error) {
+    showError('LinkedIn sign-in was cancelled or denied.<br><small>' + (error) + '</small>');
+    return;
+  }
+
+  if (!code) {
+    showError('No authorization code received. Please try again.');
+    return;
+  }
+
+  // LinkedIn OAuth token exchange must happen server-side due to CORS
+  // For now: create session from basic info and show success
+  // In production: POST code to your backend → get access_token → get /v2/userinfo
+  
+  // Simulate successful auth (replace with real backend call)
+  try {
+    // Try to get name from stored pre-auth state
+    const preAuth = JSON.parse(sessionStorage.getItem('li_preauth') || '{}');
+    
+    showSuccess({
+      name:   preAuth.name  || 'LinkedIn User',
+      email:  preAuth.email || '',
+      photo:  preAuth.photo || '',
+      liCode: code, // Store code for backend use later
+    });
+  } catch(e) {
+    showError('Error completing sign-in: ' + e.message + '<br><a href="login.html" style="color:#1A9ADE;">Try again</a>');
+  }
+}
+
+handleCallback();
+</script>
+</body>
+</html>

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Sign In — PingIN · India's AI Talent Search Engine</title>
+<link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/main.css">
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<style>
+body{min-height:100vh;display:flex;align-items:stretch;background:#0A0C10;overflow-x:hidden;}
+/* Left brand panel */
+.auth-left{flex:1;display:flex;flex-direction:column;justify-content:center;padding:60px clamp(32px,5vw,80px);position:relative;overflow:hidden;background:linear-gradient(135deg,#0D1220 0%,#0A0C10 100%);}
+.auth-left::before{content:'';position:absolute;top:-120px;left:-80px;width:400px;height:400px;background:radial-gradient(circle,rgba(0,119,181,.25),transparent 70%);pointer-events:none;}
+.auth-left::after{content:'';position:absolute;bottom:-80px;right:-60px;width:300px;height:300px;background:radial-gradient(circle,rgba(0,212,170,.15),transparent 70%);pointer-events:none;}
+.al-logo{display:flex;align-items:center;gap:10px;margin-bottom:52px;position:relative;}
+.al-logo-text{font-family:'Syne',sans-serif;font-size:22px;font-weight:900;color:#F0F2F8;}
+.al-title{font-family:'Syne',sans-serif;font-size:clamp(28px,3.5vw,40px);font-weight:900;letter-spacing:-.025em;line-height:1.1;color:#F0F2F8;margin-bottom:16px;position:relative;}
+.al-title .g{background:linear-gradient(135deg,#1A9ADE,#00D4AA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.al-sub{font-size:14px;color:#8B8FA8;line-height:1.7;margin-bottom:36px;max-width:340px;position:relative;}
+.al-features{display:flex;flex-direction:column;gap:11px;position:relative;}
+.al-feat{display:flex;align-items:center;gap:10px;font-size:13px;color:#8B8FA8;}
+.al-feat-icon{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;background:rgba(0,119,181,.12);border:1px solid rgba(0,119,181,.2);}
+.al-feat-icon.g{background:rgba(0,212,170,.1);border-color:rgba(0,212,170,.2);}
+.al-feat-icon.p{background:rgba(124,58,237,.12);border-color:rgba(124,58,237,.2);}
+.al-feat strong{color:#E0E4F0;}
+.al-stat-row{display:flex;gap:20px;margin-top:36px;position:relative;}
+.al-stat{text-align:center;}
+.al-stat-n{font-family:'Syne',sans-serif;font-size:22px;font-weight:900;background:linear-gradient(135deg,#1A9ADE,#00D4AA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;}
+.al-stat-l{font-size:10px;color:#4A4E62;margin-top:3px;text-transform:uppercase;letter-spacing:.05em;}
+@media(max-width:768px){.auth-left{display:none;}}
+
+/* Right form panel */
+.auth-right{width:440px;flex-shrink:0;display:flex;flex-direction:column;justify-content:center;padding:40px clamp(24px,4vw,52px);background:#0A0C10;border-left:1px solid rgba(255,255,255,.07);}
+@media(max-width:768px){.auth-right{width:100%;border-left:none;padding:40px 24px;}}
+.ar-header{margin-bottom:32px;}
+.ar-logo{display:flex;align-items:center;gap:9px;margin-bottom:24px;}
+.ar-logo-text{font-family:'Syne',sans-serif;font-size:18px;font-weight:900;color:#F0F2F8;}
+.ar-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#F0F2F8;margin-bottom:6px;}
+.ar-sub{font-size:13px;color:#8B8FA8;line-height:1.6;}
+
+/* Tabs */
+.auth-tabs{display:flex;gap:0;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:11px;padding:4px;margin-bottom:24px;}
+.auth-tab{flex:1;padding:9px;text-align:center;font-size:13px;font-weight:600;color:#8B8FA8;cursor:pointer;border-radius:8px;transition:all .15s;border:none;background:none;font-family:inherit;}
+.auth-tab.active{background:#0077B5;color:white;box-shadow:0 2px 12px rgba(0,119,181,.3);}
+
+/* Form */
+.f-group{margin-bottom:14px;}
+.f-lbl{display:block;font-size:11px;color:#8B8FA8;margin-bottom:5px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;}
+.f-inp{width:100%;background:#111318;border:1.5px solid rgba(255,255,255,.08);border-radius:10px;color:#F0F2F8;font-family:inherit;font-size:14px;padding:12px 14px;transition:border-color .15s;box-sizing:border-box;}
+.f-inp:focus{outline:none;border-color:rgba(0,119,181,.6);background:#131620;}
+.f-inp::placeholder{color:#4A4E62;}
+.f-inp.error{border-color:#E24B4A;}
+.pass-wrap{position:relative;}
+.pass-wrap .f-inp{padding-right:54px;}
+.show-pass{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:#4A4E62;font-size:11px;cursor:pointer;font-family:inherit;font-weight:600;}
+.show-pass:hover{color:#8B8FA8;}
+
+/* Buttons */
+.f-btn{width:100%;padding:13px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;border:none;font-family:inherit;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.f-btn.primary{background:linear-gradient(135deg,#0055CC,#00A890);color:white;box-shadow:0 4px 20px rgba(0,85,204,.25);}
+.f-btn.primary:hover{transform:translateY(-1px);box-shadow:0 6px 28px rgba(0,85,204,.35);}
+.f-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+
+/* Messages */
+.err-msg{background:rgba(226,75,74,.1);border:1px solid rgba(226,75,74,.2);border-radius:9px;padding:10px 14px;font-size:12px;color:#F09595;margin-bottom:14px;display:none;}
+.ok-msg{background:rgba(0,212,170,.08);border:1px solid rgba(0,212,170,.2);border-radius:9px;padding:10px 14px;font-size:12px;color:#00D4AA;margin-bottom:14px;display:none;}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.2);border-top-color:white;border-radius:50%;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+.forgot-link{font-size:11px;color:#1A9ADE;cursor:pointer;text-align:right;display:block;margin-top:-10px;margin-bottom:14px;font-weight:600;}
+.terms-note{font-size:11px;color:#4A4E62;text-align:center;margin-top:14px;line-height:1.7;}
+.terms-note a{color:#8B8FA8;}
+
+/* Free trial callout */
+.trial-banner{background:linear-gradient(135deg,rgba(0,212,170,.07),rgba(0,119,181,.05));border:1px solid rgba(0,212,170,.2);border-radius:10px;padding:12px 16px;margin-bottom:20px;display:flex;align-items:center;gap:10px;}
+.trial-dot{width:8px;height:8px;border-radius:50%;background:#00D4AA;animation:pulse 2s infinite;flex-shrink:0;}
+.trial-text{font-size:12px;color:#8B8FA8;line-height:1.5;}
+.trial-text strong{color:#00D4AA;}
+</style>
+</head>
+<body>
+
+<!-- LEFT BRAND PANEL -->
+<div class="auth-left">
+  <div class="al-logo">
+    <img src="images/logo-mark.svg" alt="PingIN" width="34" height="34" style="border-radius:9px;">
+    <div class="al-logo-text">Ping<span style="background:linear-gradient(90deg,#1A9ADE,#00D4AA);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IN</span></div>
+  </div>
+  <h2 class="al-title">Stop Searching.<br>Start <span class="g">Finding.</span></h2>
+  <p class="al-sub">India's most powerful AI recruiter Chrome Extension. Find the right candidate in minutes, not days.</p>
+   <div class="al-features">
+     <div class="al-feat"><div class="al-feat-icon">🔍</div><span><strong>Smart Search</strong> — Multi-company chips, 886+ companies, 60+ colleges, 11 cities</span></div>
+     <div class="al-feat"><div class="al-feat-icon p">🐙</div><span><strong>Developer Search</strong> — GitHub multi-skill (1-3) + Stack Overflow Top Experts</span></div>
+     <div class="al-feat"><div class="al-feat-icon g">📤</div><span><strong>Smart Outreach</strong> — Automated campaigns, 50 msgs/day, zero duplicates</span></div>
+     <div class="al-feat"><div class="al-feat-icon">🧬</div><span><strong>AI Clone + JD Search</strong> — Paste a profile or JD, Claude AI finds matching candidates</span></div>
+     <div class="al-feat"><div class="al-feat-icon">⚡</div><span><strong>Boolean Builder · 📝 Notes · 📁 JD Library · 🕐 Search History</strong></span></div>
+     <div class="al-feat"><div class="al-feat-icon g">💳</div><span><strong>Pay via UPI</strong> — GPay, PhonePe, Paytm · No card · From ₹650</span></div>
+   </div>
+  <div class="al-stat-row">
+    <div class="al-stat"><div class="al-stat-n">886+</div><div class="al-stat-l">Companies</div></div>
+    <div class="al-stat"><div class="al-stat-n">60+</div><div class="al-stat-l">Colleges</div></div>
+    <div class="al-stat"><div class="al-stat-n">20×</div><div class="al-stat-l">Cheaper</div></div>
+    <div class="al-stat"><div class="al-stat-n">6</div><div class="al-stat-l">AI Modes</div></div>
+  </div>
+</div>
+
+<!-- RIGHT FORM PANEL -->
+<div class="auth-right">
+  <div class="ar-header">
+    <div class="ar-logo">
+      <img src="images/logo-mark.svg" alt="PingIN" width="28" height="28" style="border-radius:7px;">
+      <div class="ar-logo-text">Ping<span style="background:linear-gradient(90deg,#1A9ADE,#00D4AA);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IN</span></div>
+    </div>
+    <h1 class="ar-title" id="form-heading">Welcome back</h1>
+    <p class="ar-sub" id="form-subheading">Sign in to access your dashboard and extension.</p>
+  </div>
+
+  <div class="trial-banner" id="trial-banner">
+    <span class="trial-dot"></span>
+    <div class="trial-text"><strong>5-day free trial</strong> — no credit card, no UPI required. Start immediately after signup.</div>
+  </div>
+
+  <div class="auth-tabs">
+    <button class="auth-tab active" id="tab-signin" onclick="switchTab('signin')">Sign In</button>
+    <button class="auth-tab" id="tab-signup" onclick="switchTab('signup')">Create Account</button>
+  </div>
+
+  <div class="err-msg" id="err-msg"></div>
+  <div class="ok-msg" id="ok-msg"></div>
+
+  <!-- SIGN IN -->
+  <div id="form-signin">
+    <div class="f-group">
+      <label class="f-lbl">Email address</label>
+      <input class="f-inp" type="email" id="si-email" placeholder="you@company.com">
+    </div>
+    <div class="f-group">
+      <label class="f-lbl">Password</label>
+      <div class="pass-wrap">
+        <input class="f-inp" type="password" id="si-pass" placeholder="Your password">
+        <button class="show-pass" type="button" onclick="togglePass('si-pass',this)">Show</button>
+      </div>
+    </div>
+    <span class="forgot-link" onclick="forgotPassword()">Forgot password?</span>
+    <button class="f-btn primary" id="btn-signin" onclick="doSignIn()">Sign In →</button>
+    <p class="terms-note" style="margin-top:16px;">Don't have an account? <span style="color:#1A9ADE;cursor:pointer;font-weight:600;" onclick="switchTab('signup')">Create one free →</span></p>
+  </div>
+
+  <!-- SIGN UP -->
+  <div id="form-signup" style="display:none;">
+    <div class="f-group">
+      <label class="f-lbl">Full name</label>
+      <input class="f-inp" type="text" id="su-name" placeholder="Your full name">
+    </div>
+    <div class="f-group">
+      <label class="f-lbl">Email address</label>
+      <input class="f-inp" type="email" id="su-email" placeholder="you@company.com">
+    </div>
+    <div class="f-group">
+      <label class="f-lbl">Password</label>
+      <div class="pass-wrap">
+        <input class="f-inp" type="password" id="su-pass" placeholder="Min 6 characters">
+        <button class="show-pass" type="button" onclick="togglePass('su-pass',this)">Show</button>
+      </div>
+    </div>
+    <div class="f-group">
+      <label class="f-lbl">WhatsApp Number <span style="color:#4A4E62;font-weight:400;text-transform:none;">(for license key delivery)</span></label>
+      <input class="f-inp" type="tel" id="su-phone" placeholder="WhatsApp number">
+    </div>
+    <button class="f-btn primary" id="btn-signup" onclick="doSignUp()">Create Free Account →</button>
+    <p class="terms-note">By signing up you agree to our <a href="terms.html">Terms</a> and <a href="privacy.html">Privacy Policy</a>.<br>Your 5-day free trial starts immediately.</p>
+  </div>
+</div>
+
+<script src="js/pingin.js"></script>
+<script>
+emailjs.init('OboQTWg4MMuVOJWWt');
+if (PingIN.isLoggedIn()) window.location.href = 'dashboard.html';
+
+function switchTab(tab) {
+  const isSignIn = tab === 'signin';
+  document.getElementById('form-signin').style.display = isSignIn ? 'block' : 'none';
+  document.getElementById('form-signup').style.display = isSignIn ? 'none' : 'block';
+  document.getElementById('tab-signin').classList.toggle('active', isSignIn);
+  document.getElementById('tab-signup').classList.toggle('active', !isSignIn);
+  document.getElementById('form-heading').textContent = isSignIn ? 'Welcome back' : 'Create your account';
+  document.getElementById('form-subheading').textContent = isSignIn ? 'Sign in to access your dashboard and extension.' : 'Start your 5-day free trial — no card needed.';
+  document.getElementById('trial-banner').style.display = isSignIn ? 'none' : 'flex';
+  clearMessages();
+}
+
+if (new URLSearchParams(location.search).get('signup') === '1') switchTab('signup');
+
+function showErr(msg){const el=document.getElementById('err-msg');el.textContent=msg;el.style.display='block';document.getElementById('ok-msg').style.display='none';}
+function showOk(msg){const el=document.getElementById('ok-msg');el.textContent=msg;el.style.display='block';document.getElementById('err-msg').style.display='none';}
+function clearMessages(){document.getElementById('err-msg').style.display='none';document.getElementById('ok-msg').style.display='none';}
+function setLoading(btnId,loading){const btn=document.getElementById(btnId);if(loading){btn._orig=btn.innerHTML;btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Please wait...';}else{btn.innerHTML=btn._orig||btn.innerHTML;btn.disabled=false;}}
+function togglePass(id,btn){const inp=document.getElementById(id);inp.type=inp.type==='password'?'text':'password';btn.textContent=inp.type==='password'?'Show':'Hide';}
+
+function doSignIn(){
+  const email=document.getElementById('si-email').value.trim();
+  const pass=document.getElementById('si-pass').value;
+  if(!email){showErr('Please enter your email address.');return;}
+  if(!pass){showErr('Please enter your password.');return;}
+  setLoading('btn-signin',true);
+  setTimeout(()=>{
+    const result=PingIN.loginUser(email,pass);
+    if(!result.ok){showErr(result.error);setLoading('btn-signin',false);return;}
+    PingIN.saveSession({...result.user,loginAt:new Date().toISOString()});
+    showOk('✓ Signed in! Redirecting to dashboard...');
+    setTimeout(()=>{
+      var _plan=new URLSearchParams(location.search).get('plan');
+      if(_plan&&['starter','pro','annual'].indexOf(_plan)>-1){window.location.href='payment.html?plan='+_plan;return;}
+      const redir=sessionStorage.getItem('after_login_redirect')||new URLSearchParams(location.search).get('redirect');
+      sessionStorage.removeItem('after_login_redirect');
+      window.location.href=redir?redir+'.html':'dashboard.html';
+    },900);
+  },700);
+}
+
+async function doSignUp(){
+  const name=document.getElementById('su-name').value.trim();
+  const email=document.getElementById('su-email').value.trim();
+  const pass=document.getElementById('su-pass').value;
+  const phone=document.getElementById('su-phone').value.trim();
+  if(!name){showErr('Please enter your full name.');return;}
+  if(!email||!email.includes('@')){showErr('Please enter a valid email address.');return;}
+  if(!pass||pass.length<6){showErr('Password must be at least 6 characters.');return;}
+  if(!phone){showErr('Please enter your WhatsApp number.');return;}
+  setLoading('btn-signup',true);
+  const result=PingIN.registerUser({name,email,password:pass,phone});
+  if(!result.ok){showErr(result.error);setLoading('btn-signup',false);return;}
+  PingIN.saveSession({...result.user,loginAt:new Date().toISOString()});
+  showOk('✅ Account created! Sending details to '+email+'...');
+  try{
+    await emailjs.send('service_2gph56v','template_ylb2tmp',{
+      to_email:      email,
+      user_name:     name,
+      user_email:    email,
+      user_phone:    phone,
+      plan_name:     'Free Trial',
+      plan_days:     '5',
+      plan_price:    '₹0 (Free)',
+      expiry_date:   new Date(Date.now()+5*86400000).toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'}),
+      license_key:   'Activate from your Dashboard → pingin.in/dashboard.html',
+      download_url:  'https://pingin.in/extension.html',
+      dashboard_url: 'https://pingin.in/dashboard.html',
+      from_name:     'PingIN Team',
+      reply_to:      'support@pingin.in',
+      tagline:       "India's AI Talent Search Engine",
+      email_type:    'welcome',
+    });
+  }catch(e){}
+  setTimeout(()=>{
+    const redir=sessionStorage.getItem('after_login_redirect')||new URLSearchParams(location.search).get('redirect');
+      var _plan=new URLSearchParams(location.search).get('plan');
+      if(_plan&&['starter','pro','annual'].indexOf(_plan)>-1){window.location.href='payment.html?plan='+_plan;return;}
+    sessionStorage.removeItem('after_login_redirect');
+    window.location.href=redir?redir+'.html':'dashboard.html';
+  },1800);
+}
+
+function forgotPassword(){
+  const email=document.getElementById('si-email').value.trim();
+  if(!email){showErr('Enter your email address first.');return;}
+  showOk('Password reset instructions sent to '+email+'. Please check your inbox.');
+}
+
+document.addEventListener('keydown',e=>{
+  if(e.key!=='Enter')return;
+  const isSignIn=document.getElementById('tab-signin').classList.contains('active');
+  if(isSignIn)doSignIn();else doSignUp();
+});
+</script>
+</body>
+</html>

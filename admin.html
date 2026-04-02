@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Admin Panel — PingIN</title>
+<link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',-apple-system,sans-serif;background:#0A0C10;color:#E8EAF0;min-height:100vh;}
+
+/* ── Login gate ── */
+.admin-gate{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;background:#0A0C10;position:relative;overflow:hidden;}
+.admin-gate::before{content:'';position:absolute;top:-120px;left:50%;transform:translateX(-50%);width:600px;height:400px;background:radial-gradient(ellipse,rgba(0,119,181,.18) 0%,transparent 70%);pointer-events:none;}
+.admin-gate::after{content:'';position:absolute;bottom:-80px;left:50%;transform:translateX(-50%);width:400px;height:300px;background:radial-gradient(ellipse,rgba(0,212,170,.1) 0%,transparent 70%);pointer-events:none;}
+.gate-card{background:#111318;border:1px solid rgba(255,255,255,.1);border-radius:22px;padding:40px 36px;width:100%;max-width:420px;text-align:center;position:relative;z-index:1;box-shadow:0 32px 80px rgba(0,0,0,.5);}
+.gate-logo{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:28px;}
+.gate-logo-mark{width:40px;height:40px;background:linear-gradient(135deg,#0055CC,#00A890);border-radius:10px;display:flex;align-items:center;justify-content:center;}
+.gate-logo-text{font-family:'Syne',sans-serif;font-size:20px;font-weight:900;color:#F0F2F8;}
+.gate-logo-text span{background:linear-gradient(90deg,#1A9ADE,#00D4AA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.gate-icon{width:52px;height:52px;border-radius:14px;background:rgba(0,119,181,.12);border:1px solid rgba(0,119,181,.2);display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 18px;}
+.gate-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:900;color:#F0F2F8;margin-bottom:6px;letter-spacing:-.02em;}
+.gate-sub{font-size:13px;color:#8B8FA8;margin-bottom:28px;line-height:1.6;}
+.gate-field{margin-bottom:14px;text-align:left;}
+.gate-field-label{font-size:11px;font-weight:700;color:#8B8FA8;text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px;display:block;}
+.gate-inp-wrap{position:relative;}
+.gate-inp{width:100%;background:#181B22;border:1.5px solid rgba(255,255,255,.08);border-radius:10px;color:#F0F2F8;font-size:14px;padding:12px 40px 12px 14px;font-family:inherit;transition:border-color .15s;box-sizing:border-box;}
+.gate-inp:focus{outline:none;border-color:rgba(0,119,181,.6);background:#1a1d26;}
+.gate-inp::placeholder{color:#4A4E62;}
+.gate-show-btn{position:absolute;right:11px;top:50%;transform:translateY(-50%);background:none;border:none;color:#4A4E62;cursor:pointer;font-size:11px;font-weight:600;font-family:inherit;padding:2px 4px;}
+.gate-show-btn:hover{color:#8B8FA8;}
+.gate-btn{width:100%;padding:13px;border-radius:10px;background:linear-gradient(135deg,#0055CC,#00A890);color:white;font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:inherit;transition:all .2s;margin-top:6px;display:flex;align-items:center;justify-content:center;gap:8px;}
+.gate-btn:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,85,204,.3);}
+.gate-btn:active{transform:translateY(0);}
+.gate-btn-ghost{width:100%;padding:11px;border-radius:10px;background:transparent;color:#8B8FA8;font-size:13px;font-weight:600;border:1.5px solid rgba(255,255,255,.08);cursor:pointer;font-family:inherit;transition:all .15s;margin-top:8px;}
+.gate-btn-ghost:hover{border-color:rgba(255,255,255,.18);color:#F0F2F8;}
+.gate-err{background:rgba(226,75,74,.1);border:1px solid rgba(226,75,74,.25);border-radius:9px;padding:10px 14px;font-size:12px;color:#F09595;margin-top:12px;display:none;text-align:left;}
+.gate-ok{background:rgba(0,212,170,.08);border:1px solid rgba(0,212,170,.25);border-radius:9px;padding:10px 14px;font-size:12px;color:#00D4AA;margin-top:12px;display:none;text-align:left;}
+.gate-divider{display:flex;align-items:center;gap:10px;margin:20px 0;}
+.gate-divider::before,.gate-divider::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.06);}
+.gate-divider span{font-size:11px;color:#4A4E62;}
+.gate-strength{margin-top:6px;height:4px;border-radius:2px;background:rgba(255,255,255,.06);overflow:hidden;}
+.gate-strength-fill{height:100%;border-radius:2px;transition:width .3s,background .3s;width:0;}
+.gate-strength-label{font-size:10px;color:#4A4E62;margin-top:4px;text-align:right;}
+
+/* ── Admin layout ── */
+.admin-wrap{display:none;min-height:100vh;flex-direction:column;}
+.admin-topbar{background:#111318;border-bottom:1px solid rgba(255,255,255,.07);padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.admin-brand{display:flex;align-items:center;gap:10px;}
+.admin-brand-text{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:#F0F2F8;}
+.admin-badge{background:rgba(226,75,74,.15);color:#F09595;border:1px solid rgba(226,75,74,.2);font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:.06em;}
+.admin-signout{padding:6px 14px;border-radius:7px;background:rgba(226,75,74,.08);border:1px solid rgba(226,75,74,.2);color:#F09595;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;}
+
+/* ── Content ── */
+.admin-content{padding:24px;max-width:1200px;margin:0 auto;width:100%;}
+
+/* ── Stats strip ── */
+.stats-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:24px;}
+@media(max-width:900px){.stats-strip{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:500px){.stats-strip{grid-template-columns:repeat(2,1fr);}}
+.stat-tile{background:#111318;border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:16px;text-align:center;}
+.stat-tile-n{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:#F0F2F8;line-height:1;margin-bottom:4px;}
+.stat-tile-l{font-size:10px;color:#8B8FA8;text-transform:uppercase;letter-spacing:.06em;}
+.stat-tile.blue .stat-tile-n{color:#1A9ADE;}
+.stat-tile.green .stat-tile-n{color:#1D9E75;}
+.stat-tile.amber .stat-tile-n{color:#BA7517;}
+.stat-tile.red .stat-tile-n{color:#E24B4A;}
+.stat-tile.teal .stat-tile-n{color:#00D4AA;}
+
+/* ── Panels grid ── */
+.panels{display:grid;grid-template-columns:1fr 380px;gap:20px;}
+@media(max-width:1000px){.panels{grid-template-columns:1fr;}}
+
+/* ── Card ── */
+.a-card{background:#111318;border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:20px;margin-bottom:16px;}
+.a-card-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:#F0F2F8;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.a-card-title-left{display:flex;align-items:center;gap:8px;}
+
+/* ── Search/filter bar ── */
+.a-searchbar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+.a-inp{background:#181B22;border:1px solid rgba(255,255,255,.08);border-radius:8px;color:#F0F2F8;font-size:12px;padding:8px 12px;font-family:inherit;flex:1;min-width:150px;}
+.a-inp:focus{outline:none;border-color:#0077B5;}
+.a-inp::placeholder{color:#4A4E62;}
+.a-sel{background:#181B22;border:1px solid rgba(255,255,255,.08);border-radius:8px;color:#F0F2F8;font-size:12px;padding:8px 12px;font-family:inherit;cursor:pointer;}
+.a-sel option{background:#181B22;}
+
+/* ── Table ── */
+.a-table{width:100%;border-collapse:collapse;font-size:12px;}
+.a-table th{padding:9px 12px;text-align:left;color:#8B8FA8;font-weight:600;text-transform:uppercase;font-size:10px;letter-spacing:.06em;border-bottom:1px solid rgba(255,255,255,.06);}
+.a-table td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:middle;}
+.a-table tr:hover td{background:rgba(255,255,255,.02);}
+.a-table tr:last-child td{border-bottom:none;}
+
+/* Badges */
+.plan-tag{padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;white-space:nowrap;}
+.plan-tag.free{background:rgba(255,255,255,.07);color:#8B8FA8;}
+.plan-tag.starter{background:rgba(0,119,181,.15);color:#1A9ADE;}
+.plan-tag.pro{background:rgba(0,119,181,.2);color:#1A9ADE;}
+.plan-tag.annual{background:rgba(0,212,170,.12);color:#00D4AA;}
+.plan-tag.none{background:rgba(255,255,255,.04);color:#4A4E62;}
+.plan-tag.expired{background:rgba(226,75,74,.12);color:#F09595;}
+.status-dot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:5px;}
+.status-dot.active{background:#1D9E75;}
+.status-dot.expired{background:#E24B4A;}
+.status-dot.none{background:#4A4E62;}
+
+/* Action buttons */
+.a-btn{padding:5px 11px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;font-family:inherit;transition:all .15s;white-space:nowrap;}
+.a-btn.blue{background:rgba(0,119,181,.15);color:#1A9ADE;border:1px solid rgba(0,119,181,.2);}
+.a-btn.blue:hover{background:rgba(0,119,181,.25);}
+.a-btn.green{background:rgba(29,158,117,.12);color:#5DCAA5;border:1px solid rgba(29,158,117,.2);}
+.a-btn.green:hover{background:rgba(29,158,117,.22);}
+.a-btn.red{background:rgba(226,75,74,.1);color:#F09595;border:1px solid rgba(226,75,74,.2);}
+.a-btn.red:hover{background:rgba(226,75,74,.2);}
+.a-btn.amber{background:rgba(186,117,23,.12);color:#EF9F27;border:1px solid rgba(186,117,23,.2);}
+
+/* ── Key Generator ── */
+.keygen-form{display:flex;flex-direction:column;gap:12px;}
+.kg-lbl{font-size:11px;color:#8B8FA8;margin-bottom:4px;font-weight:500;}
+.kg-result{background:#0D1117;border:1px solid rgba(0,212,170,.2);border-radius:10px;padding:16px;margin-top:8px;display:none;}
+.kg-key{font-family:monospace;font-size:18px;font-weight:700;color:#00D4AA;letter-spacing:.05em;margin-bottom:10px;word-break:break-all;}
+.kg-copy{padding:7px 16px;border-radius:7px;background:rgba(0,212,170,.1);border:1px solid rgba(0,212,170,.2);color:#00D4AA;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s;}
+.kg-copy:hover{background:rgba(0,212,170,.2);}
+
+/* ── Generate button ── */
+.gen-btn{width:100%;padding:12px;border-radius:9px;background:linear-gradient(135deg,#0055B5,#0099DD);color:white;font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:inherit;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.gen-btn:hover{opacity:.9;}
+
+
+
+/* ── Modal ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:500;display:none;align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.open{display:flex;}
+.modal{background:#161B22;border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:28px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;}
+.modal-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:#F0F2F8;margin-bottom:16px;}
+.modal-close{position:absolute;top:16px;right:16px;background:none;border:none;color:#8B8FA8;font-size:20px;cursor:pointer;line-height:1;}
+
+/* ── Spinner ── */
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.2);border-top-color:white;border-radius:50%;animation:spin .8s linear infinite;}
+
+/* ── Empty state ── */
+.empty-state{text-align:center;padding:40px 20px;color:#4A4E62;}
+.empty-icon{font-size:32px;margin-bottom:10px;opacity:.4;}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+</head>
+<body>
+
+<!-- ══ LOGIN GATE ══════════════════════════════════════════════════════════ -->
+<div class="admin-gate" id="admin-gate">
+
+  <!-- ── LOGIN VIEW ── -->
+  <div class="gate-card" id="gate-login-card">
+    <div class="gate-logo">
+      <div class="gate-logo-mark">
+        <svg width="22" height="22" viewBox="0 0 60 60" fill="none"><circle cx="30" cy="30" r="6" fill="white"/><circle cx="30" cy="30" r="14" fill="none" stroke="white" stroke-width="2.5" opacity=".6"/><circle cx="30" cy="30" r="22" fill="none" stroke="white" stroke-width="2" opacity=".3"/></svg>
+      </div>
+      <div class="gate-logo-text">Ping<span>IN</span></div>
+    </div>
+    <div class="gate-icon">🔐</div>
+    <div class="gate-title">Admin Panel</div>
+    <div class="gate-sub">Secure access only. Enter your admin password to continue.</div>
+
+    <div class="gate-field">
+      <label class="gate-field-label">Admin Password</label>
+      <div class="gate-inp-wrap">
+        <input class="gate-inp" type="password" id="admin-pass" placeholder="Enter admin password" autocomplete="off">
+        <button class="gate-show-btn" type="button" onclick="toggleGatePass('admin-pass',this)">Show</button>
+      </div>
+    </div>
+
+    <button class="gate-btn" onclick="adminLogin()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M12 2l-8 4v6c0 5.25 3.4 10.15 8 11.36C16.6 22.15 20 17.25 20 12V6l-8-4z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      Access Admin Panel
+    </button>
+    <div class="gate-err" id="gate-err">Incorrect password. Please try again.</div>
+
+    <div class="gate-divider"><span>or</span></div>
+    <button class="gate-btn-ghost" onclick="showChangePassword()">🔑 Change Admin Password</button>
+  </div>
+
+  <!-- ── CHANGE PASSWORD VIEW ── -->
+  <div class="gate-card" id="gate-change-card" style="display:none;">
+    <div class="gate-logo">
+      <div class="gate-logo-mark">
+        <svg width="22" height="22" viewBox="0 0 60 60" fill="none"><circle cx="30" cy="30" r="6" fill="white"/><circle cx="30" cy="30" r="14" fill="none" stroke="white" stroke-width="2.5" opacity=".6"/><circle cx="30" cy="30" r="22" fill="none" stroke="white" stroke-width="2" opacity=".3"/></svg>
+      </div>
+      <div class="gate-logo-text">Ping<span>IN</span></div>
+    </div>
+    <div class="gate-icon">🔑</div>
+    <div class="gate-title">Change Password</div>
+    <div class="gate-sub">Enter your current password, then set a new one.<br>Minimum 8 characters required.</div>
+
+    <div class="gate-field">
+      <label class="gate-field-label">Current Password</label>
+      <div class="gate-inp-wrap">
+        <input class="gate-inp" type="password" id="cp-current" placeholder="Your current admin password" autocomplete="off">
+        <button class="gate-show-btn" type="button" onclick="toggleGatePass('cp-current',this)">Show</button>
+      </div>
+    </div>
+
+    <div class="gate-field">
+      <label class="gate-field-label">New Password</label>
+      <div class="gate-inp-wrap">
+        <input class="gate-inp" type="password" id="cp-new" placeholder="Min 8 characters" autocomplete="new-password" oninput="updateStrength(this.value)">
+        <button class="gate-show-btn" type="button" onclick="toggleGatePass('cp-new',this)">Show</button>
+      </div>
+      <div class="gate-strength"><div class="gate-strength-fill" id="strength-fill"></div></div>
+      <div class="gate-strength-label" id="strength-label"></div>
+    </div>
+
+    <div class="gate-field">
+      <label class="gate-field-label">Confirm New Password</label>
+      <div class="gate-inp-wrap">
+        <input class="gate-inp" type="password" id="cp-confirm" placeholder="Re-enter new password" autocomplete="new-password">
+        <button class="gate-show-btn" type="button" onclick="toggleGatePass('cp-confirm',this)">Show</button>
+      </div>
+    </div>
+
+    <button class="gate-btn" onclick="changeAdminPassword()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Update Password
+    </button>
+    <div class="gate-err" id="cp-err"></div>
+    <div class="gate-ok" id="cp-success">✓ Password updated successfully! Redirecting to login...</div>
+
+    <div class="gate-divider"><span>or</span></div>
+    <button class="gate-btn-ghost" onclick="showLogin()">← Back to Login</button>
+  </div>
+
+</div>
+
+<!-- ══ ADMIN PANEL ════════════════════════════════════════════════════════ -->
+<div class="admin-wrap" id="admin-wrap">
+
+  <!-- Topbar -->
+  <div class="admin-topbar">
+    <div class="admin-brand">
+      <div style="width:30px;height:30px;background:linear-gradient(135deg,#0055CC,#00A890);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <svg width="18" height="18" viewBox="0 0 60 60" fill="none">
+          <circle cx="30" cy="30" r="6" fill="white"/>
+          <circle cx="30" cy="30" r="14" fill="none" stroke="white" stroke-width="2.5" opacity=".7"/>
+          <circle cx="30" cy="30" r="22" fill="none" stroke="white" stroke-width="2" opacity=".35"/>
+        </svg>
+      </div>
+      <span class="admin-brand-text">Ping<span style="background:linear-gradient(90deg,#1A9ADE,#00D4AA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">IN</span></span>
+      <span class="admin-badge">ADMIN</span><span style="font-size:9px;font-weight:700;background:rgba(0,212,170,.1);color:#00D4AA;border:1px solid rgba(0,212,170,.2);border-radius:4px;padding:2px 6px;margin-left:4px;">v2.8.4</span>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <button onclick="showChangePasswordInline()" style="padding:6px 14px;border-radius:7px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:#8B8FA8;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;">🔑 Change Password</button>
+      <button class="admin-signout" onclick="adminSignOut()">Sign Out</button>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="admin-content">
+
+    <!-- Stats -->
+    <div class="stats-strip" id="stats-strip">
+      <div class="stat-tile blue"><div class="stat-tile-n" id="st-total">0</div><div class="stat-tile-l">Total Users</div></div>
+      <div class="stat-tile green"><div class="stat-tile-n" id="st-active">0</div><div class="stat-tile-l">Active Plans</div></div>
+      <div class="stat-tile amber"><div class="stat-tile-n" id="st-trial">0</div><div class="stat-tile-l">Free Trial</div></div>
+      <div class="stat-tile red"><div class="stat-tile-n" id="st-expired">0</div><div class="stat-tile-l">Expired</div></div>
+      <div class="stat-tile teal"><div class="stat-tile-n" id="st-revenue">₹0</div><div class="stat-tile-l">Total Revenue</div></div>
+    </div>
+
+    <div class="panels">
+
+      <!-- ── LEFT: Users table ── -->
+      <div>
+        <div class="a-card">
+          <div class="a-card-title">
+            <div class="a-card-title-left">👥 All Users</div>
+            <button class="a-btn green" onclick="exportUsers()">Export CSV</button>
+          </div>
+          <div class="a-searchbar">
+            <input class="a-inp" type="text" id="search-users" placeholder="Search by name, email, phone..." oninput="renderUsers()">
+            <select class="a-sel" id="filter-plan" onchange="renderUsers()">
+              <option value="">All Plans</option>
+              <option value="none">No Plan</option>
+              <option value="free">Free Trial</option>
+              <option value="starter">Starter</option>
+              <option value="pro">Pro</option>
+              <option value="annual">Annual</option>
+              <option value="expired">Expired</option>
+            </select>
+          </div>
+          <div style="overflow-x:auto;">
+            <table class="a-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Plan</th>
+                  <th>Days Left</th>
+                  <th>Outreach Msgs/Day</th>
+                  <th>License Key</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="users-tbody">
+                <tr><td colspan="7"><div class="empty-state"><div class="empty-icon">👥</div>No users yet</div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── RIGHT: Tools ── -->
+      <div>
+
+        <!-- Key Generator -->
+        <div class="a-card">
+          <div class="a-card-title"><div class="a-card-title-left">🔑 Generate License Key</div></div>
+          <div class="keygen-form">
+            <div>
+              <div class="kg-lbl">Customer Email</div>
+              <input class="a-inp" type="email" id="kg-email" placeholder="customer@email.com" style="width:100%;min-width:unset;">
+            </div>
+            <div>
+              <div class="kg-lbl">Plan</div>
+              <select class="a-sel" id="kg-plan" style="width:100%;">
+                <option value="free">Free Trial — 5 days · 5 msgs/day</option>
+                <option value="starter">Starter — 15 days · 50 msgs/day (₹650)</option>
+                <option value="pro" selected>Pro — Monthly · 50 msgs/day (₹1,200)</option>
+                <option value="annual">Annual — 365 days · 50 msgs/day (₹10,000)</option>
+              </select>
+            </div>
+            <button class="gen-btn" onclick="generateKey()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Generate Key & Activate Plan
+            </button>
+            <div class="kg-result" id="kg-result">
+              <div style="font-size:11px;color:#8B8FA8;margin-bottom:6px;">🔑 License Key Generated:</div>
+              <div class="kg-key" id="kg-key-val">PING-XX-XXXX-XXXX</div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                <button class="kg-copy" onclick="copyGenKey()">📋 Copy Key</button>
+                <button class="kg-copy" style="background:rgba(0,119,181,.1);border-color:rgba(0,119,181,.2);color:#1A9ADE;" onclick="emailKeyToUser()">✉️ Send via Email</button>
+              </div>
+              <div style="font-size:11px;color:#4A4E62;margin-top:10px;" id="kg-plan-info"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="a-card">
+          <div class="a-card-title"><div class="a-card-title-left">⚡ Quick Actions</div></div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <button class="a-btn blue" style="width:100%;padding:10px;font-size:13px;" onclick="showExpiring()">⚠️ View Expiring in 3 Days</button>
+            <button class="a-btn amber" style="width:100%;padding:10px;font-size:13px;" onclick="emailAllExpiring()">✉️ Email All Expiring Users</button>
+            <button class="a-btn green" style="width:100%;padding:10px;font-size:13px;" onclick="exportUsers()">📊 Export All Users CSV</button>
+            <button class="a-btn red" style="width:100%;padding:10px;font-size:13px;" onclick="clearExpired()">🗑️ Remove Expired Users</button>
+          </div>
+        </div>
+
+        <!-- Revenue breakdown -->
+        <div class="a-card">
+          <div class="a-card-title"><div class="a-card-title-left">💰 Revenue Breakdown</div></div>
+          <div id="revenue-breakdown" style="font-size:13px;color:#8B8FA8;">
+            Loading...
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CHANGE PASSWORD MODAL ══════════════════════════════════════════════ -->
+<div class="modal-overlay" id="cp-modal">
+  <div class="modal" style="position:relative;max-width:400px;">
+    <button class="modal-close" onclick="closeCPModal()">×</button>
+    <div class="modal-title">🔑 Change Admin Password</div>
+    <div class="kg-lbl" style="margin-bottom:4px;">Current Password</div>
+    <input class="a-inp" type="password" id="icp-current" placeholder="Current password" style="width:100%;margin-bottom:12px;" autocomplete="off">
+    <div class="kg-lbl" style="margin-bottom:4px;">New Password <span style="color:#4A4E62;font-weight:400;">(min 8 characters)</span></div>
+    <input class="a-inp" type="password" id="icp-new" placeholder="New password" style="width:100%;margin-bottom:12px;" autocomplete="new-password">
+    <div class="kg-lbl" style="margin-bottom:4px;">Confirm New Password</div>
+    <input class="a-inp" type="password" id="icp-confirm" placeholder="Confirm new password" style="width:100%;margin-bottom:16px;" autocomplete="new-password">
+    <div id="icp-err" style="display:none;background:rgba(226,75,74,.1);border:1px solid rgba(226,75,74,.2);border-radius:7px;padding:9px 12px;font-size:12px;color:#F09595;margin-bottom:12px;"></div>
+    <div id="icp-success" style="display:none;background:rgba(29,158,117,.1);border:1px solid rgba(29,158,117,.2);border-radius:7px;padding:9px 12px;font-size:12px;color:#5DCAA5;margin-bottom:12px;">✓ Password updated! Use new password on next login.</div>
+    <button class="gen-btn" onclick="saveNewPassword()">Update Password</button>
+  </div>
+</div>
+
+<!-- ══ EDIT USER MODAL ════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="edit-modal">
+  <div class="modal" style="position:relative;">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <div class="modal-title">Edit User</div>
+    <input type="hidden" id="edit-email-orig">
+    <div class="kg-lbl" style="margin-bottom:4px;">Name</div>
+    <input class="a-inp" type="text" id="edit-name" style="width:100%;margin-bottom:12px;">
+    <div class="kg-lbl" style="margin-bottom:4px;">Email</div>
+    <input class="a-inp" type="email" id="edit-email" style="width:100%;margin-bottom:12px;">
+    <div class="kg-lbl" style="margin-bottom:4px;">Phone</div>
+    <input class="a-inp" type="tel" id="edit-phone" style="width:100%;margin-bottom:12px;">
+    <div class="kg-lbl" style="margin-bottom:4px;">Plan</div>
+    <select class="a-sel" id="edit-plan" style="width:100%;margin-bottom:12px;">
+      <option value="none">No Plan</option>
+      <option value="free">Free Trial</option>
+      <option value="starter">Starter</option>
+      <option value="pro">Pro</option>
+      <option value="annual">Annual</option>
+    </select>
+    <div class="kg-lbl" style="margin-bottom:4px;">License Key</div>
+    <input class="a-inp" type="text" id="edit-key" style="width:100%;margin-bottom:16px;font-family:monospace;">
+    <div style="display:flex;gap:8px;">
+      <button class="gen-btn" style="flex:1;" onclick="saveUser()">Save Changes</button>
+      <button class="a-btn red" style="padding:12px 16px;" onclick="deleteUser()">Delete</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/pingin.js"></script>
+<script>
+emailjs.init('OboQTWg4MMuVOJWWt');
+
+// ── Password stored in localStorage (fallback to hardcoded default) ───────────
+const DEFAULT_PASS = 'pingin@admin2026';
+function getAdminPass() {
+  return localStorage.getItem('pingin_admin_pass') || DEFAULT_PASS;
+}
+
+// ── Login gate ─────────────────────────────────────────────────────────────────
+function adminLogin() {
+  const pass = document.getElementById('admin-pass').value;
+  if (pass === getAdminPass()) {
+    sessionStorage.setItem('pingin_admin', '1');
+    showAdmin();
+  } else {
+    const err = document.getElementById('gate-err');
+    err.style.display = 'block';
+    err.textContent = 'Incorrect password. Try again.';
+    document.getElementById('admin-pass').value = '';
+    document.getElementById('admin-pass').focus();
+  }
+}
+
+function adminSignOut() {
+  sessionStorage.removeItem('pingin_admin');
+  location.reload();
+}
+
+// ── Gate helper functions ─────────────────────────────────────────────────────
+function toggleGatePass(inputId, btn) {
+  const inp = document.getElementById(inputId);
+  if (!inp) return;
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+  btn.textContent = inp.type === 'password' ? 'Show' : 'Hide';
+}
+
+function updateStrength(val) {
+  const fill  = document.getElementById('strength-fill');
+  const label = document.getElementById('strength-label');
+  if (!fill || !label) return;
+  let score = 0;
+  if (val.length >= 8)  score++;
+  if (val.length >= 12) score++;
+  if (/[A-Z]/.test(val)) score++;
+  if (/[0-9]/.test(val)) score++;
+  if (/[^A-Za-z0-9]/.test(val)) score++;
+  const levels = [
+    { pct:'0%',   color:'transparent', text:'' },
+    { pct:'25%',  color:'#E24B4A',     text:'Weak' },
+    { pct:'50%',  color:'#BA7517',     text:'Fair' },
+    { pct:'75%',  color:'#1A9ADE',     text:'Good' },
+    { pct:'100%', color:'#00D4AA',     text:'Strong' },
+  ];
+  const lv = levels[Math.min(score, 4)];
+  fill.style.width      = lv.pct;
+  fill.style.background = lv.color;
+  label.textContent     = lv.text;
+  label.style.color     = lv.color;
+}
+
+document.getElementById('admin-pass').addEventListener('keydown', e => { if (e.key==='Enter') adminLogin(); });
+document.getElementById('cp-new')?.addEventListener('keydown', e => { if (e.key==='Enter') changeAdminPassword(); });
+document.getElementById('cp-confirm')?.addEventListener('keydown', e => { if (e.key==='Enter') changeAdminPassword(); });
+
+// ── Change password views ──────────────────────────────────────────────────────
+function showChangePassword() {
+  document.getElementById('gate-login-card').style.display = 'none';
+  document.getElementById('gate-change-card').style.display = 'block';
+  setTimeout(() => document.getElementById('cp-current')?.focus(), 50);
+  ['cp-current','cp-new','cp-confirm'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.value = ''; el.type = 'password'; }
+  });
+  document.querySelectorAll('.gate-show-btn').forEach(b => b.textContent = 'Show');
+  document.getElementById('cp-err').style.display    = 'none';
+  document.getElementById('cp-success').style.display = 'none';
+  updateStrength('');
+}
+
+function showLogin() {
+  document.getElementById('gate-change-card').style.display = 'none';
+  document.getElementById('gate-login-card').style.display  = 'block';
+  const passEl = document.getElementById('admin-pass');
+  if (passEl) { passEl.value = ''; passEl.type = 'password'; }
+  document.querySelectorAll('.gate-show-btn').forEach(b => b.textContent = 'Show');
+  setTimeout(() => passEl?.focus(), 50);
+  document.getElementById('gate-err').style.display = 'none';
+}
+
+function changeAdminPassword() {
+  const current = document.getElementById('cp-current').value;
+  const newPass  = document.getElementById('cp-new').value;
+  const confirm  = document.getElementById('cp-confirm').value;
+  const errEl    = document.getElementById('cp-err');
+  const succEl   = document.getElementById('cp-success');
+
+  errEl.style.display  = 'none';
+  succEl.style.display = 'none';
+
+  const showErr = (msg) => {
+    errEl.textContent    = msg;
+    errEl.style.display  = 'block';
+  };
+
+  if (current !== getAdminPass()) { showErr('Current password is incorrect.'); return; }
+  if (newPass.length < 8)          { showErr('New password must be at least 8 characters.'); return; }
+  if (newPass !== confirm)          { showErr('Passwords do not match.'); return; }
+  if (newPass === DEFAULT_PASS)     { showErr('New password cannot be the same as the default.'); return; }
+
+  localStorage.setItem('pingin_admin_pass', newPass);
+  succEl.style.display = 'block';
+
+  // Clear fields
+  ['cp-current','cp-new','cp-confirm'].forEach(id => document.getElementById(id).value = '');
+
+  // Auto-redirect to login after 2 seconds
+  setTimeout(() => showLogin(), 2000);
+}
+
+function showAdmin() {
+  document.getElementById('admin-gate').style.display = 'none';
+  document.getElementById('admin-wrap').style.display = 'flex';
+  loadData();
+}
+
+// Auto-login if session exists
+if (sessionStorage.getItem('pingin_admin') === '1') showAdmin();
+
+// ── Load data ──────────────────────────────────────────────────────────────────
+let allUsers = [];
+
+function loadData() {
+  allUsers = PingIN.getUsers();
+  renderStats();
+  renderUsers();
+  renderRevenue();
+}
+
+function renderStats() {
+  const now = Date.now();
+  let active = 0, trial = 0, expired = 0, revenue = 0;
+  const PLAN_PRICES = { starter:650, pro:1200, annual:10000 };
+
+  allUsers.forEach(u => {
+    const expiry = u.planExpiry ? new Date(u.planExpiry) : null;
+    const isExpired = expiry && now > expiry;
+    if (u.plan === 'free' || u.plan === 'trial') trial++;
+    else if (u.plan && u.plan !== 'none' && !isExpired) { active++; revenue += PLAN_PRICES[u.plan]||0; }
+    else if (isExpired) expired++;
+  });
+
+  const set = (id,v) => { const el=document.getElementById(id); if(el) el.textContent=v; };
+  set('st-total',   allUsers.length);
+  set('st-active',  active);
+  set('st-trial',   trial);
+  set('st-expired', expired);
+  set('st-revenue', '₹' + revenue.toLocaleString('en-IN'));
+}
+
+function renderUsers() {
+  const tbody = document.getElementById('users-tbody');
+  const q     = document.getElementById('search-users')?.value?.toLowerCase() || '';
+  const fp    = document.getElementById('filter-plan')?.value || '';
+  const now   = Date.now();
+
+  let filtered = allUsers.filter(u => {
+    const matchQ  = !q || u.name?.toLowerCase().includes(q) || u.email?.toLowerCase().includes(q) || u.phone?.includes(q);
+    const expiry  = u.planExpiry ? new Date(u.planExpiry) : null;
+    const isExpired = expiry && now > expiry;
+    const planStatus = isExpired ? 'expired' : (u.plan||'none');
+    const matchP  = !fp || planStatus === fp;
+    return matchQ && matchP;
+  });
+
+  if (!filtered.length) {
+    tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><div class="empty-icon">👥</div>No users found</div></td></tr>`;
+    return;
+  }
+
+  const msgMap = { free:'5/day', starter:'50/day', pro:'50/day', annual:'50/day', expired:'—', none:'—' };
+
+  tbody.innerHTML = filtered.map(u => {
+    const expiry  = u.planExpiry ? new Date(u.planExpiry) : null;
+    const now2    = Date.now();
+    const isExp   = expiry && now2 > expiry;
+    const daysLeft= expiry ? Math.max(0, Math.ceil((expiry - now2) / 86400000)) : '—';
+    const planKey = isExp ? 'expired' : (u.plan||'none');
+    const daysColor = typeof daysLeft === 'number' && daysLeft <= 3 ? '#E24B4A' : '#F0F2F8';
+    const msgsDay = msgMap[planKey] || '—';
+    const msgsColor = planKey === 'free' ? '#D97706' : planKey === 'expired' || planKey === 'none' ? '#4A4E62' : '#00D4AA';
+
+    return `<tr>
+      <td style="color:#F0F2F8;font-weight:500;">${escH(u.name||'—')}</td>
+      <td style="color:#8B8FA8;">${escH(u.email||'—')}</td>
+      <td style="color:#8B8FA8;">${escH(u.phone||'—')}</td>
+      <td><span class="plan-tag ${planKey}">${planKey}</span></td>
+      <td style="color:${daysColor};font-weight:600;">${daysLeft}</td>
+      <td style="font-weight:700;color:${msgsColor};">${msgsDay}</td>
+      <td style="font-family:monospace;font-size:11px;color:#00D4AA;">${u.licenseKey ? u.licenseKey.slice(0,16)+'...' : '—'}</td>
+      <td>
+        <div style="display:flex;gap:4px;flex-wrap:wrap;">
+          <button class="a-btn blue" onclick="editUser('${escAttr(u.email)}')">Edit</button>
+          <button class="a-btn green" onclick="genKeyFor('${escAttr(u.email)}')">Key</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function renderRevenue() {
+  const box = document.getElementById('revenue-breakdown');
+  const PLAN_PRICES = { free:0, starter:650, pro:1200, annual:10000 };
+  const PLAN_NAMES  = { free:'Free Trial', starter:'Starter ₹650', pro:'Pro ₹1,200', annual:'Annual ₹10,000' };
+  const counts = { free:0, starter:0, pro:0, annual:0 };
+  const now = Date.now();
+
+  allUsers.forEach(u => {
+    if (u.plan && u.plan !== 'none') {
+      const expiry = u.planExpiry ? new Date(u.planExpiry) : null;
+      if (!expiry || now < expiry) counts[u.plan] = (counts[u.plan]||0) + 1;
+    }
+  });
+
+  box.innerHTML = Object.entries(counts).map(([plan, count]) => `
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:13px;">
+      <span style="color:#8B8FA8;">${PLAN_NAMES[plan]||plan}</span>
+      <span style="color:#F0F2F8;font-weight:600;">${count} users · ₹${(count * (PLAN_PRICES[plan]||0)).toLocaleString('en-IN')}</span>
+    </div>`).join('');
+}
+
+// ── Generate key ───────────────────────────────────────────────────────────────
+function generateKey() {
+  const email   = document.getElementById('kg-email')?.value?.trim();
+  const planKey = document.getElementById('kg-plan')?.value;
+  if (!email) { alert('Enter customer email first.'); return; }
+
+  const key = PingIN.generateKey(email, planKey);
+
+  // Activate plan for this user
+  const users = PingIN.getUsers();
+  const idx   = users.findIndex(u => u.email.toLowerCase() === email.toLowerCase());
+  if (idx >= 0) {
+    PingIN.activatePlan(email, planKey, key);
+  } else {
+    // User not found — create minimal record
+    const newUser = {
+      id: 'u_' + Date.now(), name: email.split('@')[0], email,
+      phone: '', passwordHash: btoa('changeme'), plan: planKey,
+      planExpiry: new Date(Date.now() + (PLANS[planKey]?.days||30) * 86400000).toISOString(),
+      licenseKey: key, trialUsed: planKey==='free', createdAt: new Date().toISOString(),
+      msgsToday: 0, msgsDate: new Date().toDateString(),
+    };
+    users.push(newUser);
+    PingIN.saveUsers(users);
+  }
+
+  document.getElementById('kg-key-val').textContent   = key;
+  document.getElementById('kg-plan-info').textContent = `Plan: ${PLANS[planKey]?.name||planKey} · ${PLANS[planKey]?.days||30} days · ${PLANS[planKey]?.priceStr||'—'} · Outreach: ${PLANS[planKey]?.dailyMsgs||50} msgs/day`;
+  document.getElementById('kg-result').style.display  = 'block';
+
+  // Store for WA send
+  window._lastGeneratedKey   = key;
+  window._lastGeneratedEmail = email;
+  window._lastGeneratedPlan  = PLANS[planKey]?.name || planKey;
+
+  allUsers = PingIN.getUsers();
+  renderStats(); renderUsers(); renderRevenue();
+}
+
+function genKeyFor(email) {
+  document.getElementById('kg-email').value = email;
+  const u = PingIN.findUser(email);
+  if (u?.plan) document.getElementById('kg-plan').value = u.plan;
+  document.querySelector('.a-card:first-child').scrollIntoView({behavior:'smooth'});
+}
+
+function copyGenKey() {
+  const key = document.getElementById('kg-key-val').textContent;
+  navigator.clipboard.writeText(key).then(() => {
+    const btn = document.querySelector('.kg-copy');
+    const o = btn.textContent; btn.textContent = '✓ Copied!';
+    setTimeout(() => btn.textContent = o, 2000);
+  }).catch(() => prompt('Copy your key:', key));
+}
+
+function emailKeyToUser() {
+  const key   = window._lastGeneratedKey;
+  const email = window._lastGeneratedEmail;
+  const plan  = window._lastGeneratedPlan;
+  if (!key) { alert('Generate a key first.'); return; }
+  const u = PingIN.findUser(email);
+  if (typeof emailjs !== 'undefined') {
+    emailjs.send('service_2gph56v','template_ylb2tmp',{
+      to_email:      email,
+      user_name:     u?.name || email.split('@')[0],
+      user_email:    email,
+      user_phone:    u?.phone || '',
+      plan_name:     plan,
+      plan_days:     String(PLANS[plan.toLowerCase()]?.days || 30),
+      plan_price:    PLANS[plan.toLowerCase()]?.priceStr || '—',
+      expiry_date:   u?.planExpiry ? new Date(u.planExpiry).toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'}) : '—',
+      license_key:   key,
+      download_url:  'https://pingin.in/extension.html',
+      dashboard_url: 'https://pingin.in/dashboard.html',
+      from_name:     'PingIN Team',
+      reply_to:      'support@pingin.in',
+      tagline:       "India's AI Talent Search Engine",
+      email_type:    'activation',
+    }).then(() => alert('✅ License key sent to ' + email + '!'))
+      .catch(e => alert('Email error: ' + e.message));
+  } else {
+    alert('EmailJS not loaded. Key: ' + key);
+  }
+}
+
+// ── Edit user modal ────────────────────────────────────────────────────────────
+function editUser(email) {
+  const u = PingIN.findUser(email);
+  if (!u) return;
+  document.getElementById('edit-email-orig').value = email;
+  document.getElementById('edit-name').value  = u.name||'';
+  document.getElementById('edit-email').value = u.email||'';
+  document.getElementById('edit-phone').value = u.phone||'';
+  document.getElementById('edit-plan').value  = u.plan||'none';
+  document.getElementById('edit-key').value   = u.licenseKey||'';
+  document.getElementById('edit-modal').classList.add('open');
+}
+
+function closeModal() { document.getElementById('edit-modal').classList.remove('open'); }
+
+function saveUser() {
+  const origEmail = document.getElementById('edit-email-orig').value;
+  const users = PingIN.getUsers();
+  const idx = users.findIndex(u => u.email.toLowerCase() === origEmail.toLowerCase());
+  if (idx < 0) { alert('User not found.'); return; }
+
+  const planKey = document.getElementById('edit-plan').value;
+  const key     = document.getElementById('edit-key').value.trim();
+
+  users[idx].name       = document.getElementById('edit-name').value.trim();
+  users[idx].email      = document.getElementById('edit-email').value.trim();
+  users[idx].phone      = document.getElementById('edit-phone').value.trim();
+  users[idx].plan       = planKey;
+  users[idx].licenseKey = key;
+
+  // Recalculate expiry if plan changed
+  if (planKey && planKey !== 'none' && PLANS[planKey]) {
+    if (!users[idx].planExpiry || new Date(users[idx].planExpiry) < new Date()) {
+      users[idx].planExpiry = new Date(Date.now() + PLANS[planKey].days * 86400000).toISOString();
+    }
+  }
+
+  PingIN.saveUsers(users);
+  allUsers = users;
+  renderStats(); renderUsers(); renderRevenue();
+  closeModal();
+  alert('✅ User updated successfully!');
+}
+
+function deleteUser() {
+  const email = document.getElementById('edit-email-orig').value;
+  if (!confirm(`Delete user ${email}? This cannot be undone.`)) return;
+  const users = PingIN.getUsers().filter(u => u.email.toLowerCase() !== email.toLowerCase());
+  PingIN.saveUsers(users);
+  allUsers = users;
+  renderStats(); renderUsers(); renderRevenue();
+  closeModal();
+}
+
+
+
+// ── Expiring users ─────────────────────────────────────────────────────────────
+function showExpiring() {
+  const now = Date.now();
+  const expiring = allUsers.filter(u => {
+    if (!u.planExpiry) return false;
+    const days = Math.ceil((new Date(u.planExpiry) - now) / 86400000);
+    return days >= 0 && days <= 3;
+  });
+  if (!expiring.length) { alert('✅ No users expiring in the next 3 days.'); return; }
+  const names = expiring.map(u => `• ${u.name} (${u.email}) — ${Math.ceil((new Date(u.planExpiry) - now) / 86400000)} days`).join('\n');
+  alert(`⚠️ Users expiring in 3 days (${expiring.length}):\n\n${names}`);
+}
+
+function emailAllExpiring() {
+  const now = Date.now();
+  const expiring = allUsers.filter(u => {
+    if (!u.planExpiry || !u.email) return false;
+    const days = Math.ceil((new Date(u.planExpiry) - now) / 86400000);
+    return days >= 0 && days <= 3;
+  });
+  if (!expiring.length) { alert('✅ No users expiring in the next 3 days.'); return; }
+  if (!confirm(`Send renewal reminder email to ${expiring.length} users?`)) return;
+  let sent = 0;
+  expiring.forEach((u, i) => {
+    const days = Math.ceil((new Date(u.planExpiry) - now) / 86400000);
+    setTimeout(() => {
+      if (typeof emailjs !== 'undefined') {
+        emailjs.send('service_2gph56v','template_ylb2tmp',{
+          to_email:    u.email,
+          user_name:   u.name || 'User',
+          user_email:  u.email,
+          user_phone:  u.phone || '',
+          plan_name:   (PLANS[u.plan]?.name||u.plan) + ' — Expiring in ' + days + ' day' + (days===1?'':'s'),
+          license_key: u.licenseKey || '—',
+        }).then(() => { sent++; if (sent === expiring.length) alert('✅ Sent ' + sent + ' renewal reminder emails!'); })
+          .catch(e => console.error('Email error:', e));
+      }
+    }, i * 1500);
+  });
+}
+
+// ── Export CSV ──────────────────────────────────────────────────────────────────
+function exportUsers() {
+  const hdr  = ['Name','Email','Phone','Plan','Plan Expiry','Days Left','License Key','Registered At'];
+  const now  = Date.now();
+  const rows = allUsers.map(u => {
+    const expiry   = u.planExpiry ? new Date(u.planExpiry) : null;
+    const daysLeft = expiry ? Math.max(0, Math.ceil((expiry - now) / 86400000)) : '';
+    return [u.name||'', u.email||'', u.phone||'', u.plan||'none', u.planExpiry||'', daysLeft, u.licenseKey||'', u.createdAt||''];
+  });
+  const csv = [hdr,...rows].map(r => r.map(c => '"'+String(c||'').replace(/"/g,'""')+'"').join(',')).join('\n');
+  const a = Object.assign(document.createElement('a'), {
+    href: URL.createObjectURL(new Blob([csv],{type:'text/csv'})),
+    download: 'pingin_users_' + new Date().toISOString().slice(0,10) + '.csv'
+  });
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+}
+
+function clearExpired() {
+  const now = Date.now();
+  const active = allUsers.filter(u => !u.planExpiry || new Date(u.planExpiry) > now || !u.plan || u.plan==='none');
+  const removed = allUsers.length - active.length;
+  if (!removed) { alert('No expired users to remove.'); return; }
+  if (!confirm(`Remove ${removed} expired users? This cannot be undone.`)) return;
+  PingIN.saveUsers(active);
+  allUsers = active;
+  renderStats(); renderUsers(); renderRevenue();
+  alert(`✅ Removed ${removed} expired users.`);
+}
+
+// ── Change password (inline modal in admin panel) ─────────────────────────────
+function showChangePasswordInline() {
+  ['icp-current','icp-new','icp-confirm'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('icp-err').style.display     = 'none';
+  document.getElementById('icp-success').style.display = 'none';
+  document.getElementById('cp-modal').classList.add('open');
+  setTimeout(() => document.getElementById('icp-current').focus(), 100);
+}
+
+function closeCPModal() {
+  document.getElementById('cp-modal').classList.remove('open');
+}
+
+function saveNewPassword() {
+  const current = document.getElementById('icp-current').value;
+  const newPass  = document.getElementById('icp-new').value;
+  const confirm  = document.getElementById('icp-confirm').value;
+  const errEl    = document.getElementById('icp-err');
+  const succEl   = document.getElementById('icp-success');
+
+  errEl.style.display  = 'none';
+  succEl.style.display = 'none';
+
+  const showErr = (msg) => { errEl.textContent = msg; errEl.style.display = 'block'; };
+
+  if (current !== getAdminPass())  { showErr('Current password is incorrect.'); return; }
+  if (newPass.length < 8)           { showErr('New password must be at least 8 characters.'); return; }
+  if (newPass !== confirm)           { showErr('Passwords do not match.'); return; }
+
+  localStorage.setItem('pingin_admin_pass', newPass);
+  succEl.style.display = 'block';
+  ['icp-current','icp-new','icp-confirm'].forEach(id => document.getElementById(id).value = '');
+  setTimeout(() => closeCPModal(), 2500);
+}
+
+// ── Utils ──────────────────────────────────────────────────────────────────────
+function escH(s)    { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function escAttr(s) { return String(s||'').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+</script>
+</body>
+</html>

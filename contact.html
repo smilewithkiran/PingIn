@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us — PingIN</title>
+  <meta name="description" content="Contact PingIN support — email us at support@pingin.in">
+  <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Inter:wght@400;500;600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <style>
+    .legal-page { padding:100px var(--gutter) 60px; max-width:820px; margin:0 auto; }
+    .legal-page h1 { font-size:clamp(28px,4vw,42px); margin-bottom:8px; }
+    .legal-page .updated { font-size:13px; color:var(--ts); margin-bottom:40px; }
+    .legal-page h2 { font-size:20px; color:var(--tp); margin:36px 0 12px; padding-bottom:8px; border-bottom:1px solid var(--border); }
+    .legal-page h3 { font-size:16px; color:var(--tp); margin:20px 0 8px; }
+    .legal-page p { font-size:14px; color:var(--ts); line-height:1.8; margin-bottom:14px; }
+    .legal-page ul { padding-left:20px; margin-bottom:14px; }
+    .legal-page ul li { font-size:14px; color:var(--ts); line-height:1.8; margin-bottom:6px; }
+    .legal-page a { color:var(--blue-l); }
+    .legal-highlight { background:rgba(0,119,181,.07); border:1px solid rgba(0,119,181,.2); border-radius:var(--r); padding:16px 20px; margin:20px 0; }
+    .legal-highlight p { margin:0; color:var(--tp); font-weight:500; }
+  </style>
+</head>
+<body>
+  <nav class="nav scrolled" id="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="logo">
+        <img src="images/logo-mark.svg" alt="PingIN" width="30" height="30" style="border-radius:7px;">
+        <span class="logo-text">Ping<span style="background:linear-gradient(90deg,#1A9ADE,#00D4AA);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IN</span></span>
+      </a>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="pricing.html">Pricing</a>
+        
+        <a href="extension.html">Chrome Extension</a>
+      </div>
+      <div class="nav-cta">
+        <a href="login.html" class="btn-ghost-sm">Sign in</a>
+        <a href="pricing.html" class="btn-primary-sm">Start free</a>
+      </div>
+    </div>
+  </nav>
+<style>
+.contact-page{padding:100px var(--gutter) 60px;}
+.contact-page h1{font-size:clamp(28px,4vw,48px);margin-bottom:12px;}
+.contact-page .sub{font-size:16px;color:var(--ts);margin-bottom:50px;line-height:1.7;}
+.contact-split{display:grid;grid-template-columns:1fr 1.2fr;gap:32px;align-items:start;max-width:1000px;}
+.contact-methods{display:flex;flex-direction:column;gap:14px;}
+.cm-card{background:var(--surf);border:1px solid var(--border2);border-radius:var(--rl);padding:22px;display:flex;gap:16px;align-items:flex-start;transition:border-color .2s;}
+.cm-card:hover{border-color:var(--blue);}
+.cm-icon{font-size:28px;flex-shrink:0;}
+.cm-title{font-size:15px;font-weight:600;color:var(--tp);margin-bottom:4px;}
+.cm-sub{font-size:13px;color:var(--ts);line-height:1.6;}
+.cm-link{display:inline-flex;align-items:center;gap:5px;margin-top:10px;padding:6px 14px;border-radius:7px;background:rgba(0,119,181,.12);color:var(--blue-l);border:1px solid rgba(0,119,181,.25);font-size:12px;font-weight:600;text-decoration:none;transition:all .15s;}
+.cm-link:hover{background:rgba(0,119,181,.22);}
+.hours-box{background:var(--surf2);border-radius:var(--r);padding:16px;margin-top:20px;}
+.hours-title{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ts);margin-bottom:10px;}
+.hours-row{display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid var(--border);}
+.hours-row:last-child{border-bottom:none;}
+.hours-row span:first-child{color:var(--ts);}
+.hours-row span:last-child{color:var(--tp);font-weight:500;}
+.contact-form-card{background:var(--surf);border:1px solid var(--border2);border-radius:var(--rl);padding:28px;}
+.cf-title{font-size:20px;font-weight:700;color:var(--tp);margin-bottom:6px;}
+.cf-sub{font-size:13px;color:var(--ts);margin-bottom:24px;}
+.cf-label{display:block;font-size:12px;color:var(--ts);margin-bottom:5px;font-weight:500;}
+.cf-input{width:100%;background:var(--surf2);border:1px solid var(--border2);border-radius:var(--r);color:var(--tp);font-family:inherit;font-size:13px;padding:10px 13px;margin-bottom:14px;transition:border-color .15s;}
+.cf-input:focus{outline:none;border-color:var(--blue);}
+.cf-select{width:100%;background:var(--surf2);border:1px solid var(--border2);border-radius:var(--r);color:var(--tp);font-family:inherit;font-size:13px;padding:10px 13px;margin-bottom:14px;}
+.cf-textarea{width:100%;height:110px;background:var(--surf2);border:1px solid var(--border2);border-radius:var(--r);color:var(--tp);font-family:inherit;font-size:13px;padding:10px 13px;margin-bottom:16px;resize:none;}
+.cf-submit{width:100%;padding:13px;border-radius:9px;background:var(--blue);color:white;border:none;cursor:pointer;font-size:14px;font-weight:700;font-family:inherit;transition:all .2s;}
+.cf-submit:hover{background:var(--blue-l);}
+.cf-success{display:none;text-align:center;padding:30px 0;}
+.faq-mini{margin-top:40px;}
+.faq-mini h3{font-size:18px;margin-bottom:16px;}
+@media(max-width:700px){.contact-split{grid-template-columns:1fr;}}
+</style>
+<section class="contact-page">
+  <div class="container">
+    <div class="section-tag">Get in touch</div>
+    <h1>We'd love to hear from you</h1>
+    <p class="sub">Have a question, need help, or want to give feedback?<br>We respond to all queries within 4 business hours.</p>
+
+    <div class="contact-split">
+      <!-- Left: Contact methods -->
+      <div>
+        <div class="contact-methods">
+          <div class="cm-card">
+            <div class="cm-icon">⚡</div>
+            <div>
+              <div class="cm-title">Quick Support</div>
+              <div class="cm-sub">Send us an email for fast support. We respond to all queries within 4 business hours.</div>
+              <a class="cm-link" href="mailto:support@pingin.in">support@pingin.in →</a>
+            </div>
+          </div>
+          <div class="cm-card">
+            <div class="cm-icon">📧</div>
+            <div>
+              <div class="cm-title">Email Support</div>
+              <div class="cm-sub">For detailed queries and billing questions. We respond within 4 business hours.</div>
+              <a class="cm-link" href="mailto:support@pingin.in">support@pingin.in →</a>
+            </div>
+          </div>
+          <div class="cm-card">
+            <div class="cm-icon">🐛</div>
+            <div>
+              <div class="cm-title">Bug Reports</div>
+              <div class="cm-sub">Found something not working? Tell us and we'll fix it ASAP — usually within 24 hours.</div>
+              <a class="cm-link" href="mailto:support@pingin.in">support@pingin.in →</a>
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+
+      <!-- Right: Contact form -->
+      <div class="contact-form-card">
+        <div class="cf-title">Send us a message</div>
+        <div class="cf-sub">Fill the form below and we'll get back to you quickly.</div>
+
+        <div id="contact-form">
+          <label class="cf-label">Your name *</label>
+          <input type="text" class="cf-input" id="c-name" placeholder="Your full name">
+
+          <label class="cf-label">Email address *</label>
+          <input type="email" class="cf-input" id="c-email" placeholder="you@example.com">
+
+          <label class="cf-label">Mobile Number <span style="font-weight:400;color:var(--tm);">(optional)</span></label>
+          <input type="tel" class="cf-input" id="c-mobile" placeholder="+91 98765 43210">
+
+          <label class="cf-label">Topic *</label>
+          <select class="cf-select" id="c-topic">
+            <option value="">Select a topic</option>
+            <option>General question</option>
+            <option>Technical support / Bug report</option>
+            <option>Billing / Payment</option>
+                        <option>Feature request</option>
+            <option>Partnership / Business</option>
+            <option>Other</option>
+          </select>
+
+          <label class="cf-label">Message *</label>
+          <textarea class="cf-textarea" id="c-msg" placeholder="Describe your question or issue in detail..."></textarea>
+
+          <button class="cf-submit" id="cf-btn" onclick="submitContact()">Send Message</button>
+        </div>
+
+        <div class="cf-success" id="cf-success">
+          <div style="font-size:40px;margin-bottom:12px;">✅</div>
+          <h3 style="color:var(--tp);margin-bottom:8px;">Message received!</h3>
+          <p style="color:var(--ts);font-size:14px;line-height:1.7;">Thank you for reaching out! We'll reply to your email within 4 business hours.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mini FAQ -->
+    <div class="faq-mini" style="max-width:1000px;margin-top:50px;">
+      <h3>Quick answers</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div style="background:var(--surf);border:1px solid var(--border);border-radius:var(--r);padding:16px;">
+          <div style="font-size:14px;font-weight:600;color:var(--tp);margin-bottom:6px;">Questions about billing?</div>
+          <div style="font-size:13px;color:var(--ts);line-height:1.6;">Email us at <a href="mailto:support@pingin.in" style="color:var(--blue-l)">support@pingin.in</a> with your payment details. We respond within 4 business hours.</div>
+        </div>
+        <div style="background:var(--surf);border:1px solid var(--border);border-radius:var(--r);padding:16px;">
+          <div style="font-size:14px;font-weight:600;color:var(--tp);margin-bottom:6px;">My extension stopped working?</div>
+          <div style="font-size:13px;color:var(--ts);line-height:1.6;">LinkedIn sometimes updates their interface. Email <a href="mailto:support@pingin.in" style="color:var(--blue-l)">support@pingin.in</a> and we'll push a fix usually within 24 hours.</div>
+        </div>
+        <div style="background:var(--surf);border:1px solid var(--border);border-radius:var(--r);padding:16px;">
+          <div style="font-size:14px;font-weight:600;color:var(--tp);margin-bottom:6px;">How do I cancel my subscription?</div>
+          <div style="font-size:13px;color:var(--ts);line-height:1.6;">Go to Dashboard → Settings → Cancel subscription. Or email us and we'll cancel for you immediately.</div>
+        </div>
+        <div style="background:var(--surf);border:1px solid var(--border);border-radius:var(--r);padding:16px;">
+          <div style="font-size:14px;font-weight:600;color:var(--tp);margin-bottom:6px;">Will PingIN get my LinkedIn banned?</div>
+          <div style="font-size:13px;color:var(--ts);line-height:1.6;">We limit sends to 50/day with random delays and business-hours-only mode. Thousands of users use PingIN safely every day.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<script>
+function submitContact() {
+  const name  = document.getElementById("c-name").value.trim();
+  const email = document.getElementById("c-email").value.trim();
+  const topic = document.getElementById("c-topic").value;
+  const msg   = document.getElementById("c-msg").value.trim();
+  if (!name || !email || !topic || !msg) { alert("Please fill all required fields."); return; }
+  const btn = document.getElementById("cf-btn");
+  btn.disabled = true; btn.textContent = "Sending...";
+  setTimeout(() => {
+    document.getElementById("contact-form").style.display = "none";
+    document.getElementById("cf-success").style.display  = "block";
+  }, 1200);
+}
+</script>
+
+  <footer class="footer" style="margin-top:40px;">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="logo">
+            <img src="images/logo-mark.svg" alt="PingIN" width="30" height="30" style="border-radius:7px;">
+            <span class="logo-text">Ping<span style="background:linear-gradient(90deg,#1A9ADE,#00D4AA);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IN</span></span>
+          </a>
+          <p>India's AI Talent Search Engine<br>built for India 🇮🇳</p>
+        </div>
+        <div class="footer-col">
+          <div class="fc-title">Product</div>
+          <a href="extension.html">Chrome Extension</a>
+          
+          <a href="pricing.html">Pricing</a>
+        </div>
+        <div class="footer-col">
+          <div class="fc-title">Legal</div>
+          <a href="terms.html">Terms of Service</a>
+          <a href="privacy.html">Privacy Policy</a>
+          
+        </div>
+        <div class="footer-col">
+          <div class="fc-title">Company</div>
+          <a href="about.html">About us</a>
+          <a href="contact.html">Contact</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 PingIN Technologies. All rights reserved.</span>
+        <span>Made with ❤️ in Hyderabad, India 🇮🇳</span>
+      </div>
+    </div>
+  </footer>
+  <script src="js/pingin.js"></script>
+<script src="js/nav.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>

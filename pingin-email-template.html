@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>PingIN Email Template</title>
+<!--
+  ════════════════════════════════════════════════════════════════
+  PINGIN EMAIL TEMPLATE — v2.8.4
+  Paste this HTML into EmailJS → Template → Email Body (HTML)
+  
+  Variables used (set in your code):
+    {{user_name}}     — Recruiter's full name
+    {{user_email}}    — Their email address
+    {{user_phone}}    — WhatsApp / phone
+    {{plan_name}}     — Plan name (Free Trial / Starter / Pro / Annual)
+    {{plan_days}}     — Number of days (5 / 15 / 30 / 365)
+    {{plan_price}}    — Price (₹0 / ₹650 / ₹1,200 / ₹10,000)
+    {{expiry_date}}   — Expiry date in readable format
+    {{license_key}}   — PING-XX-XXXX-XXXX
+    {{download_url}}  — https://pingin.in/extension.html
+    {{dashboard_url}} — https://pingin.in/dashboard.html
+    {{email_type}}    — welcome / free_trial / purchase / activation
+  ════════════════════════════════════════════════════════════════
+-->
+</head>
+<body style="margin:0;padding:0;background:#0F1117;font-family:'Segoe UI',Arial,sans-serif;-webkit-font-smoothing:antialiased;">
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#0F1117;padding:32px 16px;">
+  <tr>
+    <td align="center">
+
+      <!-- ── EMAIL CARD ─────────────────────────────────────────── -->
+      <table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;background:#111318;border-radius:20px;overflow:hidden;border:1px solid rgba(255,255,255,0.08);">
+
+        <!-- TOP GRADIENT BAR -->
+        <tr>
+          <td style="height:5px;background:linear-gradient(90deg,#0055CC 0%,#00A890 100%);font-size:0;line-height:0;">&nbsp;</td>
+        </tr>
+
+        <!-- HEADER with Logo -->
+        <tr>
+          <td style="padding:32px 40px 24px;background:#111318;border-bottom:1px solid rgba(255,255,255,0.06);">
+            <table width="100%" cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <td style="vertical-align:middle;">
+                  <!-- Logo mark inline SVG -->
+                  <table cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                      <td style="vertical-align:middle;">
+                        <!-- Logo box -->
+                        <div style="display:inline-block;width:44px;height:44px;background:linear-gradient(135deg,#0055CC,#00A890);border-radius:11px;text-align:center;line-height:44px;vertical-align:middle;">
+                          <!--[if !mso]><!-->
+                          <svg width="26" height="26" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle;margin-top:9px;">
+                            <circle cx="30" cy="30" r="6" fill="white"/>
+                            <circle cx="30" cy="30" r="14" fill="none" stroke="white" stroke-width="2.5" opacity="0.7"/>
+                            <circle cx="30" cy="30" r="22" fill="none" stroke="white" stroke-width="2" opacity="0.35"/>
+                          </svg>
+                          <!--<![endif]-->
+                        </div>
+                      </td>
+                      <td style="padding-left:12px;vertical-align:middle;">
+                        <div style="font-family:'Segoe UI',Arial,sans-serif;font-size:22px;font-weight:800;color:#F0F2F8;line-height:1;">
+                          Ping<span style="color:#00D4AA;">IN</span>
+                        </div>
+                        <div style="font-size:11px;color:#8B8FA8;margin-top:3px;letter-spacing:0.06em;text-transform:uppercase;">
+                          India's AI Talent Search Engine
+                        </div>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+                <td align="right" style="vertical-align:middle;">
+                  <div style="font-size:11px;color:#4A4E62;">Built for India 🇮🇳</div>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- WELCOME HERO SECTION -->
+        <tr>
+          <td style="padding:40px 40px 32px;background:linear-gradient(160deg,rgba(0,85,204,0.1) 0%,rgba(0,168,144,0.05) 100%);">
+
+            <!-- Greeting -->
+            <p style="margin:0 0 8px;font-size:14px;color:#8B8FA8;font-weight:500;">Hello {{user_name}},</p>
+
+            <!-- Headline changes by email type -->
+            <h1 style="margin:0 0 14px;font-size:28px;font-weight:800;color:#F0F2F8;line-height:1.2;letter-spacing:-0.02em;">
+              Welcome to PingIN! 🎉
+            </h1>
+
+            <p style="margin:0 0 24px;font-size:15px;color:#8B8FA8;line-height:1.7;">
+              Your <strong style="color:#F0F2F8;">{{plan_name}}</strong> is now active.
+              You're all set to find the right candidates faster than ever —
+              powered by Claude AI, built for India 🇮🇳
+            </p>
+
+            <!-- Plan details card -->
+            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#0D0F14;border-radius:14px;border:1px solid rgba(0,212,170,0.2);margin-bottom:24px;overflow:hidden;">
+              <tr>
+                <td style="padding:20px 24px;border-bottom:1px solid rgba(255,255,255,0.05);">
+                  <div style="font-size:11px;font-weight:700;color:#8B8FA8;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;">Your Plan Details</div>
+                  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                      <td width="50%" style="padding-bottom:10px;">
+                        <div style="font-size:11px;color:#4A4E62;margin-bottom:3px;">Plan</div>
+                        <div style="font-size:15px;font-weight:700;color:#F0F2F8;">{{plan_name}}</div>
+                      </td>
+                      <td width="50%" style="padding-bottom:10px;">
+                        <div style="font-size:11px;color:#4A4E62;margin-bottom:3px;">Duration</div>
+                        <div style="font-size:15px;font-weight:700;color:#F0F2F8;">{{plan_days}} days</div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td width="50%">
+                        <div style="font-size:11px;color:#4A4E62;margin-bottom:3px;">Amount Paid</div>
+                        <div style="font-size:15px;font-weight:700;color:#00D4AA;">{{plan_price}}</div>
+                      </td>
+                      <td width="50%">
+                        <div style="font-size:11px;color:#4A4E62;margin-bottom:3px;">Access Until</div>
+                        <div style="font-size:15px;font-weight:700;color:#F0F2F8;">{{expiry_date}}</div>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+              <!-- License Key -->
+              <tr>
+                <td style="padding:16px 24px;background:rgba(0,212,170,0.04);">
+                  <div style="font-size:11px;font-weight:700;color:#8B8FA8;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;">🔑 Your License Key</div>
+                  <div style="font-family:'Courier New',monospace;font-size:20px;font-weight:700;color:#00D4AA;letter-spacing:0.08em;background:#0A0C10;border:1px solid rgba(0,212,170,0.25);border-radius:9px;padding:12px 18px;word-break:break-all;">
+                    {{license_key}}
+                  </div>
+                  <div style="font-size:11px;color:#4A4E62;margin-top:8px;">
+                    Keep this safe. Enter it in the Chrome Extension → Settings tab → License Key → Activate.
+                  </div>
+                </td>
+              </tr>
+            </table>
+
+            <!-- CTA Buttons -->
+            <table width="100%" cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <td width="48%" align="center">
+                  <a href="{{dashboard_url}}" style="display:block;padding:14px 10px;background:linear-gradient(135deg,#0055CC,#00A890);border-radius:10px;font-size:14px;font-weight:700;color:#ffffff;text-decoration:none;text-align:center;">
+                    Go to Dashboard →
+                  </a>
+                </td>
+                <td width="4%"></td>
+                <td width="48%" align="center">
+                  <a href="{{download_url}}" style="display:block;padding:14px 10px;background:transparent;border:1.5px solid rgba(255,255,255,0.15);border-radius:10px;font-size:14px;font-weight:700;color:#F0F2F8;text-decoration:none;text-align:center;">
+                    Download Extension
+                  </a>
+                </td>
+              </tr>
+            </table>
+
+          </td>
+        </tr>
+
+        <!-- HOW TO GET STARTED -->
+        <tr>
+          <td style="padding:32px 40px;border-top:1px solid rgba(255,255,255,0.06);">
+            <h2 style="margin:0 0 20px;font-size:16px;font-weight:700;color:#F0F2F8;">Get started in 3 steps</h2>
+
+            <!-- Step 1 -->
+            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:12px;">
+              <tr>
+                <td width="36" style="vertical-align:top;padding-top:2px;">
+                  <div style="width:28px;height:28px;border-radius:50%;background:rgba(0,119,181,0.15);border:1px solid rgba(0,119,181,0.3);text-align:center;line-height:28px;font-size:12px;font-weight:700;color:#1A9ADE;">1</div>
+                </td>
+                <td style="padding-left:12px;vertical-align:top;">
+                  <div style="font-size:13px;font-weight:700;color:#F0F2F8;margin-bottom:3px;">Download &amp; Install the Extension</div>
+                  <div style="font-size:12px;color:#8B8FA8;line-height:1.6;">Visit <a href="{{download_url}}" style="color:#1A9ADE;text-decoration:none;">pingin.in/extension.html</a> → Download your plan ZIP → Extract → Chrome → chrome://extensions → Developer Mode → Load Unpacked</div>
+                </td>
+              </tr>
+            </table>
+
+            <!-- Step 2 -->
+            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:12px;">
+              <tr>
+                <td width="36" style="vertical-align:top;padding-top:2px;">
+                  <div style="width:28px;height:28px;border-radius:50%;background:rgba(0,119,181,0.15);border:1px solid rgba(0,119,181,0.3);text-align:center;line-height:28px;font-size:12px;font-weight:700;color:#1A9ADE;">2</div>
+                </td>
+                <td style="padding-left:12px;vertical-align:top;">
+                  <div style="font-size:13px;font-weight:700;color:#F0F2F8;margin-bottom:3px;">Activate Your License Key</div>
+                  <div style="font-size:12px;color:#8B8FA8;line-height:1.6;">Open LinkedIn in Chrome → click the PingIN icon → go to Settings tab → paste your license key above → click Activate</div>
+                </td>
+              </tr>
+            </table>
+
+            <!-- Step 3 -->
+            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:24px;">
+              <tr>
+                <td width="36" style="vertical-align:top;padding-top:2px;">
+                  <div style="width:28px;height:28px;border-radius:50%;background:rgba(0,212,170,0.12);border:1px solid rgba(0,212,170,0.3);text-align:center;line-height:28px;font-size:12px;font-weight:700;color:#00D4AA;">3</div>
+                </td>
+                <td style="padding-left:12px;vertical-align:top;">
+                  <div style="font-size:13px;font-weight:700;color:#F0F2F8;margin-bottom:3px;">Start Finding Candidates!</div>
+                  <div style="font-size:12px;color:#8B8FA8;line-height:1.6;">Choose Smart Search, Clone Search, JD Search or Developer Search. Add companies, keywords, location — click <strong style="color:#F0F2F8;">Search &amp; Collect Profiles</strong> and let PingIN do the work.</div>
+                </td>
+              </tr>
+            </table>
+
+            <!-- What's included strip -->
+            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#0D0F14;border-radius:12px;border:1px solid rgba(255,255,255,0.06);padding:0;overflow:hidden;">
+              <tr>
+                <td style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.05);">
+                  <div style="font-size:11px;font-weight:700;color:#8B8FA8;text-transform:uppercase;letter-spacing:0.08em;">What's included in your plan</div>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:16px 20px;">
+                  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                      <td width="50%" style="padding-bottom:8px;">
+                        <div style="font-size:12px;color:#8B8FA8;"><span style="color:#00D4AA;font-weight:700;">✓</span>&nbsp; Smart Search (multi-company)</div>
+                      </td>
+                      <td width="50%" style="padding-bottom:8px;">
+                        <div style="font-size:12px;color:#8B8FA8;"><span style="color:#00D4AA;font-weight:700;">✓</span>&nbsp; Profile Scoring 0–100</div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td width="50%" style="padding-bottom:8px;">
+                        <div style="font-size:12px;color:#8B8FA8;"><span style="color:#00D4AA;font-weight:700;">✓</span>&nbsp; ⚡ Boolean Builder</div>
+                      </td>
+                      <td width="50%" style="padding-bottom:8px;">
+                        <div style="font-size:12px;color:#8B8FA8;"><span style="color:#00D4AA;font-weight:700;">✓</span>&nbsp; 📝 Candidate Notes</div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td width="50%" style="padding-bottom:8px;">
+                        <div style="font-size:12px;color:#8B8FA8;"><span style="color:#00D4AA;font-weight:700;">✓</span>&nbsp; 🕐 Search History</div>
+                      </td>
+                      <td width="50%" style="padding-bottom:8px;">
+                        <div style="font-size:12px;color:#8B8FA8;"><span style="color:#00D4AA;font-weight:700;">✓</span>&nbsp; 📁 JD Library</div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td width="50%">
+                        <div style="font-size:12px;color:#8B8FA8;"><span style="color:#00D4AA;font-weight:700;">✓</span>&nbsp; 📤 Smart Outreach</div>
+                      </td>
+                      <td width="50%">
+                        <div style="font-size:12px;color:#8B8FA8;"><span style="color:#00D4AA;font-weight:700;">✓</span>&nbsp; 🐙 Developer Search</div>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+
+          </td>
+        </tr>
+
+        <!-- SUPPORT SECTION -->
+        <tr>
+          <td style="padding:24px 40px;background:rgba(0,119,181,0.05);border-top:1px solid rgba(0,119,181,0.12);border-bottom:1px solid rgba(255,255,255,0.06);">
+            <table width="100%" cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <td>
+                  <div style="font-size:13px;font-weight:700;color:#F0F2F8;margin-bottom:6px;">Need help? We're here. 👋</div>
+                  <div style="font-size:12px;color:#8B8FA8;line-height:1.7;">
+                    Email us: <a href="mailto:support@pingin.in" style="color:#1A9ADE;text-decoration:none;">support@pingin.in</a><br>
+                    Website: <a href="https://pingin.in" style="color:#1A9ADE;text-decoration:none;">pingin.in</a><br>
+                    We typically respond within a few hours.
+                  </div>
+                </td>
+                <td align="right" style="vertical-align:top;">
+                  <div style="font-size:11px;color:#4A4E62;text-align:right;line-height:1.8;">
+                    Account: {{user_email}}<br>
+                    Phone: {{user_phone}}
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- FOOTER -->
+        <tr>
+          <td style="padding:24px 40px;text-align:center;">
+            <div style="font-size:13px;font-weight:700;color:#F0F2F8;margin-bottom:4px;">
+              Ping<span style="color:#00D4AA;">IN</span>
+            </div>
+            <div style="font-size:11px;color:#4A4E62;margin-bottom:14px;">
+              India's AI Talent Search Engine &nbsp;·&nbsp; Made with ❤️ in Hyderabad 🇮🇳
+            </div>
+            <div style="font-size:11px;color:#4A4E62;line-height:1.8;">
+              <a href="https://pingin.in/privacy.html" style="color:#4A4E62;text-decoration:none;">Privacy Policy</a>
+              &nbsp;·&nbsp;
+              <a href="https://pingin.in/terms.html" style="color:#4A4E62;text-decoration:none;">Terms of Service</a>
+            </div>
+            <div style="font-size:10px;color:#2C2F3E;margin-top:12px;">
+              © 2026 PingIN · All rights reserved · pingin.in
+            </div>
+          </td>
+        </tr>
+
+        <!-- BOTTOM GRADIENT BAR -->
+        <tr>
+          <td style="height:4px;background:linear-gradient(90deg,#0055CC 0%,#00A890 100%);font-size:0;line-height:0;">&nbsp;</td>
+        </tr>
+
+      </table>
+      <!-- END EMAIL CARD -->
+
+      <!-- Pre-header note (not visible in email body) -->
+      <table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;margin-top:16px;">
+        <tr>
+          <td align="center">
+            <p style="font-size:11px;color:#2C2F3E;margin:0;">
+              You received this email because you registered at pingin.in.<br>
+              Questions? <a href="mailto:support@pingin.in" style="color:#4A4E62;">support@pingin.in</a>
+            </p>
+          </td>
+        </tr>
+      </table>
+
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>

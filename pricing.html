@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Pricing — PingIN</title>
+<meta name="description" content="PingIN pricing plans. Start free for 5 days. Pay via UPI — no credit card. From ₹650 for 15 days.">
+<link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/main.css">
+<style>
+.page-hero{padding:100px clamp(20px,4vw,48px) 50px;text-align:center;background:radial-gradient(ellipse 70% 50% at 50% 0%,rgba(0,119,181,.14) 0%,transparent 70%);}
+.page-title{font-family:'Syne',sans-serif;font-size:clamp(32px,5vw,56px);font-weight:900;color:var(--tp);margin-bottom:14px;letter-spacing:-.025em;}
+.page-sub{font-size:16px;color:var(--ts);max-width:560px;margin:0 auto 20px;line-height:1.7;}
+.urgency{display:inline-block;background:rgba(226,75,74,.12);border:1px solid rgba(226,75,74,.25);color:#F09595;font-size:12px;font-weight:700;padding:5px 16px;border-radius:100px;letter-spacing:.04em;margin-bottom:8px;}
+.pricing-section{padding:50px clamp(20px,4vw,48px) 80px;}
+.pricing-grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;max-width:1140px;margin:0 auto;}
+@media(max-width:1000px){.pricing-grid-4{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:560px){.pricing-grid-4{grid-template-columns:1fr;}}
+.plan-card{background:var(--surf);border:1px solid var(--border);border-radius:18px;padding:28px 24px;position:relative;display:flex;flex-direction:column;transition:transform .2s,border-color .2s;}
+.plan-card:hover{transform:translateY(-3px);}
+.plan-card.popular{border-color:var(--blue);background:linear-gradient(160deg,rgba(0,119,181,.08) 0%,var(--surf) 60%);}
+.plan-card.best{border-color:rgba(0,212,170,.4);background:linear-gradient(160deg,rgba(0,212,170,.06) 0%,var(--surf) 60%);}
+.plan-ribbon{position:absolute;top:-13px;left:50%;transform:translateX(-50%);padding:4px 16px;border-radius:100px;font-size:11px;font-weight:700;white-space:nowrap;letter-spacing:.04em;}
+.plan-ribbon.blue{background:var(--blue);color:white;}
+.plan-ribbon.teal{background:linear-gradient(90deg,#009B7D,#00D4AA);color:white;}
+.plan-name{font-size:12px;font-weight:700;color:var(--ts);margin-bottom:6px;text-transform:uppercase;letter-spacing:.09em;}
+.plan-price{font-family:'Syne',sans-serif;font-size:42px;font-weight:900;color:var(--tp);line-height:1;margin-bottom:4px;}
+.plan-price sup{font-size:20px;font-weight:700;vertical-align:top;margin-top:9px;display:inline-block;}
+.plan-period{font-size:12px;color:var(--ts);margin-bottom:4px;}
+.plan-perday{font-size:11px;color:var(--accent);font-weight:700;margin-bottom:20px;}
+.plan-btn{width:100%;padding:13px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;border:none;font-family:inherit;transition:all .15s;margin-bottom:22px;}
+.plan-btn.primary{background:var(--blue);color:white;}
+.plan-btn.primary:hover{background:var(--blue-l);}
+.plan-btn.outline{background:transparent;color:var(--blue);border:2px solid var(--blue);}
+.plan-btn.outline:hover{background:rgba(0,119,181,.08);}
+.plan-btn.teal{background:linear-gradient(135deg,#009B7D,#00D4AA);color:white;}
+.plan-btn.teal:hover{opacity:.9;}
+.plan-divider{height:1px;background:var(--border);margin-bottom:18px;}
+.plan-feats{display:flex;flex-direction:column;gap:8px;flex:1;}
+.pf{font-size:12.5px;color:var(--ts);padding-left:20px;position:relative;line-height:1.5;}
+.pf::before{content:'✓';position:absolute;left:0;color:var(--accent);font-weight:700;}
+.pf.no{color:var(--tm);}
+.pf.no::before{content:'✕';color:var(--tm);}
+.pf.new::after{content:'NEW';font-size:8px;font-weight:800;background:rgba(0,212,170,.15);color:#00D4AA;border:1px solid rgba(0,212,170,.25);border-radius:3px;padding:1px 5px;margin-left:5px;letter-spacing:.05em;vertical-align:middle;}
+.pf strong{color:var(--tp);}
+.compare-section{padding:0 clamp(20px,4vw,48px) 80px;}
+.compare-wrap{max-width:960px;margin:0 auto;}
+.ct-title{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:var(--tp);text-align:center;margin-bottom:30px;}
+.ct{width:100%;border-collapse:collapse;font-size:13px;}
+.ct th{padding:12px 14px;text-align:center;color:var(--ts);font-weight:600;border-bottom:1px solid var(--border);}
+.ct th:first-child{text-align:left;}
+.ct th.hl{color:var(--blue-l);background:rgba(0,119,181,.06);}
+.ct td{padding:11px 14px;border-bottom:1px solid var(--border);color:var(--ts);text-align:center;}
+.ct td:first-child{text-align:left;color:var(--ts);}
+.ct td.hl{background:rgba(0,119,181,.04);color:var(--blue-l);font-weight:600;}
+.ct tr:hover td{background:rgba(255,255,255,.02);}
+.ct-yes{color:var(--accent);font-weight:700;}
+.ct-no{color:var(--tm);}
+.ct tr.new-row td:first-child{color:var(--accent);font-weight:600;}
+.ct tr.new-row td:first-child::before{content:'★ ';color:var(--accent);}
+</style>
+</head>
+<body>
+
+<nav class="nav scrolled" id="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="logo"><img src="images/logo-mark.svg" class="logo-mark" alt="PingIN" width="30" height="30" style="border-radius:8px;"><span class="logo-text">Ping<span style="background:linear-gradient(90deg,#1A9ADE,#00D4AA);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IN</span></span></a>
+    <div class="nav-links">
+      <a href="index.html#features">Features</a>
+      <a href="pricing.html" class="active">Pricing</a>
+      <a href="extension.html">Extension</a>
+    </div>
+    <div class="nav-cta" id="nav-cta">
+      <a href="login.html" class="btn-ghost-sm">Sign in</a>
+      <a href="login.html" class="btn-primary-sm">Start Free →</a>
+    </div>
+    <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+  </div>
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="index.html">Home</a><a href="pricing.html">Pricing</a><a href="extension.html">Extension</a><a href="login.html">Sign in</a>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div class="urgency">⏰ Limited-time pricing — Lock in now before prices increase</div>
+  <h1 class="page-title">Simple, honest pricing 🇮🇳</h1>
+  <p class="page-sub">Start free for 5 days. No credit card required.<br>Pay via UPI · GPay · PhonePe · Paytm · Cancel anytime</p>
+</div>
+
+<section class="pricing-section">
+  <div class="pricing-grid-4">
+
+    <!-- FREE -->
+    <div class="plan-card reveal">
+      <div class="plan-name">Free Trial</div>
+      <div class="plan-price"><sup>₹</sup>0</div>
+      <div class="plan-period">5 days · no card needed</div>
+      <div class="plan-perday">&nbsp;</div>
+      <button class="plan-btn outline" onclick="location.href='login.html'">Start Free Trial →</button>
+      <div class="plan-divider"></div>
+      <div class="plan-feats">
+        <div class="pf"><strong>Smart Search only</strong></div>
+        <div class="pf">Single page scrape (~10 profiles)</div>
+        <div class="pf">Profile scoring 0–100</div>
+        <div class="pf">Boolean search chips</div>
+        <div class="pf new">⚡ Boolean Builder</div>
+        <div class="pf new">🕐 Search History</div>
+        <div class="pf new">📝 Candidate Notes</div>
+        <div class="pf">CSV export</div>
+        <div class="pf" style="color:var(--amber)">📤 Smart Outreach — <strong>5 msgs/day</strong></div>
+        <div class="pf no">AI Clone / JD / Predictive</div>
+        <div class="pf no">Multi-page scraping</div>
+        <div class="pf no">JD Library</div>
+        <div class="pf no">Developer Search (GitHub/SO)</div>
+      </div>
+    </div>
+
+    <!-- STARTER -->
+    <div class="plan-card reveal">
+      <div class="plan-name">Starter</div>
+      <div class="plan-price"><sup>₹</sup>650</div>
+      <div class="plan-period">15 days</div>
+      <div class="plan-perday">~₹43/day</div>
+      <button class="plan-btn outline" onclick="checkAuthThenPay('starter')">Get Starter — ₹650</button>
+      <div class="plan-divider"></div>
+      <div class="plan-feats">
+        <div class="pf"><strong>Smart + Developer Search</strong></div>
+        <div class="pf">5-page scraping (~50 profiles)</div>
+        <div class="pf">Profile scoring 0–100</div>
+        <div class="pf new">⚡ Boolean Builder</div>
+        <div class="pf new">🕐 Search History</div>
+        <div class="pf new">📝 Candidate Notes</div>
+        <div class="pf new">📁 JD Library (save 10 JDs)</div>
+        <div class="pf">CSV + Excel export</div>
+        <div class="pf" style="color:var(--accent)">📤 Smart Outreach — <strong>50 msgs/day</strong></div>
+        <div class="pf">🐙 GitHub Smart Search</div>
+        <div class="pf">📚 Stack Overflow Top Experts</div>
+        <div class="pf">🔍 GitHub Multi-Skill Search (1-3 skills)</div>
+        <div class="pf no">AI Clone Search</div>
+        <div class="pf no">AI JD Parsing</div>
+        <div class="pf no">Predictive Sourcing</div>
+      </div>
+    </div>
+
+    <!-- PRO -->
+    <div class="plan-card popular reveal">
+      <div class="plan-ribbon blue">🔥 Most Popular</div>
+      <div class="plan-name">Pro</div>
+      <div class="plan-price"><sup>₹</sup>1,200</div>
+      <div class="plan-period">per month</div>
+      <div class="plan-perday">~₹40/day · all 6 AI modes</div>
+      <button class="plan-btn primary" onclick="checkAuthThenPay('pro')">Start Pro — ₹1,200</button>
+      <div class="plan-divider"></div>
+      <div class="plan-feats">
+        <div class="pf"><strong>All 6 search modes + AI</strong></div>
+        <div class="pf"><strong>Unlimited multi-page scraping</strong></div>
+        <div class="pf">AI Clone Search (Claude-powered)</div>
+        <div class="pf">AI JD Parsing (Claude-powered)</div>
+        <div class="pf">Predictive Sourcing (Claude-powered)</div>
+        <div class="pf new">⚡ Boolean Builder</div>
+        <div class="pf new">🕐 Search History</div>
+        <div class="pf new">📝 Candidate Notes</div>
+        <div class="pf new">📁 JD Library (save 10 JDs)</div>
+        <div class="pf" style="color:var(--accent)">📤 Smart Outreach — <strong>50 msgs/day</strong></div>
+        <div class="pf">🐙 GitHub Smart Search</div>
+        <div class="pf">📚 Stack Overflow Top Experts</div>
+        <div class="pf">🔍 GitHub Multi-Skill Search (1-3 skills)</div>
+        <div class="pf">🐙 GitHub Profile Banner</div>
+        <div class="pf">Save unlimited searches + profiles</div>
+        <div class="pf">All profile type filters (11 types)</div>
+        <div class="pf">GCC + Startup + Layoff filters</div>
+        <div class="pf">IIT/IIM college filter (60+)</div>
+      </div>
+    </div>
+
+    <!-- ANNUAL -->
+    <div class="plan-card best reveal">
+      <div class="plan-ribbon teal">🏆 Best Value</div>
+      <div class="plan-name">Annual</div>
+      <div class="plan-price" style="font-size:36px;"><sup>₹</sup>10,000</div>
+      <div class="plan-period">1 year (365 days)</div>
+      <div class="plan-perday">~₹27/day · Save ₹4,400 vs 12× Pro</div>
+      <button class="plan-btn teal" onclick="checkAuthThenPay('annual')">Get Annual — ₹10,000</button>
+      <div class="plan-divider"></div>
+      <div class="plan-feats">
+        <div class="pf"><strong>Everything in Pro plan</strong></div>
+        <div class="pf"><strong>All 6 AI modes · all year</strong></div>
+        <div class="pf">Unlimited multi-page scraping</div>
+        <div class="pf new">⚡ Boolean Builder</div>
+        <div class="pf new">🕐 Search History</div>
+        <div class="pf new">📝 Candidate Notes</div>
+        <div class="pf new">📁 JD Library (save 10 JDs)</div>
+        <div class="pf" style="color:var(--accent)">📤 Smart Outreach — <strong>50 msgs/day</strong></div>
+        <div class="pf" style="color:var(--accent)">🔁 Sequence campaigns (Annual only)</div>
+        <div class="pf">🐙 GitHub Smart Search</div>
+        <div class="pf">📚 Stack Overflow Top Experts</div>
+        <div class="pf">🔍 GitHub Multi-Skill Search (1-3 skills)</div>
+        <div class="pf">All profile type filters (11 types)</div>
+        <div class="pf">GCC + Startup + Layoff filters</div>
+        <div class="pf">Priority support</div>
+        <div class="pf" style="color:var(--accent)"><strong>Save ₹4,400 vs 12× Pro</strong></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- UPI note -->
+  <div style="max-width:1140px;margin:28px auto 0;background:var(--surf);border:1px solid var(--border);border-radius:14px;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
+    <div>
+      <div style="font-size:15px;font-weight:700;color:var(--tp);margin-bottom:4px;">💳 Pay via UPI — No credit card needed</div>
+      <div style="font-size:13px;color:var(--ts);">GPay · PhonePe · Paytm · BHIM · Any UPI app · Zero transaction fees</div>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center;"><span style="font-size:22px;">📱</span><span style="font-size:22px;">💸</span><span style="font-size:13px;color:var(--ts);">Pay in seconds</span></div>
+  </div>
+
+  <!-- vs LinkedIn Recruiter -->
+  <div style="max-width:1140px;margin:16px auto 0;background:linear-gradient(135deg,rgba(0,119,181,.08),rgba(0,212,170,.05));border:1px solid rgba(0,119,181,.2);border-radius:14px;padding:20px 24px;text-align:center;">
+    <div style="font-size:13px;color:var(--ts);margin-bottom:8px;">Compare to LinkedIn Recruiter</div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap;">
+      <div style="text-align:center;"><div style="font-family:'Syne',sans-serif;font-size:30px;font-weight:900;color:var(--red);">₹25,000</div><div style="font-size:12px;color:var(--ts);">LinkedIn Recruiter / month</div></div>
+      <div style="font-size:24px;color:var(--tm);">vs</div>
+      <div style="text-align:center;"><div style="font-family:'Syne',sans-serif;font-size:30px;font-weight:900;color:var(--accent);">₹1,200</div><div style="font-size:12px;color:var(--ts);">PingIN Pro / month</div></div>
+      <div style="background:rgba(0,212,170,.1);border:1px solid rgba(0,212,170,.2);border-radius:8px;padding:10px 16px;font-size:13px;color:var(--accent);font-weight:600;">PingIN is <strong>20× cheaper</strong> and<br>finds talent FOR you</div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARE TABLE -->
+<section class="compare-section">
+  <div class="compare-wrap">
+    <h2 class="ct-title">Full feature comparison</h2>
+    <div style="overflow-x:auto;">
+      <table class="ct">
+        <thead>
+          <tr>
+            <th style="width:36%;text-align:left;">Feature</th>
+            <th>Free Trial</th>
+            <th>Starter</th>
+            <th class="hl">Pro 🔥</th>
+            <th>Annual 🏆</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Duration</td><td>5 days</td><td>15 days</td><td class="hl">30 days</td><td>365 days</td></tr>
+          <tr><td>Price</td><td>₹0</td><td>₹650</td><td class="hl"><strong>₹1,200/mo</strong></td><td>₹10,000/yr</td></tr>
+          <tr><td>Per day cost</td><td>Free</td><td>~₹43</td><td class="hl">~₹40</td><td><strong style="color:var(--accent)">~₹27</strong></td></tr>
+          <tr><td>Pages per search</td><td>1 page</td><td>5 pages</td><td class="hl ct-yes">Unlimited</td><td class="ct-yes">Unlimited</td></tr>
+          <tr><td>Profiles per search</td><td>~10</td><td>~50</td><td class="hl ct-yes">1,000+</td><td class="ct-yes">1,000+</td></tr>
+          <tr style="background:rgba(0,212,170,.03)"><td><strong>🔍 Search Modes</strong></td><td></td><td></td><td class="hl"></td><td></td></tr>
+          <tr><td>Smart Search</td><td class="ct-yes">✓</td><td class="ct-yes">✓</td><td class="hl ct-yes">✓</td><td class="ct-yes">✓</td></tr>
+          <tr><td>AI Clone Search</td><td class="ct-no">✗</td><td class="ct-no">✗</td><td class="hl ct-yes">✓</td><td class="ct-yes">✓</td></tr>
+          <tr><td>AI JD Parsing</td><td class="ct-no">✗</td><td class="ct-no">✗</td><td class="hl ct-yes">✓</td><td class="ct-yes">✓</td></tr>
+          <tr><td>Predictive Sourcing</td><td class="ct-no">✗</td><td class="ct-no">✗</td><td class="hl ct-yes">✓</td><td class="ct-yes">✓</td></tr>
+          <tr style="background:rgba(124,58,237,.03)" class="new-row"><td>🐙 GitHub Smart Search</td><td class="ct-no">✗</td><td class="ct-yes">✓</td><td class="hl ct-yes">✓</td><td class="ct-yes">✓</td></tr>
+          <tr style="background:rgba(124,58,237,.03)" class="new-row"><td>📚 Stack Overflow Top Experts</td><td class="ct-no">✗</td><td class="ct-yes">✓</td><td class="hl ct-yes">✓</td><td class="ct-yes">✓</td></tr>
+          <tr style="background:rgba(124,58,237,.03)" class="new-row"><td>🔍 GitHub Multi-Skill Search (1-3 skills)</td><td class="ct-no">✗</td><td class="ct-yes">✓</td><td class="hl ct-yes">✓</td><td class="ct-yes">✓</td></tr>
+          <tr style="background:rgba(0,212,170,.03)"><td><strong>⚙️ Productivity</strong></td><td></td><td></td><td class="hl"></td><td></td></tr>
+          <tr class="new-row"><td>⚡ Boolean Builder</td><td class="ct-yes">✓</td><td class="ct-yes">✓</td><td class="hl ct-yes">✓</td><td class="ct-yes">✓</td></tr>
+          <tr class="new-row"><td>🕐 Search History</td><td class="ct-yes">✓</td><td class="ct-yes">✓</td><td class="hl ct-yes">✓</td><td class="ct-yes">✓</td></tr>
+          <tr class="new-row"><td>📝 Candidate Notes</td><td class="ct-yes">✓</td><td class="ct-yes">✓</td><td class="hl ct-yes">✓</td><td class="ct-yes">✓</td></tr>
+          <tr class="new-row"><td>📁 JD Library (save JDs)</td><td class="ct-no">✗</td><td class="ct-yes">✓</td><td class="hl ct-yes">✓</td><td class="ct-yes">✓</td></tr>
+          <tr><td>Profile scoring 0–100</td><td class="ct-yes">✓</td><td class="ct-yes">✓</td><td class="hl ct-yes">✓</td><td class="ct-yes">✓</td></tr>
+          <tr><td>College filter (60+)</td><td class="ct-yes">✓</td><td class="ct-yes">✓</td><td class="hl ct-yes">✓</td><td class="ct-yes">✓</td></tr>
+          <tr><td>Company search (886+)</td><td class="ct-yes">✓</td><td class="ct-yes">✓</td><td class="hl ct-yes">✓</td><td class="ct-yes">✓</td></tr>
+          <tr><td>CSV + Excel export</td><td>CSV only</td><td class="ct-yes">✓</td><td class="hl ct-yes">✓</td><td class="ct-yes">✓</td></tr>
+          <tr style="background:rgba(0,212,170,.03)"><td><strong>📤 Smart Outreach</strong></td><td></td><td></td><td class="hl"></td><td></td></tr>
+          <tr><td>Outreach messages/day</td><td style="color:var(--amber)">5 / day</td><td style="color:var(--accent)">50 / day</td><td class="hl" style="color:var(--accent)"><strong>50 / day</strong></td><td style="color:var(--accent)"><strong>50 / day</strong></td></tr>
+          <tr><td>Campaign types</td><td>Connect</td><td>Connect · Message</td><td class="hl">Connect · Message · Visit</td><td>All + Sequence</td></tr>
+          <tr><td>Sequence campaigns</td><td class="ct-no">✗</td><td class="ct-no">✗</td><td class="hl ct-no">✗</td><td class="ct-yes">✓ Annual only</td></tr>
+          <tr><td>Payment method</td><td>Free</td><td>UPI ₹650</td><td class="hl">UPI ₹1,200</td><td>UPI ₹10,000</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section" style="padding-top:0;">
+  <div class="container">
+    <div style="background:linear-gradient(135deg,rgba(0,55,204,.15),rgba(0,168,144,.08));border:1px solid rgba(0,85,204,.2);border-radius:20px;padding:50px 40px;text-align:center;">
+      <h2 style="font-family:'Syne',sans-serif;font-size:clamp(22px,3vw,36px);color:var(--tp);margin-bottom:12px;">Start your 5-day free trial today</h2>
+      <p style="font-size:15px;color:var(--ts);margin-bottom:28px;">No credit card · No UPI required · All core features free to explore</p>
+      <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+        <a href="login.html" class="btn-primary btn-lg">Start Free Trial</a>
+        <a href="extension.html" class="btn-outline btn-lg">Download Extension</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand"><a href="index.html" class="logo"><img src="images/logo-mark.svg" class="logo-mark" alt="PingIN" width="30" height="30" style="border-radius:8px;"><span class="logo-text">Ping<span style="background:linear-gradient(90deg,#1A9ADE,#00D4AA);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IN</span></span></a><p style="margin-top:12px;font-size:13px;color:var(--ts);line-height:1.7;">India's AI Talent Search Engine<br>Built for India 🇮🇳</p></div>
+      <div class="footer-col"><div class="fc-title">Product</div><a href="extension.html">Chrome Extension</a><a href="pricing.html">Pricing</a></div>
+      <div class="footer-col"><div class="fc-title">Legal</div><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms of Service</a></div>
+      <div class="footer-col"><div class="fc-title">Support</div><a href="contact.html">Contact Us</a><a href="mailto:support@pingin.in">support@pingin.in</a></div>
+    </div>
+    <div class="footer-bottom"><span>© 2026 PingIN · All rights reserved</span><span>Made with ❤️ in Hyderabad, India 🇮🇳</span></div>
+  </div>
+</footer>
+
+<script src="js/pingin.js"></script>
+<script src="js/nav.js"></script>
+<script>
+const obs=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('visible');obs.unobserve(x.target);}});},{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+<script>
+function checkAuthThenPay(plan) {
+  try {
+    var s = JSON.parse(localStorage.getItem('pingin_session') || 'null');
+    if (s && s.email && s.loginAt) {
+      window.location.href = 'payment.html?plan=' + plan;
+      return;
+    }
+  } catch(e) {}
+  window.location.href = 'login.html?plan=' + plan;
+}
+</script>
+</body>
+</html>

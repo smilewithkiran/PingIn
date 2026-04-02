@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Dashboard — PingIN · v2.8.4</title>
+<link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/main.css">
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<style>
+.dash-wrap{max-width:900px;margin:0 auto;padding:90px clamp(16px,4vw,40px) 60px;}
+.dash-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:12px;}
+.dash-greeting{font-family:'Syne',sans-serif;font-size:clamp(20px,3vw,28px);font-weight:800;color:#F0F2F8;}
+.dash-greeting span{color:#1A9ADE;}
+.dash-sub{font-size:13px;color:#8B8FA8;margin-top:4px;}
+
+/* Plan status card */
+.plan-card{background:#111318;border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:24px;margin-bottom:20px;position:relative;overflow:hidden;}
+.plan-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#0077B5,#00D4AA);}
+.plan-card.expired::before{background:#E24B4A;}
+.plan-card.warning::before{background:#BA7517;}
+.plan-card.none::before{background:#232839;}
+.plan-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px;}
+@media(max-width:600px){.plan-grid{grid-template-columns:1fr 1fr;}}
+.plan-stat{text-align:center;padding:14px;background:#0D0F14;border-radius:10px;}
+.plan-stat-n{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:#F0F2F8;line-height:1;}
+.plan-stat-l{font-size:10px;color:#8B8FA8;text-transform:uppercase;letter-spacing:.06em;margin-top:4px;}
+.plan-stat-n.blue{color:#1A9ADE;} .plan-stat-n.green{color:#1D9E75;} .plan-stat-n.amber{color:#BA7517;} .plan-stat-n.red{color:#E24B4A;}
+.plan-name-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:100px;background:rgba(0,119,181,.15);color:#1A9ADE;font-size:12px;font-weight:700;margin-bottom:12px;}
+.plan-name-badge.expired{background:rgba(226,75,74,.1);color:#E24B4A;}
+.plan-name-badge.warning{background:rgba(186,117,23,.1);color:#BA7517;}
+.plan-name-badge.none{background:rgba(255,255,255,.05);color:#8B8FA8;}
+.expiry-banner{background:rgba(186,117,23,.08);border:1px solid rgba(186,117,23,.2);border-radius:9px;padding:12px 16px;font-size:13px;color:#EF9F27;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.expired-banner{background:rgba(226,75,74,.08);border:1px solid rgba(226,75,74,.2);border-radius:9px;padding:12px 16px;font-size:13px;color:#F09595;margin-bottom:16px;}
+.no-plan-banner{background:rgba(0,119,181,.06);border:1px solid rgba(0,119,181,.18);border-radius:9px;padding:16px;font-size:13px;color:#1A9ADE;margin-bottom:16px;text-align:center;}
+
+/* License key */
+.key-box{background:#0D0F14;border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;}
+.key-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#8B8FA8;margin-bottom:4px;}
+.key-value{font-family:monospace;font-size:15px;font-weight:700;color:#00D4AA;letter-spacing:.05em;}
+.key-copy{padding:6px 14px;border-radius:7px;background:rgba(0,212,170,.1);border:1px solid rgba(0,212,170,.2);color:#00D4AA;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;transition:all .15s;}
+.key-copy:hover{background:rgba(0,212,170,.2);}
+
+/* Download section */
+.dl-card{background:#111318;border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:24px;margin-bottom:20px;}
+.dl-card-title{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;color:#F0F2F8;margin-bottom:6px;}
+.dl-card-sub{font-size:13px;color:#8B8FA8;margin-bottom:20px;line-height:1.6;}
+.dl-btn{display:inline-flex;align-items:center;gap:9px;padding:13px 24px;border-radius:10px;background:linear-gradient(135deg,#0055B5,#0099DD);color:white;font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:inherit;transition:all .2s;text-decoration:none;margin-bottom:20px;}
+.dl-btn:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,119,181,.3);}
+
+/* Setup steps */
+.setup-steps{display:flex;flex-direction:column;gap:12px;}
+.setup-step{display:flex;gap:12px;align-items:flex-start;padding:13px;background:#0D0F14;border-radius:9px;}
+.setup-num{width:26px;height:26px;border-radius:50%;background:rgba(0,119,181,.15);color:#1A9ADE;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.setup-title{font-size:13px;font-weight:600;color:#F0F2F8;margin-bottom:3px;}
+.setup-desc{font-size:12px;color:#8B8FA8;line-height:1.5;}
+code{background:rgba(255,255,255,.06);padding:2px 7px;border-radius:4px;font-size:11px;color:#1A9ADE;font-family:monospace;}
+
+/* Upgrade plans */
+.upgrade-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+@media(max-width:900px){.upgrade-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:500px){.upgrade-grid{grid-template-columns:1fr;}}
+.up-card{background:#111318;border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:18px;text-align:center;cursor:pointer;transition:all .15s;}
+.up-card:hover{border-color:rgba(0,119,181,.3);transform:translateY(-1px);}
+.up-card.current{border-color:#0077B5;background:rgba(0,119,181,.06);}
+.up-card.popular{border-color:rgba(255,153,0,.4);}
+.up-card-name{font-size:11px;font-weight:600;color:#8B8FA8;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;}
+.up-card-price{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#F0F2F8;line-height:1;margin-bottom:4px;}
+.up-card-period{font-size:10px;color:#8B8FA8;margin-bottom:12px;}
+.up-card-btn{width:100%;padding:8px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;border:none;font-family:inherit;transition:all .15s;}
+.up-card-btn.primary{background:#0077B5;color:white;}
+.up-card-btn.outline{background:transparent;color:#8B8FA8;border:1px solid rgba(255,255,255,.1);}
+.up-card-btn.current-btn{background:rgba(0,119,181,.1);color:#1A9ADE;border:1px solid rgba(0,119,181,.2);}
+.popular-badge{font-size:9px;font-weight:700;background:rgba(255,153,0,.15);color:#EF9F27;padding:2px 8px;border-radius:100px;margin-bottom:6px;display:inline-block;}
+
+/* Account section */
+.acct-card{background:#111318;border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:24px;margin-bottom:20px;}
+.acct-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:13px;}
+.acct-row:last-child{border-bottom:none;}
+.acct-label{color:#8B8FA8;}
+.acct-value{color:#F0F2F8;font-weight:500;}
+.signout-btn{padding:9px 20px;border-radius:8px;background:rgba(226,75,74,.08);border:1px solid rgba(226,75,74,.2);color:#F09595;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s;}
+.signout-btn:hover{background:rgba(226,75,74,.15);}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav scrolled" id="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="logo" style="flex-direction:column;align-items:flex-start;gap:2px;">
+      <div style="display:flex;align-items:center;gap:9px;">
+        <img src="images/logo-mark.svg" style="width:30px;height:30px;border-radius:8px;" alt="PingIN">
+        <span class="logo-text">Ping<span style="background:linear-gradient(90deg,#1A9ADE,#00D4AA);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IN</span></span>
+      </div>
+      <span style="font-size:9px;color:#8B8FA8;letter-spacing:.08em;text-transform:uppercase;padding-left:39px;">India's AI Talent Search Engine</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html#features">Features</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="extension.html">Chrome Extension</a>
+    </div>
+    <div class="nav-cta">
+      <button onclick="PingIN.signOut()" class="btn-ghost-sm">Sign out</button>
+    </div>
+  </div>
+</nav>
+
+<div class="dash-wrap">
+
+  <!-- Header -->
+  <div class="dash-header">
+    <div>
+      <div class="dash-greeting">Welcome back, <span id="d-name">User</span>! 👋</div>
+      <div class="dash-sub" id="d-sub">Manage your plan and Chrome Extension below</div>
+    </div>
+    <button class="signout-btn" onclick="PingIN.signOut()">Sign out</button>
+  </div>
+
+  <!-- Expiry warning banner (shown when ≤3 days) -->
+  <div class="expiry-banner" id="expiry-banner" style="display:none;">
+    <span>⚠️ <strong>Your plan expires in <span id="expiry-days">3</span> days!</strong> Renew now to avoid interruption.</span>
+    <a href="mailto:support@pingin.in?subject=Renew Plan" style="padding:6px 14px;border-radius:6px;background:rgba(186,117,23,.2);border:1px solid rgba(186,117,23,.3);color:#EF9F27;font-size:12px;font-weight:600;font-family:inherit;text-decoration:none;">Renew Plan →</a>
+  </div>
+
+  <!-- ── PLAN STATUS CARD ── -->
+  <div class="plan-card" id="plan-card">
+    <div class="plan-name-badge" id="plan-badge">Free Trial</div>
+    <div class="plan-grid">
+      <div class="plan-stat"><div class="plan-stat-n blue" id="d-days">—</div><div class="plan-stat-l">Days Left</div></div>
+      <div class="plan-stat"><div class="plan-stat-n green" id="d-access">—</div><div class="plan-stat-l">Access Period</div></div>
+      <div class="plan-stat"><div class="plan-stat-n" id="d-plan-name">—</div><div class="plan-stat-l">Current Plan</div></div>
+      <div class="plan-stat"><div class="plan-stat-n amber" id="d-msgs">—</div><div class="plan-stat-l">Outreach Sent/Day</div></div>
+    </div>
+
+    <!-- No plan state -->
+    <div id="no-plan-state" style="display:none;">
+      <div style="background:rgba(0,119,181,.06);border:1px solid rgba(0,119,181,.18);border-radius:12px;padding:20px;margin-bottom:16px;">
+        <div style="font-size:22px;margin-bottom:10px;text-align:center;">🎉</div>
+        <div style="font-size:14px;font-weight:700;color:#F0F2F8;text-align:center;margin-bottom:6px;">Welcome to PingIN!</div>
+        <div style="font-size:13px;color:#8B8FA8;text-align:center;line-height:1.6;">Start your <strong style="color:#1A9ADE;">5-day free trial</strong> to access the Chrome Extension<br>and start finding candidates with AI-powered sourcing.</div>
+      </div>
+      <div style="text-align:center;margin-top:16px;">
+        <button onclick="startFreeTrial()" style="
+          display:inline-flex;align-items:center;justify-content:center;gap:10px;
+          padding:14px 32px;border-radius:12px;
+          background:linear-gradient(135deg,#0077B5,#009B7D);
+          color:white;font-size:15px;font-weight:700;
+          border:none;cursor:pointer;font-family:inherit;
+          box-shadow:0 8px 24px rgba(0,119,181,.3);
+          transition:all .2s;width:100%;max-width:320px;
+        " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
+          🚀 Start Free Trial — 5 Days
+        </button>
+        <div style="font-size:11px;color:#4A4E62;margin-top:10px;">No payment required · Smart Search included · 5-day access</div>
+      </div>
+    </div>
+
+    <!-- License key (shown when plan active) -->
+    <div id="key-section" style="display:none;">
+      <div class="key-box">
+        <div>
+          <div class="key-label">🔑 License Key</div>
+          <div class="key-value" id="d-key">PING-XX-XXXX-XXXX</div>
+        </div>
+        <button class="key-copy" onclick="copyKey()">📋 Copy</button>
+      </div>
+      <div style="font-size:11px;color:#4A4E62;line-height:1.6;">Enter this key in the Chrome Extension → Settings tab → License Key field to unlock your plan.</div>
+    </div>
+  </div>
+
+  <!-- ── WHAT'S NEW v2.8 ── -->
+  <div class="dl-card" style="border-color:rgba(0,212,170,.2);background:linear-gradient(135deg,rgba(0,212,170,.04),var(--surf));">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+      <div class="dl-card-title" style="margin-bottom:0;">🎉 What's New in v2.8.4</div>
+      <div style="font-size:10px;font-weight:700;background:rgba(0,212,170,.12);color:#00D4AA;border:1px solid rgba(0,212,170,.25);border-radius:4px;padding:2px 8px;">LATEST</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;">
+      <div style="background:#0D0F14;border-radius:9px;padding:12px 14px;border:1px solid rgba(255,255,255,.05);">
+        <div style="font-size:13px;font-weight:700;color:#F0F2F8;margin-bottom:4px;">🐙 Developer Search</div>
+        <div style="font-size:11px;color:#8B8FA8;line-height:1.5;">GitHub Smart Search + Stack Overflow Top Experts + LinkedIn Extractor</div>
+      </div>
+      <div style="background:#0D0F14;border-radius:9px;padding:12px 14px;border:1px solid rgba(255,255,255,.05);">
+        <div style="font-size:13px;font-weight:700;color:#F0F2F8;margin-bottom:4px;">📤 Smart Outreach</div>
+        <div style="font-size:11px;color:#8B8FA8;line-height:1.5;">Automated campaigns — 50 personalised connection requests/day</div>
+      </div>
+      <div style="background:#0D0F14;border-radius:9px;padding:12px 14px;border:1px solid rgba(255,255,255,.05);">
+        <div style="font-size:13px;font-weight:700;color:#F0F2F8;margin-bottom:4px;">⚡ Boolean Builder</div>
+        <div style="font-size:11px;color:#8B8FA8;line-height:1.5;">Add skill chips, choose AND/OR logic — Boolean string built automatically</div>
+      </div>
+      <div style="background:#0D0F14;border-radius:9px;padding:12px 14px;border:1px solid rgba(255,255,255,.05);">
+        <div style="font-size:13px;font-weight:700;color:#F0F2F8;margin-bottom:4px;">🕐 Search History</div>
+        <div style="font-size:11px;color:#8B8FA8;line-height:1.5;">Last 15 searches saved — click any to instantly re-run</div>
+      </div>
+      <div style="background:#0D0F14;border-radius:9px;padding:12px 14px;border:1px solid rgba(255,255,255,.05);">
+        <div style="font-size:13px;font-weight:700;color:#F0F2F8;margin-bottom:4px;">📝 Candidate Notes</div>
+        <div style="font-size:11px;color:#8B8FA8;line-height:1.5;">Private notes on every profile card — persists across sessions</div>
+      </div>
+      <div style="background:#0D0F14;border-radius:9px;padding:12px 14px;border:1px solid rgba(255,255,255,.05);">
+        <div style="font-size:13px;font-weight:700;color:#F0F2F8;margin-bottom:4px;">📁 JD Library</div>
+        <div style="font-size:11px;color:#8B8FA8;line-height:1.5;">Save 10 JDs — one click to load & auto-search any saved JD</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CHROME EXTENSION DOWNLOAD ── -->
+  <div class="dl-card">
+    <div class="dl-card-title">📥 Chrome Extension <span style="font-size:10px;font-weight:700;background:rgba(0,212,170,.1);color:#00D4AA;border:1px solid rgba(0,212,170,.2);border-radius:4px;padding:2px 7px;vertical-align:middle;">v2.8.4</span></div>
+    <div class="dl-card-sub" id="dl-sub">Your plan-specific extension will be ready to download below.</div>
+
+    <!-- Plan feature summary badge -->
+    <div id="plan-feature-box" style="display:none;background:#0D0F14;border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:14px 16px;margin-bottom:16px;">
+      <div style="font-size:11px;font-weight:700;color:#8B8FA8;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;">Your Plan Includes</div>
+      <div id="plan-features-list" style="display:flex;flex-direction:column;gap:6px;font-size:13px;"></div>
+    </div>
+
+    <!-- Download button — href set dynamically by JS -->
+    <a id="dl-btn-ext" href="#" class="dl-btn" download>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 15V7M8 11l4 4 4-4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 19h14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+      <span id="dl-btn-label">Download Extension (ZIP)</span>
+    </a>
+
+    <!-- No plan state -->
+    <div id="dl-no-plan" style="display:none;background:rgba(226,75,74,.07);border:1px solid rgba(226,75,74,.2);border-radius:9px;padding:12px 16px;font-size:13px;color:#F09595;margin-bottom:16px;">
+      ❌ No active plan. <a href="pricing.html" style="color:#F09595;font-weight:700;">Choose a plan →</a> to get your extension.
+    </div>
+
+    <div style="background:rgba(0,119,181,.06);border:1px solid rgba(0,119,181,.12);border-radius:9px;padding:11px 14px;font-size:12px;color:#1A9ADE;margin-bottom:16px;">
+      ⚠️ <strong>Important:</strong> PingIN Chrome Extension works <strong>only on LinkedIn pages</strong> (linkedin.com). It will not activate on any other website.
+    </div>
+
+    <div class="dl-card-title" style="font-size:15px;margin-bottom:14px;">How to install (2 minutes)</div>
+    <div class="setup-steps">
+      <div class="setup-step"><div class="setup-num">1</div><div><div class="setup-title">Download & Extract</div><div class="setup-desc">Click the download button above. Save the ZIP file and extract it — you'll see a folder named <code>pingin-extension</code>.</div></div></div>
+      <div class="setup-step"><div class="setup-num">2</div><div><div class="setup-title">Open Chrome Extensions</div><div class="setup-desc">Open Chrome → go to <code>chrome://extensions</code> → Turn on <strong>Developer mode</strong> (top-right toggle).</div></div></div>
+      <div class="setup-step"><div class="setup-num">3</div><div><div class="setup-title">Load the Extension</div><div class="setup-desc">Click <strong>"Load unpacked"</strong> → Select the extracted <code>pingin-extension</code> folder → PingIN icon appears in your toolbar.</div></div></div>
+      <div class="setup-step"><div class="setup-num">4</div><div><div class="setup-title">Start Finding Talent!</div><div class="setup-desc">Your plan features are pre-activated — no license key needed. Just open LinkedIn and click the PingIN icon. 🚀</div></div></div>
+    </div>
+  </div>
+
+  <!-- ── UPGRADE PLANS ── -->
+  <div class="dl-card">
+    <div class="dl-card-title">💳 Plans & Pricing</div>
+    <div class="dl-card-sub">Upgrade to unlock AI search modes, unlimited scraping and more. All plans via UPI — no credit card needed.</div>
+    <div class="upgrade-grid" id="upgrade-grid">
+      <!-- Filled by JS -->
+    </div>
+    <div style="font-size:12px;color:#4A4E62;text-align:center;">Pay via GPay · PhonePe · Paytm · BHIM · Any UPI app</div>
+  </div>
+
+  <!-- ── ACCOUNT INFO ── -->
+  <div class="acct-card">
+    <div class="dl-card-title" style="margin-bottom:14px;">👤 Account</div>
+    <div class="acct-row"><span class="acct-label">Name</span><span class="acct-value" id="acct-name">—</span></div>
+    <div class="acct-row"><span class="acct-label">Email</span><span class="acct-value" id="acct-email">—</span></div>
+    <div class="acct-row"><span class="acct-label">Phone</span><span class="acct-value" id="acct-phone">—</span></div>
+    <div class="acct-row"><span class="acct-label">Member since</span><span class="acct-value" id="acct-since">—</span></div>
+    <div class="acct-row"><span class="acct-label">License Key</span><span class="acct-value" id="acct-key" style="font-family:monospace;color:#00D4AA;font-size:13px;">—</span></div>
+  </div>
+
+</div>
+
+<script src="js/pingin.js"></script>
+<script>
+emailjs.init('OboQTWg4MMuVOJWWt');
+
+// ── Require login ─────────────────────────────────────────────────────────────
+PingIN.requireLogin();
+
+const session = PingIN.getSession();
+const user    = PingIN.findUser(session?.email) || session;
+
+// ── Populate UI ───────────────────────────────────────────────────────────────
+function initDash() {
+  if (!user) { PingIN.signOut(); return; }
+
+  document.getElementById('d-name').textContent    = (user.name||'User').split(' ')[0];
+  document.getElementById('acct-name').textContent  = user.name  || '—';
+  document.getElementById('acct-email').textContent = user.email || '—';
+  document.getElementById('acct-phone').textContent = user.phone || '—';
+  document.getElementById('acct-key').textContent   = user.licenseKey || '—';
+  document.getElementById('acct-since').textContent = user.createdAt
+    ? new Date(user.createdAt).toLocaleDateString('en-IN', {day:'numeric',month:'short',year:'numeric'})
+    : '—';
+
+  const info = PingIN.getPlanInfo(user);
+
+  const msgLimits = { free: '5', starter: '50', pro: '50', annual: '50', none: '—' };
+
+  if (!user.plan || user.plan === 'none') {
+    // No plan yet
+    document.getElementById('no-plan-state').style.display = 'block';
+    document.getElementById('key-section').style.display   = 'none';
+    document.getElementById('d-days').textContent          = '0';
+    document.getElementById('d-access').textContent        = '—';
+    document.getElementById('d-plan-name').textContent     = 'None';
+    document.getElementById('d-msgs').textContent          = '—';
+    document.getElementById('plan-badge').textContent      = 'No Plan';
+    document.getElementById('plan-badge').className        = 'plan-name-badge none';
+    document.getElementById('plan-card').className         = 'plan-card none';
+    document.getElementById('d-sub').textContent           = 'Start your free trial to begin!';
+    setupExtensionDownload('none', null);
+  } else if (info.expired) {
+    // Expired
+    document.getElementById('no-plan-state').style.display = 'none';
+    document.getElementById('key-section').style.display   = 'block';
+    document.getElementById('d-key').textContent           = user.licenseKey || '—';
+    document.getElementById('d-days').textContent          = '0';
+    document.getElementById('d-days').className            = 'plan-stat-n red';
+    document.getElementById('d-access').textContent        = '—';
+    document.getElementById('d-plan-name').textContent     = info.planObj?.name || '—';
+    document.getElementById('d-msgs').textContent          = '—';
+    document.getElementById('plan-badge').textContent      = '⚠ Plan Expired';
+    document.getElementById('plan-badge').className        = 'plan-name-badge expired';
+    document.getElementById('plan-card').className         = 'plan-card expired';
+    document.getElementById('d-sub').textContent           = 'Your plan has expired. Please renew to continue.';
+    // Show expired banner
+    const expBanner = document.getElementById('expiry-banner');
+    expBanner.style.display = 'flex';
+    expBanner.style.background = 'rgba(226,75,74,.08)';
+    expBanner.style.borderColor = 'rgba(226,75,74,.2)';
+    expBanner.style.color = '#F09595';
+    expBanner.innerHTML = `<span>❌ <strong>Your plan has expired!</strong> Renew now to continue using PingIN.</span><button onclick="renewNow()" style="padding:6px 14px;border-radius:6px;background:rgba(226,75,74,.15);border:1px solid rgba(226,75,74,.3);color:#F09595;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;">Renew Now</button>`;
+  } else {
+    // Active plan
+    document.getElementById('no-plan-state').style.display = 'none';
+    document.getElementById('key-section').style.display   = 'block';
+    document.getElementById('d-key').textContent           = user.licenseKey || '—';
+    document.getElementById('d-days').textContent          = info.daysLeft;
+    document.getElementById('d-days').className            = 'plan-stat-n ' + (info.daysLeft <= 3 ? 'amber' : 'blue');
+    const periodLabels = { free:'5 Days', starter:'15 Days', pro:'Monthly', annual:'1 Year' };
+    document.getElementById('d-access').textContent        = periodLabels[user.plan] || '—';
+    document.getElementById('d-plan-name').textContent     = info.planObj?.name || '—';
+    document.getElementById('d-msgs').textContent          = (msgLimits[user.plan] || '50') + ' / day';
+    document.getElementById('plan-badge').textContent      = '✓ ' + (info.planObj?.name || 'Active');
+    document.getElementById('plan-badge').className        = 'plan-name-badge' + (info.daysLeft <= 3 ? ' warning' : '');
+    document.getElementById('d-sub').textContent           = `Plan expires: ${new Date(user.planExpiry).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}`;
+
+    // 3-day warning
+    if (info.daysLeft <= 3 && info.daysLeft > 0) {
+      const banner = document.getElementById('expiry-banner');
+      banner.style.display = 'flex';
+      document.getElementById('expiry-days').textContent = info.daysLeft;
+      // Expiry warning shown
+    }
+  }
+
+  // ── Set plan-specific extension download ──
+  setupExtensionDownload(user.plan, info);
+
+  // Build upgrade grid
+  buildUpgradeGrid(user.plan);
+}
+
+function setupExtensionDownload(plan, info) {
+  const PLAN_EXT = {
+    free:    { zip:'pingin-extension-free.zip',    label:'Download Free Trial Extension',  color:'#1A9ADE', features:['✅ Smart Search (LinkedIn profiles)','✅ 1 page per search (~10 profiles)','✅ Profile scoring 0–100','✅ ⚡ Boolean Builder','✅ 🕐 Search History (last 15)','✅ 📝 Candidate Notes','✅ Smart Outreach — 5 msgs/day','✅ CSV export','🔒 Developer Search (GitHub/SO) — locked','🔒 📁 JD Library — locked','🔒 AI Clone / JD / Predictive — locked'] },
+    starter: { zip:'pingin-extension-starter.zip', label:'Download Starter Extension',     color:'#1A9ADE', features:['✅ Smart Search — unlimited','✅ 🐙 GitHub Multi-Skill Search (1-3 skills)','✅ 📚 Stack Overflow Top Experts','✅ 🔍 GitHub Multi-Skill Search (1-3)','✅ Up to 5 pages per search (~50 profiles)','✅ ⚡ Boolean Builder','✅ 🕐 Search History','✅ 📝 Candidate Notes','✅ 📁 JD Library (save 10 JDs)','✅ Smart Outreach — 50 msgs/day','✅ CSV + Excel export','🔒 AI Clone / JD / Predictive — locked'] },
+    pro:     { zip:'pingin-extension-pro.zip',     label:'Download Pro Extension',         color:'#00D4AA', features:['✅ All 6 search modes + AI unlocked','✅ 🐙 GitHub Multi-Skill Search (1-3 skills)','✅ 📚 Stack Overflow Top Experts','✅ 🔍 GitHub Multi-Skill Search (1-3)','✅ 🐙 GitHub Profile Floating Banner','✅ ⚡ Boolean Builder','✅ 🕐 Search History','✅ 📝 Candidate Notes','✅ 📁 JD Library (save 10 JDs)','✅ Smart Outreach — 50 msgs/day','✅ Unlimited pages per search (1000+ profiles)','✅ AI Clone Search (Claude-powered)','✅ AI JD Parsing (Claude-powered)','✅ Predictive Sourcing','✅ CSV + Excel export'] },
+    annual:  { zip:'pingin-extension-annual.zip',  label:'Download Annual Extension',      color:'#00D4AA', features:['✅ EVERYTHING in Pro — all year','✅ 🐙 GitHub Smart Search + Profile Banner','✅ 📚 Stack Overflow Top Experts','✅ 🔍 GitHub Multi-Skill Search (1-3)','✅ ⚡ Boolean Builder','✅ 🕐 Search History','✅ 📝 Candidate Notes','✅ 📁 JD Library (save 10 JDs)','✅ Smart Outreach — 50 msgs/day','✅ 🔁 Sequence campaigns (connect + follow-up)','✅ Unlimited pages — all year','✅ All AI modes — all year','✅ Saves ₹4,400 vs 12× Pro'] },
+  };
+
+  const btnEl   = document.getElementById('dl-btn-ext');
+  const labelEl = document.getElementById('dl-btn-label');
+  const subEl   = document.getElementById('dl-sub');
+  const featBox = document.getElementById('plan-feature-box');
+  const featList= document.getElementById('plan-features-list');
+  const noplan  = document.getElementById('dl-no-plan');
+
+  if (!plan || plan === 'none') {
+    if (btnEl)  btnEl.style.display  = 'none';
+    if (noplan) noplan.style.display = 'block';
+    return;
+  }
+
+  if (info && info.expired) {
+    if (btnEl)  btnEl.style.display  = 'none';
+    if (noplan) { noplan.style.display = 'block'; noplan.innerHTML = '❌ Your plan has expired. <a href="pricing.html" style="color:#F09595;font-weight:700;">Renew now →</a>'; }
+    return;
+  }
+
+  const ext = PLAN_EXT[plan] || PLAN_EXT['free'];
+
+  if (btnEl) {
+    btnEl.href     = ext.zip;
+    btnEl.download = ext.zip;
+    btnEl.style.background = plan === 'pro' || plan === 'annual'
+      ? 'linear-gradient(135deg,#009B7D,#00D4AA)'
+      : 'linear-gradient(135deg,#0055B5,#0099DD)';
+  }
+  if (labelEl) labelEl.textContent = ext.label;
+  if (subEl)   subEl.textContent   = 'Your ' + (PLAN_EXT[plan]?.label?.replace('Download ','')?.replace(' Extension','') || plan) + ' extension is ready — features are pre-activated inside.';
+
+  // Show plan feature list
+  if (featBox && featList) {
+    featBox.style.display = 'block';
+    featList.innerHTML = ext.features.map(f => {
+      const isLocked = f.startsWith('🔒');
+      return '<div style="display:flex;align-items:flex-start;gap:8px;color:' + (isLocked ? '#4A4E62' : '#E0E3F0') + ';font-size:12px;">' + f + '</div>';
+    }).join('');
+  }
+}
+
+function buildUpgradeGrid(currentPlan) {
+  const grid = document.getElementById('upgrade-grid');
+  const plans = [
+    { key:'free',    name:'Free Trial', price:'₹0',      period:'5 days',      btn:'Start Trial',  feats:'Smart Search · 1-page scrape · Profile scoring' },
+    { key:'starter', name:'Starter',    price:'₹650',    period:'15 days',     btn:'Upgrade',      feats:'Smart + Developer (GitHub+SO) · 5 pages · JD Library · Notes' },
+    { key:'pro',     name:'Pro 🔥',     price:'₹1,200',  period:'per month',   btn:'Upgrade',      feats:'All 6 AI modes · GitHub+SO · JD Library · Notes · History', popular:true },
+    { key:'annual',  name:'Annual 🏆',  price:'₹10,000', period:'365 days',    btn:'Upgrade',      feats:'Everything in Pro · Sequence campaigns · All year · Save ₹4,400' },
+  ];
+  grid.innerHTML = plans.map(p => {
+    const isCurrent = currentPlan === p.key;
+    return `<div class="up-card ${isCurrent?'current':''} ${p.popular?'popular':''}">
+      ${p.popular ? '<div class="popular-badge">🔥 Most Popular</div>' : ''}
+      <div class="up-card-name">${p.name}</div>
+      <div class="up-card-price">${p.price}</div>
+      <div class="up-card-period">${p.period}</div>
+      ${p.feats ? `<div style="font-size:10px;color:#4A4E62;margin-bottom:10px;line-height:1.5;">${p.feats}</div>` : ''}
+      <button class="up-card-btn ${isCurrent?'current-btn':p.key==='free'?'outline':'primary'}"
+        onclick="${isCurrent ? '' : p.key==='free' ? 'startFreeTrial()' : `location.href='payment.html?plan=${p.key}'`}">
+        ${isCurrent ? '✓ Current Plan' : p.btn}
+      </button>
+    </div>`;
+  }).join('');
+}
+
+// ── Start free trial ──────────────────────────────────────────────────────────
+function startFreeTrial() {
+  const u = PingIN.findUser(session?.email);
+  if (u?.trialUsed) {
+    alert('You have already used your free trial. Please purchase a plan to continue.');
+    return;
+  }
+  const key = PingIN.generateKey(session.email, 'free');
+  PingIN.activatePlan(session.email, 'free', key);
+
+  // Send welcome email with key
+  if (typeof emailjs !== 'undefined') {
+    emailjs.send('service_2gph56v','template_ylb2tmp',{
+      to_email:      session.email,
+      user_name:     session.name || 'User',
+      user_email:    session.email,
+      user_phone:    session.phone || '',
+      plan_name:     'Free Trial',
+      plan_days:     '5',
+      plan_price:    '₹0 (Free)',
+      expiry_date:   new Date(Date.now()+5*86400000).toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'}),
+      license_key:   key,
+      download_url:  'https://pingin.in/extension.html',
+      dashboard_url: 'https://pingin.in/dashboard.html',
+      from_name:     'PingIN Team',
+      reply_to:      'support@pingin.in',
+      tagline:       "India's AI Talent Search Engine",
+      email_type:    'free_trial',
+    }).catch(e => console.error('Email error:', e));
+  }
+
+  location.reload();
+}
+
+// ── Copy license key ──────────────────────────────────────────────────────────
+function copyKey() {
+  const key = document.getElementById('d-key').textContent;
+  navigator.clipboard.writeText(key).then(() => {
+    const btn = document.querySelector('.key-copy');
+    const orig = btn.textContent;
+    btn.textContent = '✓ Copied!';
+    setTimeout(() => btn.textContent = orig, 2000);
+  }).catch(() => {
+    prompt('Copy your license key:', key);
+  });
+}
+
+function remindExpiry() {
+  window.location.href = 'pricing.html';
+}
+
+function renewNow() {
+  window.location.href = 'pricing.html';
+}
+
+initDash();
+</script>
+</body>
+</html>
