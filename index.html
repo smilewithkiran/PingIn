@@ -13,7 +13,7 @@
 .hero{padding:120px 0 80px;text-align:center;position:relative;overflow:hidden;}
 .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 55% at 50% -5%,rgba(0,119,181,.2) 0%,transparent 70%);pointer-events:none;}
 .hero-inner{max-width:880px;margin:0 auto;padding:0 clamp(20px,4vw,48px);}
-.hero-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(0,212,170,.08);border:1px solid rgba(0,212,170,.25);border-radius:100px;padding:6px 18px;font-size:12px;color:#00D4AA;font-weight:600;margin-bottom:32px;letter-spacing:.05em;}
+.hero-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(0,212,170,.08);border:1px solid rgba(0,212,170,.25);border-radius:100px;padding:6px 18px;font-size:12px;color:#00D4AA;font-weight:600;margin-bottom:32px;letter-spacing:.05em;white-space:normal;}
 .hero-tag-dot{width:7px;height:7px;border-radius:50%;background:#00D4AA;animation:blink 2s ease-in-out infinite;flex-shrink:0;}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
 .hero-title{font-family:'Syne',sans-serif;font-size:clamp(40px,7vw,84px);font-weight:900;letter-spacing:-.035em;line-height:1.04;color:#F0F2F8;margin-bottom:26px;}
@@ -104,6 +104,10 @@
 .section-sub{font-size:15px;color:#8B8FA8;line-height:1.7;}
 .reveal{opacity:0;transform:translateY(24px);transition:opacity .6s,transform .6s;}
 .reveal.visible{opacity:1;transform:translateY(0);}
+
+.two-col-section{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;}
+@media(max-width:768px){.two-col-section{grid-template-columns:1fr!important;gap:32px!important;}}
+@media(max-width:768px){.whats-new-grid{grid-template-columns:1fr!important;}}
 </style>
 </head>
 <body>
@@ -140,7 +144,7 @@
 <!-- HERO -->
 <section class="hero">
   <div class="hero-inner">
-    <div class="hero-tag"><span class="hero-tag-dot"></span>Now with GitHub & Stack Overflow · Developer Search · v2.8.4</div>
+    <div class="hero-tag" style="flex-wrap:wrap;text-align:center;max-width:90vw;line-height:1.6;"><span class="hero-tag-dot" style="flex-shrink:0;"></span>GitHub &amp; Stack Overflow · Developer Search · v2.8.4</div>
     <h1 class="hero-title">Stop Searching.<br>Start <span class="grad">Finding.</span></h1>
     <p class="hero-sub">India's most powerful AI recruiter Chrome Extension. Smart Search, Clone Search, JD Parsing, Developer Search on GitHub & Stack Overflow — plus automated Smart Outreach campaigns. Find the right candidate in minutes, not days.</p>
     <div class="hero-actions">
@@ -279,7 +283,7 @@
 <!-- SMART OUTREACH SECTION -->
 <section class="section" style="background:var(--surf);border-top:1px solid var(--border);">
   <div class="container">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;max-width:980px;margin:0 auto;">
+    <div class="two-col-section" style="display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;max-width:980px;margin:0 auto;">
       <div class="reveal">
         <div class="ov-wrap">
           <div class="ov-hdr">
