@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="css/main.css">
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <style>
-body{min-height:100vh;display:flex;align-items:stretch;background:#0A0C10;overflow-x:hidden;}
+body{min-height:100vh;display:flex;align-items:stretch;background:#0A0C10;overflow-x:hidden;max-width:100vw;}
 /* Left brand panel */
 .auth-left{flex:1;display:flex;flex-direction:column;justify-content:center;padding:60px clamp(32px,5vw,80px);position:relative;overflow:hidden;background:linear-gradient(135deg,#0D1220 0%,#0A0C10 100%);}
 .auth-left::before{content:'';position:absolute;top:-120px;left:-80px;width:400px;height:400px;background:radial-gradient(circle,rgba(0,119,181,.25),transparent 70%);pointer-events:none;}
@@ -33,7 +33,7 @@ body{min-height:100vh;display:flex;align-items:stretch;background:#0A0C10;overfl
 @media(max-width:768px){.auth-left{display:none;}}
 
 /* Right form panel */
-.auth-right{width:440px;flex-shrink:0;display:flex;flex-direction:column;justify-content:center;padding:40px clamp(24px,4vw,52px);background:#0A0C10;border-left:1px solid rgba(255,255,255,.07);}
+.auth-right{width:440px;max-width:100%;flex-shrink:1;display:flex;flex-direction:column;justify-content:center;padding:40px clamp(24px,4vw,52px);background:#0A0C10;border-left:1px solid rgba(255,255,255,.07);box-sizing:border-box;overflow-x:hidden;}
 @media(max-width:768px){.auth-right{width:100%;border-left:none;padding:40px 24px;}}
 .ar-header{margin-bottom:32px;}
 .ar-logo{display:flex;align-items:center;gap:9px;margin-bottom:24px;}
@@ -87,7 +87,7 @@ body{min-height:100vh;display:flex;align-items:stretch;background:#0A0C10;overfl
 <!-- LEFT BRAND PANEL -->
 <div class="auth-left">
   <div class="al-logo">
-    <img src="images/logo-mark.svg" alt="PingIN" width="34" height="34" style="border-radius:9px;">
+    <span style="display:inline-flex;width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#0055CC,#00A890);align-items:center;justify-content:center;flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 60 60" fill="none"><circle cx="30" cy="30" r="6" fill="white"/><circle cx="30" cy="30" r="14" fill="none" stroke="white" stroke-width="2.5" opacity=".7"/><circle cx="30" cy="30" r="22" fill="none" stroke="white" stroke-width="2" opacity=".35"/></svg></span>
     <div class="al-logo-text">Ping<span style="background:linear-gradient(90deg,#1A9ADE,#00D4AA);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IN</span></div>
   </div>
   <h2 class="al-title">Stop Searching.<br>Start <span class="g">Finding.</span></h2>
@@ -112,7 +112,7 @@ body{min-height:100vh;display:flex;align-items:stretch;background:#0A0C10;overfl
 <div class="auth-right">
   <div class="ar-header">
     <div class="ar-logo">
-      <img src="images/logo-mark.svg" alt="PingIN" width="28" height="28" style="border-radius:7px;">
+      <span style="display:inline-flex;width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#0055CC,#00A890);align-items:center;justify-content:center;flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 60 60" fill="none"><circle cx="30" cy="30" r="6" fill="white"/><circle cx="30" cy="30" r="14" fill="none" stroke="white" stroke-width="2.5" opacity=".7"/><circle cx="30" cy="30" r="22" fill="none" stroke="white" stroke-width="2" opacity=".35"/></svg></span>
       <div class="ar-logo-text">Ping<span style="background:linear-gradient(90deg,#1A9ADE,#00D4AA);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IN</span></div>
     </div>
     <h1 class="ar-title" id="form-heading">Welcome back</h1>

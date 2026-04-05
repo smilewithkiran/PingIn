@@ -1,0 +1,28 @@
+<svg width="240" height="90" viewBox="0 0 240 90" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="iconGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0055B5"/>
+      <stop offset="60%" stop-color="#0099CC"/>
+      <stop offset="100%" stop-color="#00D4AA"/>
+    </linearGradient>
+    <linearGradient id="textGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1A9ADE"/>
+      <stop offset="100%" stop-color="#00D4AA"/>
+    </linearGradient>
+  </defs>
+  <!-- Icon box -->
+  <rect x="0" y="8" width="70" height="70" rx="18" fill="url(#iconGrad)"/>
+  <!-- Ping waves -->
+  <circle cx="35" cy="43" r="7" fill="white"/>
+  <circle cx="35" cy="43" r="15" fill="none" stroke="white" stroke-width="2.5" opacity="0.55"/>
+  <circle cx="35" cy="43" r="23" fill="none" stroke="white" stroke-width="2" opacity="0.3"/>
+  <circle cx="35" cy="43" r="30" fill="none" stroke="white" stroke-width="1.5" opacity="0.12"/>
+  <!-- India tricolour dot -->
+  <circle cx="60" cy="18" r="6" fill="#FF9933"/>
+  <circle cx="60" cy="18" r="3.5" fill="white" opacity="0.9"/>
+  <circle cx="60" cy="18" r="1.8" fill="#138808"/>
+  <!-- Brand name -->
+  <text x="85" y="52" font-family="Syne,system-ui,sans-serif" font-weight="900" font-size="36" letter-spacing="-1.5" fill="#F0F2F8">Ping<tspan fill="url(#textGrad)">IN</tspan></text>
+  <!-- Tagline -->
+  <text x="86" y="70" font-family="DM Sans,system-ui,sans-serif" font-weight="400" font-size="12" fill="#4A4E62" letter-spacing="0.05em">Smart LinkedIn Outreach · India</text>
+</svg>
