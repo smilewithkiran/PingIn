@@ -1,0 +1,131 @@
+// PingIN Salary Intel — Netlify Serverless Function
+// Your Anthropic key stays here on the server — users never need their own key
+// Set ANTHROPIC_API_KEY in Netlify dashboard → Site Settings → Environment Variables
+
+exports.handler = async (event) => {
+  // Handle CORS preflight
+  if (event.httpMethod === 'OPTIONS') {
+    return {
+      statusCode: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type',
+      },
+      body: '',
+    };
+  }
+
+  if (event.httpMethod !== 'POST') {
+    return { statusCode: 405, body: 'Method not allowed' };
+  }
+
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) {
+    return {
+      statusCode: 500,
+      headers: { 'Access-Control-Allow-Origin': '*' },
+      body: JSON.stringify({ ok: false, error: 'Server not configured' }),
+    };
+  }
+
+  let profileText = '';
+  try {
+    const body = JSON.parse(event.body || '{}');
+    profileText = (body.profileText || '').slice(0, 2500);
+  } catch(e) {
+    return {
+      statusCode: 400,
+      headers: { 'Access-Control-Allow-Origin': '*' },
+      body: JSON.stringify({ ok: false, error: 'Invalid request' }),
+    };
+  }
+
+  if (!profileText || profileText.length < 50) {
+    return {
+      statusCode: 400,
+      headers: { 'Access-Control-Allow-Origin': '*' },
+      body: JSON.stringify({ ok: false, error: 'No profile text provided' }),
+    };
+  }
+
+  const prompt = `You are a senior compensation analyst for the Indian tech job market (2025-26).
+
+Analyze this LinkedIn profile text and extract the CURRENT role details only.
+
+IMPORTANT:
+- Extract ONLY the CURRENT/LATEST job (top of experience section)
+- Ignore all previous companies, recommendations, "people also viewed", ads
+- If the person is a fresher/student, set expYears to 0
+
+PROFILE TEXT:
+"""
+${profileText}
+"""
+
+Reply ONLY with this JSON (no markdown, no explanation):
+{
+  "title": "current job title",
+  "company": "current employer name only",
+  "city": "Indian city or empty string",
+  "expYears": total work experience as number or null,
+  "education": "IIT/IIM/BITS/NIT/Other",
+  "tier": "faang|unicorn|mnc|startup|service|other",
+  "minLPA": estimated minimum CTC in lakhs,
+  "maxLPA": estimated maximum CTC in lakhs,
+  "reasoning": "one sentence explanation"
+}
+
+Salary benchmarks India 2025-26:
+FAANG/GCC (Google/MS/Amazon/Meta/Goldman/McKinsey): 0yr=₹15-25L, 1-3yr=₹22-38L, 3-6yr=₹38-68L, 6-10yr=₹62-100L, 10yr+=₹88-180L, VP/Dir=₹150-350L
+Unicorn (Razorpay/Swiggy/PhonePe/Zerodha/Freshworks/Zoho): 0yr=₹10-18L, 1-3yr=₹16-28L, 3-6yr=₹26-48L, 6-10yr=₹42-72L, 10yr+=₹66-120L
+MNC (Accenture/Deloitte/IBM/SAP/Capgemini/EY/KPMG/Bosch): 0yr=₹7-13L, 1-3yr=₹12-22L, 3-6yr=₹20-38L, 6-10yr=₹34-58L, 10yr+=₹52-95L
+Startup (Flipkart/Blinkit/Zepto/Practo): 0yr=₹6-12L, 1-3yr=₹9-18L, 3-6yr=₹16-30L, 6-10yr=₹26-48L
+IT Services (TCS/Infosys/Wipro/HCL/Cognizant/Genpact): 0yr=₹3-6L, 1-3yr=₹5-10L, 3-6yr=₹8-17L, 6-10yr=₹14-27L, 10yr+=₹22-45L
+Other: 0yr=₹2-5L, 1-3yr=₹4-8L, 3-6yr=₹7-14L, 6-10yr=₹12-22L
+IIT/IIM premium: +30-40%. BITS/NIT: +10-20%. City multiplier: BLR=1.0, MUM=0.95, HYD=0.88, PUN=0.87, DEL=0.92, CHN=0.85`;
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+      },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 350,
+        messages: [{ role: 'user', content: prompt }],
+      }),
+    });
+
+    if (!resp.ok) {
+      const err = await resp.text();
+      return {
+        statusCode: 502,
+        headers: { 'Access-Control-Allow-Origin': '*' },
+        body: JSON.stringify({ ok: false, error: 'AI error: ' + resp.status }),
+      };
+    }
+
+    const data   = await resp.json();
+    const raw    = data.content?.[0]?.text || '';
+    const result = JSON.parse(raw.replace(/```json|```/g, '').trim());
+
+    return {
+      statusCode: 200,
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+      },
+      body: JSON.stringify({ ok: true, ...result }),
+    };
+  } catch(e) {
+    return {
+      statusCode: 500,
+      headers: { 'Access-Control-Allow-Origin': '*' },
+      body: JSON.stringify({ ok: false, error: e.message }),
+    };
+  }
+};
