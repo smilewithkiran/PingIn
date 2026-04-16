@@ -57,9 +57,9 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:#0A0C10;color:#E8
 .admin-content{padding:24px;max-width:1200px;margin:0 auto;width:100%;}
 
 /* ── Stats strip ── */
-.stats-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:24px;}
-@media(max-width:900px){.stats-strip{grid-template-columns:repeat(3,1fr);}}
-@media(max-width:500px){.stats-strip{grid-template-columns:repeat(2,1fr);}}
+.stats-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px;}
+@media(max-width:1100px){.stats-strip{grid-template-columns:repeat(4,1fr);}} @media(max-width:800px){.stats-strip{grid-template-columns:repeat(2,1fr);}}
+
 .stat-tile{background:#111318;border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:16px;text-align:center;}
 .stat-tile-n{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:#F0F2F8;line-height:1;margin-bottom:4px;}
 .stat-tile-l{font-size:10px;color:#8B8FA8;text-transform:uppercase;letter-spacing:.06em;}
@@ -68,6 +68,8 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:#0A0C10;color:#E8
 .stat-tile.amber .stat-tile-n{color:#BA7517;}
 .stat-tile.red .stat-tile-n{color:#E24B4A;}
 .stat-tile.teal .stat-tile-n{color:#00D4AA;}
+.stat-tile.purple .stat-tile-n{color:#A78BFA;}
+.stat-tile.pink .stat-tile-n{color:#F472B6;}
 
 /* ── Panels grid ── */
 .panels{display:grid;grid-template-columns:1fr 380px;gap:20px;}
@@ -258,13 +260,63 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:#0A0C10;color:#E8
   <!-- Content -->
   <div class="admin-content">
 
-    <!-- Stats -->
+    <!-- User Stats -->
+    <div style="font-size:10px;font-weight:700;color:#4A4E62;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">👥 User Stats</div>
     <div class="stats-strip" id="stats-strip">
       <div class="stat-tile blue"><div class="stat-tile-n" id="st-total">0</div><div class="stat-tile-l">Total Users</div></div>
       <div class="stat-tile green"><div class="stat-tile-n" id="st-active">0</div><div class="stat-tile-l">Active Plans</div></div>
       <div class="stat-tile amber"><div class="stat-tile-n" id="st-trial">0</div><div class="stat-tile-l">Free Trial</div></div>
       <div class="stat-tile red"><div class="stat-tile-n" id="st-expired">0</div><div class="stat-tile-l">Expired</div></div>
-      <div class="stat-tile teal"><div class="stat-tile-n" id="st-revenue">₹0</div><div class="stat-tile-l">Total Revenue</div></div>
+    </div>
+
+    <!-- Revenue strip -->
+    <div class="stats-strip" style="grid-template-columns:1fr;margin-bottom:20px;margin-top:-4px;">
+      <div class="stat-tile teal" style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px;">
+        <div>
+          <div class="stat-tile-n" id="st-revenue" style="font-size:24px;">₹0</div>
+          <div class="stat-tile-l">Total Revenue Collected</div>
+        </div>
+        <div style="font-size:28px;opacity:.3;">💰</div>
+      </div>
+    </div>
+
+    <!-- Website Visitor Analytics -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+      <div style="font-size:10px;font-weight:700;color:#4A4E62;text-transform:uppercase;letter-spacing:.08em;">🌐 Website Visitors</div>
+      <button onclick="loadVisitorStats()" id="refresh-visitors-btn"
+        style="font-size:11px;font-weight:600;color:#8B8FA8;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:6px;padding:4px 10px;cursor:pointer;font-family:inherit;">
+        ↻ Refresh
+      </button>
+    </div>
+    <div class="stats-strip" id="visitor-strip">
+      <div class="stat-tile purple">
+        <div class="stat-tile-n" id="vt-total"><span class="loading-dots">•••</span></div>
+        <div class="stat-tile-l">Total Visits (All Time)</div>
+      </div>
+      <div class="stat-tile teal">
+        <div class="stat-tile-n" id="vt-today"><span class="loading-dots">•••</span></div>
+        <div class="stat-tile-l">Visits Today</div>
+      </div>
+      <div class="stat-tile blue">
+        <div class="stat-tile-n" id="vt-week"><span class="loading-dots">•••</span></div>
+        <div class="stat-tile-l">Visits This Week</div>
+      </div>
+      <div class="stat-tile green">
+        <div class="stat-tile-n" id="vt-home"><span class="loading-dots">•••</span></div>
+        <div class="stat-tile-l">Homepage Views</div>
+      </div>
+    </div>
+
+    <!-- Page breakdown -->
+    <div style="background:#111318;border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:16px 20px;margin-bottom:20px;" id="visitor-pages-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+        <div style="font-size:12px;font-weight:700;color:#F0F2F8;">📄 Page Views Breakdown</div>
+        <div style="font-size:10px;color:#4A4E62;">Live data from CountAPI</div>
+      </div>
+      <div id="visitor-pages-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
+        <!-- Populated by JS -->
+        <div style="text-align:center;padding:8px;color:#4A4E62;font-size:12px;grid-column:1/-1;">Loading page stats...</div>
+      </div>
     </div>
 
     <div class="panels">
@@ -537,11 +589,112 @@ function changeAdminPassword() {
   setTimeout(() => showLogin(), 2000);
 }
 
+
+// ── Visitor Analytics via CountAPI ─────────────────────────────────────────
+const VISITOR_NS = 'pingin-in-v1';
+
+async function fetchCount(key) {
+  try {
+    const r = await fetch('https://api.countapi.xyz/get/' + VISITOR_NS + '/' + key);
+    if (!r.ok) return 0;
+    const d = await r.json();
+    return d.value || 0;
+  } catch(e) { return 0; }
+}
+
+function fmtNum(n) {
+  if (n >= 1000000) return (n/1000000).toFixed(1) + 'M';
+  if (n >= 1000)    return (n/1000).toFixed(1)    + 'K';
+  return String(n || 0);
+}
+
+async function loadVisitorStats() {
+  const btn = document.getElementById('refresh-visitors-btn');
+  if (btn) { btn.textContent = '↻ Loading...'; btn.disabled = true; }
+
+  // Today + this week keys
+  const today = new Date().toISOString().slice(0,10).replace(/-/g,'');
+  const d2 = new Date();
+  const week = d2.getFullYear() + 'W' +
+    String(Math.ceil((((d2 - new Date(d2.getFullYear(),0,1))/864e5)+1)/7)).padStart(2,'0');
+
+  // Fetch all counts in parallel
+  const [total, todayV, weekV,
+         home, pricing, ext, login, payment, dashboard, contact] = await Promise.all([
+    fetchCount('total'),
+    fetchCount('day-' + today),
+    fetchCount('week-' + week),
+    fetchCount('index'),
+    fetchCount('pricing'),
+    fetchCount('extension'),
+    fetchCount('login'),
+    fetchCount('payment'),
+    fetchCount('dashboard'),
+    fetchCount('contact'),
+  ]);
+
+  // Set main tiles
+  const set = (id,v) => { const el=document.getElementById(id); if(el) el.innerHTML=v; };
+  set('vt-total', fmtNum(total));
+  set('vt-today', fmtNum(todayV));
+  set('vt-week',  fmtNum(weekV));
+  set('vt-home',  fmtNum(home));
+
+  // Page breakdown grid
+  const pages = [
+    { name:'🏠 Home',      count:home },
+    { name:'💰 Pricing',   count:pricing },
+    { name:'🔌 Extension', count:ext },
+    { name:'🔑 Login',     count:login },
+    { name:'💳 Payment',   count:payment },
+    { name:'📊 Dashboard', count:dashboard },
+    { name:'📧 Contact',   count:contact },
+  ];
+
+  // Sort by most visited
+  pages.sort((a,b) => b.count - a.count);
+  const maxV = pages[0]?.count || 1;
+
+  const grid = document.getElementById('visitor-pages-grid');
+  if (grid) {
+    grid.innerHTML = pages.map(p => {
+      const pct = Math.round((p.count / maxV) * 100);
+      return `<div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:9px;padding:10px 12px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <div style="font-size:11px;font-weight:600;color:#F0F2F8;">${p.name}</div>
+          <div style="font-size:13px;font-weight:800;color:#00D4AA;">${fmtNum(p.count)}</div>
+        </div>
+        <div style="height:4px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden;">
+          <div style="height:100%;width:${pct}%;background:linear-gradient(90deg,#0077B5,#00D4AA);border-radius:2px;transition:width .5s;"></div>
+        </div>
+        <div style="font-size:9px;color:#4A4E62;margin-top:3px;">${pct}% of top page</div>
+      </div>`;
+    }).join('');
+  }
+
+  if (btn) { btn.textContent = '↻ Refresh'; btn.disabled = false; }
+
+  // Show last updated time
+  const timeEl = document.querySelector('[data-visitor-time]');
+  if (timeEl) timeEl.textContent = 'Updated: ' + new Date().toLocaleTimeString('en-IN');
+}
+
+// Load visitor stats when admin panel opens
 function showAdmin() {
   document.getElementById('admin-gate').style.display = 'none';
   document.getElementById('admin-wrap').style.display = 'flex';
   loadData();
+  loadVisitorStats();
 }
+
+// CSS for loading dots animation
+const _vstyle = document.createElement('style');
+_vstyle.textContent = `
+  .loading-dots { color:#4A4E62; letter-spacing:2px; animation:ldots 1.2s infinite; }
+  @keyframes ldots { 0%,100%{opacity:.3} 50%{opacity:1} }
+`;
+document.head.appendChild(_vstyle);
+
 
 // Auto-login if session exists
 if (sessionStorage.getItem('pingin_admin') === '1') showAdmin();

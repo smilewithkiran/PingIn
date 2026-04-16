@@ -193,5 +193,36 @@
   <script src="js/pingin.js"></script>
 <script src="js/nav.js"></script>
   <script src="js/auth.js"></script>
+
+<!-- PingIN Visitor Tracking -->
+<script>
+(function() {
+  try {
+    // Page key from URL
+    var page = location.pathname.replace(/\/$/,'').split('/').pop().replace('.html','') || 'home';
+    if (!page || page === '') page = 'home';
+    var NS = 'pingin-in-v1';
+
+    // Hit: total page view
+    fetch('https://api.countapi.xyz/hit/' + NS + '/' + page)
+      .catch(function(){});
+
+    // Hit: total site visits (all pages combined)
+    fetch('https://api.countapi.xyz/hit/' + NS + '/total')
+      .catch(function(){});
+
+    // Hit: today's visits using date key
+    var today = new Date().toISOString().slice(0,10).replace(/-/g,'');
+    fetch('https://api.countapi.xyz/hit/' + NS + '/day-' + today)
+      .catch(function(){});
+
+    // Hit: this week
+    var d = new Date();
+    var week = d.getFullYear() + 'W' + Math.ceil((((d - new Date(d.getFullYear(),0,1))/864e5)+1)/7);
+    fetch('https://api.countapi.xyz/hit/' + NS + '/week-' + week)
+      .catch(function(){});
+  } catch(e) {}
+})();
+</script>
 </body>
 </html>
