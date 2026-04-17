@@ -470,10 +470,8 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:#0A0C10;color:#E8
 </div>
 
 <script src="js/pingin.js"></script>
-  <script src="js/firebase-config.js"></script>
-  <script src="js/pingin-firebase.js"></script>
 <script>
-emailjs.init('OboQTWg4MMuVOJWWt');
+try { emailjs.init('OboQTWg4MMuVOJWWt'); } catch(e) {}
 
 // ── Admin password — SHA-256 based ──────────────────────────────────────────
 // Real SHA-256('pingin@admin2026') = 42a1561ffd064d41cbda60f74f1293c1ec3e3f26680b2ced6c2f57095155818e
@@ -566,7 +564,7 @@ function updateStrength(val) {
   label.style.color     = lv.color;
 }
 
-document.getElementById('admin-pass').addEventListener('keydown', e => { if (e.key==='Enter') adminLogin(); });
+document.getElementById('admin-pass')?.addEventListener('keydown', e => { if (e.key==='Enter') adminLogin(); });
 document.getElementById('cp-new')?.addEventListener('keydown', e => { if (e.key==='Enter') changeAdminPassword(); });
 document.getElementById('cp-confirm')?.addEventListener('keydown', e => { if (e.key==='Enter') changeAdminPassword(); });
 
@@ -731,32 +729,21 @@ function showAdmin() {
 }
 
 // CSS for loading dots animation
-const _vstyle = document.createElement('style');
-_vstyle.textContent = `
-  .loading-dots { color:#4A4E62; letter-spacing:2px; animation:ldots 1.2s infinite; }
-  @keyframes ldots { 0%,100%{opacity:.3} 50%{opacity:1} }
-`;
-document.head.appendChild(_vstyle);
+try {
+  const _vstyle = document.createElement('style');
+  _vstyle.textContent = '.loading-dots{color:#4A4E62;letter-spacing:2px;animation:ldots 1.2s infinite} @keyframes ldots{0%,100%{opacity:.3}50%{opacity:1}}';
+  document.head.appendChild(_vstyle);
+} catch(e) {}
 
 
 // Auto-login if session exists
-if (sessionStorage.getItem('pingin_admin') === '1') showAdmin();
+try { if (sessionStorage.getItem('pingin_admin') === '1') showAdmin(); } catch(e) {}
 
 // ── Load data ──────────────────────────────────────────────────────────────────
 let allUsers = [];
 
-async function loadData() {
-  try {
-    // Load from Firebase if configured, else localStorage
-    if (typeof PingINDB !== 'undefined' && PingINDB.getAllUsers) {
-      allUsers = await PingINDB.getAllUsers();
-    } else {
-      allUsers = PingIN.getUsers();
-    }
-  } catch(e) {
-    console.warn('[Admin] loadData fallback:', e);
-    allUsers = PingIN.getUsers();
-  }
+function loadData() {
+  try { allUsers = PingIN.getUsers(); } catch(e) { allUsers = []; }
   try { renderStats();   } catch(e) {}
   try { renderUsers();   } catch(e) {}
   try { renderRevenue(); } catch(e) {}
