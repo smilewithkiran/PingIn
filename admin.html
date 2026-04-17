@@ -473,57 +473,31 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:#0A0C10;color:#E8
 <script>
 try { emailjs.init('OboQTWg4MMuVOJWWt'); } catch(e) {}
 
-// ── Admin password — SHA-256 based ──────────────────────────────────────────
-// Real SHA-256('pingin@admin2026') = 42a1561ffd064d41cbda60f74f1293c1ec3e3f26680b2ced6c2f57095155818e
-// To change password: compute SHA-256 of new password and update STORED_HASH below
+// ── Admin password ──────────────────────────────────────────────────────────
+// Default: pingin@admin2026
+// To change: update ADMIN_PASSWORD below and re-upload admin.html
 
-async function sha256(str) {
-  try {
-    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
-    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
-  } catch(e) {
-    // Fallback for environments where crypto.subtle is unavailable
-    return btoa(unescape(encodeURIComponent(str)));
-  }
-}
-
-// The verified SHA-256 hash of 'pingin@admin2026'
-const DEFAULT_HASH = '42a1561ffd064d41cbda60f74f1293c1ec3e3f26680b2ced6c2f57095155818e';
-
-function getStoredHash() {
-  return localStorage.getItem('pingin_admin_pass_hash') || DEFAULT_HASH;
+function getAdminPassword() {
+  return localStorage.getItem('pingin_admin_pwd') || 'pingin@admin2026';
 }
 
 // ── Login gate ─────────────────────────────────────────────────────────────────
-async function adminLogin() {
-  const passEl = document.getElementById('admin-pass');
-  const errEl  = document.getElementById('gate-err');
-  const pass   = passEl ? passEl.value.trim() : '';
+function adminLogin() {
+  var passEl = document.getElementById('admin-pass');
+  var errEl  = document.getElementById('gate-err');
+  var pass   = passEl ? passEl.value : '';
 
   if (!pass) {
     if (errEl) { errEl.style.display='block'; errEl.textContent='Please enter your password.'; }
     return;
   }
 
-  try {
-    const inputHash = await sha256(pass);
-    const correct   = getStoredHash();
-
-    if (inputHash === correct) {
-      sessionStorage.setItem('pingin_admin', '1');
-      showAdmin();
-    } else {
-      if (errEl) { errEl.style.display='block'; errEl.textContent='Incorrect password. Try again.'; }
-      if (passEl) { passEl.value=''; passEl.focus(); }
-    }
-  } catch(e) {
-    // Last resort — plain text compare (should never reach here)
-    if (pass === 'pingin@admin2026' || pass === getStoredHash()) {
-      sessionStorage.setItem('pingin_admin', '1');
-      showAdmin();
-    } else {
-      if (errEl) { errEl.style.display='block'; errEl.textContent='Login error. Try again.'; }
-    }
+  if (pass === getAdminPassword()) {
+    sessionStorage.setItem('pingin_admin', '1');
+    showAdmin();
+  } else {
+    if (errEl) { errEl.style.display='block'; errEl.textContent='Incorrect password. Try again.'; }
+    if (passEl) { passEl.value=''; passEl.focus(); }
   }
 }
 
@@ -593,7 +567,7 @@ function showLogin() {
   document.getElementById('gate-err').style.display = 'none';
 }
 
-async function changeAdminPassword() {
+function changeAdminPassword() {
   const current = document.getElementById('cp-current').value;
   const newPass  = document.getElementById('cp-new').value;
   const confirm  = document.getElementById('cp-confirm').value;
@@ -608,15 +582,13 @@ async function changeAdminPassword() {
     errEl.style.display  = 'block';
   };
 
-  const currentHash = await sha256(current);
-  if (currentHash !== getStoredHash()) { showErr('Current password is incorrect.'); return; }
-  if (newPass.length < 8)              { showErr('New password must be at least 8 characters.'); return; }
-  if (newPass !== confirm)             { showErr('Passwords do not match.'); return; }
+  if (current !== getAdminPassword()) { showErr('Current password is incorrect.'); return; }
+  if (newPass.length < 8)             { showErr('New password must be at least 8 characters.'); return; }
+  if (newPass !== confirm)            { showErr('Passwords do not match.'); return; }
 
-  const newHash = await sha256(newPass);
-  localStorage.setItem('pingin_admin_pass_hash', newHash);
-  localStorage.removeItem('pingin_admin_pass');
-  const _succ = document.getElementById('cp-success'); if(_succ){ _succ.style.display='block'; _succ.className='gate-ok'; }
+  localStorage.setItem('pingin_admin_pwd', newPass);
+  const _succ = document.getElementById('cp-success');
+  if (_succ) { _succ.style.display='block'; _succ.className='gate-ok'; }
 
   // Clear fields
   ['cp-current','cp-new','cp-confirm'].forEach(id => document.getElementById(id).value = '');
@@ -1077,14 +1049,11 @@ function saveNewPassword() {
 
   const showErr = (msg) => { errEl.textContent = msg; errEl.style.display = 'block'; };
 
-  const _ih = await sha256(current);
-  if (_ih !== getStoredHash())      { showErr('Current password is incorrect.'); return; }
-  if (newPass.length < 8)           { showErr('New password must be at least 8 characters.'); return; }
+  if (current !== getAdminPassword()) { showErr('Current password is incorrect.'); return; }
+  if (newPass.length < 8)            { showErr('New password must be at least 8 characters.'); return; }
   if (newPass !== confirm)           { showErr('Passwords do not match.'); return; }
 
-  const _nh = await sha256(newPass);
-  localStorage.setItem('pingin_admin_pass_hash', _nh);
-  localStorage.removeItem('pingin_admin_pass');
+  localStorage.setItem('pingin_admin_pwd', newPass);
   if(succEl){ succEl.style.display='block'; }
   ['icp-current','icp-new','icp-confirm'].forEach(id => document.getElementById(id).value = '');
   setTimeout(() => closeCPModal(), 2500);
