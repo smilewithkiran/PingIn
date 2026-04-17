@@ -177,6 +177,8 @@ body{min-height:100vh;display:flex;align-items:stretch;background:#0A0C10;overfl
 </div>
 
 <script src="js/pingin.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/pingin-firebase.js"></script>
 <script>
 emailjs.init('OboQTWg4MMuVOJWWt');
 if (PingIN.isLoggedIn()) window.location.href = 'dashboard.html';
@@ -201,14 +203,15 @@ function clearMessages(){document.getElementById('err-msg').style.display='none'
 function setLoading(btnId,loading){const btn=document.getElementById(btnId);if(loading){btn._orig=btn.innerHTML;btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Please wait...';}else{btn.innerHTML=btn._orig||btn.innerHTML;btn.disabled=false;}}
 function togglePass(id,btn){const inp=document.getElementById(id);inp.type=inp.type==='password'?'text':'password';btn.textContent=inp.type==='password'?'Show':'Hide';}
 
-function doSignIn(){
+async function doSignIn(){
   const email=document.getElementById('si-email').value.trim();
   const pass=document.getElementById('si-pass').value;
   if(!email){showErr('Please enter your email address.');return;}
   if(!pass){showErr('Please enter your password.');return;}
   setLoading('btn-signin',true);
-  setTimeout(()=>{
-    const result=PingIN.loginUser(email,pass);
+  // Use async PingINDB (Firebase + localStorage)
+  try {
+    const result=await PingINDB.loginUser(email,pass);
     if(!result.ok){showErr(result.error);setLoading('btn-signin',false);return;}
     PingIN.saveSession({...result.user,loginAt:new Date().toISOString()});
     showOk('✓ Signed in! Redirecting to dashboard...');
@@ -219,7 +222,7 @@ function doSignIn(){
       sessionStorage.removeItem('after_login_redirect');
       window.location.href=redir?redir+'.html':'dashboard.html';
     },900);
-  },700);
+  } catch(e) { showErr('Sign in error. Please try again.'); setLoading('btn-signin',false); }
 }
 
 async function doSignUp(){
@@ -232,7 +235,14 @@ async function doSignUp(){
   if(!pass||pass.length<6){showErr('Password must be at least 6 characters.');return;}
   if(!phone){showErr('Please enter your WhatsApp number.');return;}
   setLoading('btn-signup',true);
-  const result=PingIN.registerUser({name,email,password:pass,phone});
+  // Check for duplicate email/phone and trial abuse
+  const trialCheck = await PingINDB.hasUsedTrial(email.toLowerCase(), phone);
+  if (trialCheck.blocked) {
+    showErr(trialCheck.msg);
+    setLoading('btn-signup',false);
+    return;
+  }
+  const result = await PingINDB.registerUser({name,email,phone,password:pass});
   if(!result.ok){showErr(result.error);setLoading('btn-signup',false);return;}
   PingIN.saveSession({...result.user,loginAt:new Date().toISOString()});
   showOk('✅ Account created! Sending details to '+email+'...');

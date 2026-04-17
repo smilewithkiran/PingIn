@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Dashboard — PingIN · v2.8.7</title>
+<title>Dashboard — PingIN · v2.9.0</title>
 <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
@@ -174,7 +174,7 @@ code{background:rgba(255,255,255,.06);padding:2px 7px;border-radius:4px;font-siz
   <!-- ── WHAT'S NEW v2.8 ── -->
   <div class="dl-card" style="border-color:rgba(0,212,170,.2);background:linear-gradient(135deg,rgba(0,212,170,.04),var(--surf));">
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
-      <div class="dl-card-title" style="margin-bottom:0;">🎉 What's New in v2.8.7</div>
+      <div class="dl-card-title" style="margin-bottom:0;">🎉 What's New in v2.9.0</div>
       <div style="font-size:10px;font-weight:700;background:rgba(0,212,170,.12);color:#00D4AA;border:1px solid rgba(0,212,170,.25);border-radius:4px;padding:2px 8px;">LATEST</div>
     </div>
     <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;" class="whats-new-grid">
@@ -207,7 +207,7 @@ code{background:rgba(255,255,255,.06);padding:2px 7px;border-radius:4px;font-siz
 
   <!-- ── CHROME EXTENSION DOWNLOAD ── -->
   <div class="dl-card">
-    <div class="dl-card-title">📥 Chrome Extension <span style="font-size:10px;font-weight:700;background:rgba(0,212,170,.1);color:#00D4AA;border:1px solid rgba(0,212,170,.2);border-radius:4px;padding:2px 7px;vertical-align:middle;">v2.8.7</span></div>
+    <div class="dl-card-title">📥 Chrome Extension <span style="font-size:10px;font-weight:700;background:rgba(0,212,170,.1);color:#00D4AA;border:1px solid rgba(0,212,170,.2);border-radius:4px;padding:2px 7px;vertical-align:middle;">v2.9.0</span></div>
     <div class="dl-card-sub" id="dl-sub">Your plan-specific extension will be ready to download below.</div>
 
     <!-- Plan feature summary badge -->
@@ -263,6 +263,8 @@ code{background:rgba(255,255,255,.06);padding:2px 7px;border-radius:4px;font-siz
 </div>
 
 <script src="js/pingin.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/pingin-firebase.js"></script>
 <script>
 emailjs.init('OboQTWg4MMuVOJWWt');
 
@@ -359,7 +361,7 @@ function setupExtensionDownload(plan, info) {
     free:    { zip:'pingin-extension-free.zip',    label:'Download Free Trial Extension',  color:'#1A9ADE', features:['✅ Smart Search (LinkedIn profiles)','✅ 1 page per search (~10 profiles)','✅ Profile scoring 0–100','✅ ⚡ Boolean Builder','✅ 🕐 Search History (last 15)','✅ 📝 Candidate Notes','✅ Smart Outreach — 5 msgs/day','✅ CSV export','🔒 Developer Search (GitHub/SO) — locked','🔒 📁 JD Library — locked','🔒 AI Clone / JD / Predictive — locked'] },
     starter: { zip:'pingin-extension-starter.zip', label:'Download Starter Extension',     color:'#1A9ADE', features:['✅ Smart Search — unlimited','✅ 🐙 GitHub Multi-Skill Search (1-3 skills)','✅ 📚 Stack Overflow Top Experts','✅ 🔍 GitHub Multi-Skill Search (1-3)','✅ Up to 5 pages per search (~50 profiles)','✅ ⚡ Boolean Builder','✅ 🕐 Search History','✅ 📝 Candidate Notes','✅ 📁 JD Library (save 10 JDs)','✅ Smart Outreach — 50 msgs/day','✅ CSV + Excel export','🔒 AI Clone / JD / Predictive — locked'] },
     pro:     { zip:'pingin-extension-pro.zip',     label:'Download Pro Extension',         color:'#00D4AA', features:['✅ All 6 search modes + AI unlocked','✅ 🐙 GitHub Multi-Skill Search (1-3 skills)','✅ 📚 Stack Overflow Top Experts','✅ 🔍 GitHub Multi-Skill Search (1-3)','✅ 🐙 GitHub Profile Floating Banner','✅ ⚡ Boolean Builder','✅ 🕐 Search History','✅ 📝 Candidate Notes','✅ 📁 JD Library (save 10 JDs)','✅ Smart Outreach — 50 msgs/day','✅ Unlimited pages per search (1000+ profiles)','✅ AI Clone Search (Claude-powered)','✅ AI JD Parsing (Claude-powered)','✅ Predictive Sourcing','✅ CSV + Excel export'] },
-    annual:  { zip:'pingin-extension-annual.zip',  label:'Download Annual Extension',      color:'#00D4AA', features:['✅ EVERYTHING in Pro — all year','✅ 🐙 GitHub Smart Search + Profile Banner','✅ 📚 Stack Overflow Top Experts','✅ 🔍 GitHub Multi-Skill Search (1-3)','✅ ⚡ Boolean Builder','✅ 🕐 Search History','✅ 📝 Candidate Notes','✅ 📁 JD Library (save 10 JDs)','✅ Smart Outreach — 50 msgs/day','✅ 🔁 Sequence campaigns (connect + follow-up)','✅ Unlimited pages — all year','✅ All AI modes — all year','✅ Saves ₹4,400 vs 12× Pro'] },
+    annual:  { zip:'pingin-extension-annual.zip',  label:'Download Annual Extension',      color:'#00D4AA', features:['✅ EVERYTHING in Pro — all year','✅ 🐙 GitHub Smart Search + Profile Banner','✅ 📚 Stack Overflow Top Experts','✅ 🔍 GitHub Multi-Skill Search (1-3)','✅ ⚡ Boolean Builder','✅ 🕐 Search History','✅ 📝 Candidate Notes','✅ 📁 JD Library (save 10 JDs)','✅ Smart Outreach — 50 msgs/day','✅ 🔁  (connect + follow-up)','✅ Unlimited pages — all year','✅ All AI modes — all year','✅ Saves ₹4,400 vs 12× Pro'] },
   };
 
   const btnEl   = document.getElementById('dl-btn-ext');
@@ -409,7 +411,7 @@ function buildUpgradeGrid(currentPlan) {
     { key:'free',    name:'Free Trial', price:'₹0',      period:'5 days',      btn:'Start Trial',  feats:'Smart Search · 1-page scrape · Profile scoring' },
     { key:'starter', name:'Starter',    price:'₹650',    period:'15 days',     btn:'Upgrade',      feats:'Smart + Developer (GitHub+SO) · 5 pages · JD Library · Notes' },
     { key:'pro',     name:'Pro 🔥',     price:'₹1,200',  period:'per month',   btn:'Upgrade',      feats:'All 6 AI modes · GitHub+SO · JD Library · Notes · History', popular:true },
-    { key:'annual',  name:'Annual 🏆',  price:'₹10,000', period:'365 days',    btn:'Upgrade',      feats:'Everything in Pro · Sequence campaigns · All year · Save ₹4,400' },
+    { key:'annual',  name:'Annual 🏆',  price:'₹10,000', period:'365 days',    btn:'Upgrade',      feats:'Everything in Pro ·  · All year · Save ₹4,400' },
   ];
   grid.innerHTML = plans.map(p => {
     const isCurrent = currentPlan === p.key;

@@ -176,6 +176,8 @@
 </div>
 
 <script src="js/pingin.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/pingin-firebase.js"></script>
 <script>
 emailjs.init('OboQTWg4MMuVOJWWt');
 
@@ -244,8 +246,7 @@ document.addEventListener('DOMContentLoaded', () => {
       '📁 JD Library · ⚡ Boolean Builder',
       '🕐 Search History · 📝 Notes',
       'Smart Outreach — 50 msgs/day',
-      '🔁 Sequence campaigns (Annual only)',
-      'Priority support',
+            'Priority support',
       'Save ₹4,400 vs 12× Pro',
     ],
   };
@@ -329,7 +330,12 @@ async function onPaymentSuccess({ paymentId, name, email, phone }) {
   const key    = PingIN.generateKey(email, planKey);
   const expiry = new Date(Date.now() + P.days * 86400000).toISOString();
 
-  PingIN.activatePlan(email, planKey, key);
+  // Activate plan in Firebase (cross-device) + localStorage
+  await PingINDB.activatePlan(email, {
+    plan:        planKey,
+    licenseKey:  key,
+    planExpiry:  expiry,
+  });
 
   // Update session
   const session = PingIN.getSession();
