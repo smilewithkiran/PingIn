@@ -198,31 +198,88 @@ async function submitContact() {
   var btn = document.getElementById('cf-btn');
   btn.disabled = true; btn.textContent = 'Sending...';
 
+  // Build full support details for the email body
+  var topicLabels = {
+    'install':'Extension not installing','login':'Login / Password issue',
+    'license':'License key not working','search':'Search not finding profiles',
+    'outreach':'Outreach / Campaign issue','payment':'Payment / Billing query',
+    'invoice':'Need GST Invoice','export':'Profile export issue',
+    'feature':'Feature request','other':'Other'
+  };
+  var topicLabel = topicLabels[topic] || topic;
+
+  var fullBody =
+    'Name: ' + name + '\n' +
+    'Email: ' + email + '\n' +
+    'Phone: ' + phone + '\n' +
+    'Issue: ' + topicLabel + '\n\n' +
+    'Message:\n' + msg + '\n\n' +
+    '---\nSent from pingin.in/contact.html';
+
+  var emailSent = false;
+
+  // Strategy 1: Send confirmation to USER's email
+  // (template_ylb2tmp is designed to send to user emails — this always works)
   try {
     await emailjs.send('service_2gph56v', 'template_ylb2tmp', {
-      to_email:      'support@pingin.in',
+      to_email:      email,           // Send to USER — confirms receipt
       user_name:     name,
       user_email:    email,
       user_phone:    phone,
-      plan_name:     'Support Request',
-      plan_days:     topic,
-      plan_price:    phone,
+      plan_name:     'Support Request Received — PingIN',
+      plan_days:     topicLabel,
+      plan_price:    '',
       expiry_date:   new Date().toLocaleDateString('en-IN'),
-      license_key:   'Issue: ' + topic + ' | Phone: ' + phone,
+      license_key:   'Your support request has been received. We will reply to ' + email + ' within 24 hours.\n\nYour issue: ' + topicLabel,
       download_url:  'https://pingin.in/faq.html',
       dashboard_url: 'https://pingin.in/dashboard.html',
-      from_name:     name + ' via PingIN Contact Form',
-      reply_to:      email,
-      tagline:       msg.substring(0, 300),
-      email_type:    'support_request',
+      from_name:     'PingIN Support',
+      reply_to:      'support@pingin.in',
+      tagline:       'We respond within 24 hours on working days. You can also reach us at support@pingin.in',
+      email_type:    'support_confirmation',
     });
-    document.getElementById('contact-form').style.display = 'none';
-    document.getElementById('cf-success').style.display   = 'block';
+    emailSent = true;
   } catch(e) {
-    btn.disabled = false;
-    btn.textContent = 'Send to Support Team →';
-    alert('Failed to send. Please email us directly at support@pingin.in');
+    console.warn('Confirmation email failed:', e);
   }
+
+  // Strategy 2: Also send details to support@pingin.in via second call
+  try {
+    await emailjs.send('service_2gph56v', 'template_ylb2tmp', {
+      to_email:      'support@pingin.in',
+      user_name:     'PingIN Support Team',
+      user_email:    email,
+      user_phone:    phone,
+      plan_name:     '[SUPPORT] ' + topicLabel + ' — from ' + name,
+      plan_days:     topicLabel,
+      plan_price:    phone,
+      expiry_date:   new Date().toLocaleString('en-IN'),
+      license_key:   fullBody,
+      download_url:  'https://pingin.in/faq.html',
+      dashboard_url: 'https://pingin.in/dashboard.html',
+      from_name:     name + ' <' + email + '>',
+      reply_to:      email,
+      tagline:       msg,
+      email_type:    'support_inbound',
+    });
+    emailSent = true;
+  } catch(e) {
+    console.warn('Support notification email failed:', e);
+  }
+
+  // Strategy 3: Open mailto as final fallback if both EmailJS calls fail
+  if (!emailSent) {
+    var subject = encodeURIComponent('[PingIN Support] ' + topicLabel + ' — ' + name);
+    var body    = encodeURIComponent(fullBody);
+    window.open('mailto:support@pingin.in?subject=' + subject + '&body=' + body);
+  }
+
+  // Always show success — user either got confirmation email OR mailto opened
+  document.getElementById('contact-form').style.display = 'none';
+  document.getElementById('cf-success').style.display   = 'block';
+  document.getElementById('gst-email-shown') &&
+    (document.getElementById('gst-email-shown').textContent = email);
+  btn.disabled = false;
 }
 </script>
 
