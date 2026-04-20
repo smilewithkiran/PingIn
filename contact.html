@@ -21,7 +21,11 @@
     .legal-page a { color:var(--blue-l); }
     .legal-highlight { background:rgba(0,119,181,.07); border:1px solid rgba(0,119,181,.2); border-radius:var(--r); padding:16px 20px; margin:20px 0; }
     .legal-highlight p { margin:0; color:var(--tp); font-weight:500; }
-  </style>
+  
+#attach-area:hover{border-color:rgba(0,119,181,.5)!important;background:rgba(0,119,181,.04)!important;}
+#attach-area.dragover{border-color:#00D4AA!important;background:rgba(0,212,170,.06)!important;}
+
+</style>
 </head>
 <body>
   <nav class="nav" id="nav" style="position:relative;">
@@ -123,30 +127,42 @@
         <div class="cf-sub">Fill the form below and we'll get back to you quickly.</div>
 
         <div id="contact-form">
-          <label class="cf-label">Your name *</label>
+          <label class="cf-label">Full Name *</label>
           <input type="text" class="cf-input" id="c-name" placeholder="Your full name">
 
-          <label class="cf-label">Email address *</label>
-          <input type="email" class="cf-input" id="c-email" placeholder="you@example.com">
+          <label class="cf-label">Email Address *</label>
+          <input type="email" class="cf-input" id="c-email" placeholder="you@company.com">
 
-          <label class="cf-label">Mobile Number <span style="font-weight:400;color:var(--tm);">(optional)</span></label>
+          <label class="cf-label">Mobile Number *</label>
           <input type="tel" class="cf-input" id="c-mobile" placeholder="+91 98765 43210">
 
-          <label class="cf-label">Topic *</label>
+          <label class="cf-label">Issue / Topic *</label>
           <select class="cf-select" id="c-topic">
-            <option value="">Select a topic</option>
-            <option>General question</option>
-            <option>Technical support / Bug report</option>
-            <option>Billing / Payment</option>
-                        <option>Feature request</option>
-            <option>Partnership / Business</option>
-            <option>Other</option>
+            <option value="">Select your issue</option>
+            <option value="install">Extension not installing</option>
+            <option value="login">Login / Password issue</option>
+            <option value="license">License key not working</option>
+            <option value="search">Search not finding profiles</option>
+            <option value="outreach">Outreach / Campaign issue</option>
+            <option value="payment">Payment / Billing query</option>
+            <option value="invoice">Need GST Invoice</option>
+            <option value="export">Profile export issue</option>
+            <option value="feature">Feature request</option>
+            <option value="other">Other</option>
           </select>
 
-          <label class="cf-label">Message *</label>
-          <textarea class="cf-textarea" id="c-msg" placeholder="Describe your question or issue in detail..."></textarea>
+          <label class="cf-label">Describe Your Issue *</label>
+          <textarea class="cf-textarea" id="c-msg" rows="4" placeholder="Describe the issue in detail. What were you doing when it happened?"></textarea>
 
-          <button class="cf-submit" id="cf-btn" onclick="submitContact()">Send Message</button>
+          <label class="cf-label">Screenshot / Attachment <span style="font-weight:400;color:var(--tm);font-size:11px;">(optional — max 5MB)</span></label>
+          <div id="attach-area" style="border:1.5px dashed rgba(255,255,255,.15);border-radius:9px;padding:14px;text-align:center;cursor:pointer;background:rgba(255,255,255,.02);margin-bottom:14px;transition:border-color .2s;" onclick="document.getElementById('c-attach').click()">
+            <div style="font-size:22px;margin-bottom:4px;">📎</div>
+            <div style="font-size:12px;color:var(--ts);" id="attach-label">Click to attach screenshot or drag file here</div>
+            <div style="font-size:11px;color:var(--tm);margin-top:2px;">PNG, JPG, PDF accepted</div>
+          </div>
+          <input type="file" id="c-attach" accept="image/*,.pdf" style="display:none;" onchange="handleAttach(this)">
+
+          <button class="cf-submit" id="cf-btn" onclick="submitContact()">Send to Support Team →</button>
         </div>
 
         <div class="cf-success" id="cf-success">
@@ -188,10 +204,11 @@ async function submitContact() {
   var phone  = document.getElementById('c-mobile').value.trim();
   var topic  = document.getElementById('c-topic').value;
   var msg    = document.getElementById('c-msg').value.trim();
+  var file   = document.getElementById('c-attach').files[0] || null;
 
   if (!name)  { showFormErr('Please enter your full name.'); return; }
   if (!email || !email.includes('@')) { showFormErr('Please enter a valid email.'); return; }
-  if (!phone) { showFormErr('Please enter your contact number.'); return; }
+  if (!phone) { showFormErr('Please enter your mobile number.'); return; }
   if (!topic) { showFormErr('Please select an issue type.'); return; }
   if (!msg)   { showFormErr('Please describe your issue.'); return; }
 
@@ -210,69 +227,82 @@ async function submitContact() {
 
   var sent = false;
 
-  // ── Method 1: EmailJS — dedicated support template (template_jl3jdbf) ────────
+  // ── Convert attachment to base64 if provided ──────────────────────────────
+  var fileData = '';
+  var fileName = '';
+  if (file) {
+    try {
+      fileData = await new Promise(function(resolve, reject) {
+        var reader = new FileReader();
+        reader.onload  = function(e) { resolve(e.target.result); };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+      fileName = file.name;
+    } catch(e) { console.warn('File read failed:', e); }
+  }
+
+  // ── EmailJS send — template_jl3jdbf → goes to support@pingin.in ──────────
   try {
     await emailjs.send('service_2gph56v', 'template_jl3jdbf', {
-      to_email:      'support@pingin.in',
       user_name:     name,
       user_email:    email,
       user_phone:    phone,
-      plan_name:     '[Support] ' + topicLabel + ' — from ' + name,
+      plan_name:     '[Support] ' + topicLabel + ' — ' + name,
       plan_days:     topicLabel,
       plan_price:    phone,
       expiry_date:   new Date().toLocaleDateString('en-IN'),
-      license_key:   msg,
+      license_key:   msg + (fileName ? '\n\n[Attachment: ' + fileName + ' attached separately]' : ''),
       download_url:  email,
       dashboard_url: phone,
       from_name:     name,
       reply_to:      email,
-      tagline:       'Phone: ' + phone + ' | Email: ' + email,
+      tagline:       'Phone: ' + phone + ' | Issue: ' + topicLabel,
       email_type:    'support',
+      attachment:    fileData,
+      attachment_name: fileName,
     });
     sent = true;
-    console.log('[PingIN] EmailJS support sent ✓');
+    console.log('[PingIN] Support email sent ✓');
   } catch(e) {
-    console.warn('[PingIN] EmailJS failed:', e.text || e.message || e);
+    console.warn('[PingIN] EmailJS error:', JSON.stringify(e));
   }
 
-  // ── Method 2: Web3Forms (if you have a key) ────────────────────────────────
-  var W3F_KEY = 'YOUR_WEB3FORMS_KEY'; // paste key here if you get one
-  if (!sent && W3F_KEY !== 'YOUR_WEB3FORMS_KEY') {
-    try {
-      var r = await fetch('https://api.web3forms.com/submit', {
-        method: 'POST',
-        headers: {'Content-Type':'application/json','Accept':'application/json'},
-        body: JSON.stringify({
-          access_key: W3F_KEY,
-          subject:    '[PingIN Support] ' + topicLabel + ' — ' + name,
-          from_name:  name,
-          email:      email,
-          phone:      phone,
-          issue:      topicLabel,
-          message:    msg,
-        })
-      });
-      var d = await r.json();
-      if (d.success) { sent = true; console.log('[PingIN] Web3Forms sent ✓'); }
-    } catch(e) { console.warn('[PingIN] Web3Forms failed:', e); }
-  }
-
-  // ── Method 3: mailto — always works, opens email client ────────────────────
+  // ── mailto fallback — always opens user's email client if EmailJS fails ────
   if (!sent) {
     var subject = encodeURIComponent('[PingIN Support] ' + topicLabel + ' — ' + name);
     var body    = encodeURIComponent(
-      'Name: ' + name + '\r\nEmail: ' + email + '\r\nPhone: ' + phone +
-      '\r\nIssue: ' + topicLabel + '\r\n\r\nMessage:\r\n' + msg
+      'Name: '    + name    + '\r\n' +
+      'Email: '   + email   + '\r\n' +
+      'Phone: '   + phone   + '\r\n' +
+      'Issue: '   + topicLabel + '\r\n\r\n' +
+      'Message:\r\n' + msg + '\r\n\r\n' +
+      (fileName ? 'Attachment: ' + fileName + ' (please attach manually)\r\n' : '') +
+      '---\r\nSent from pingin.in/contact.html'
     );
     window.location.href = 'mailto:support@pingin.in?subject=' + subject + '&body=' + body;
     sent = true;
   }
 
-  // Show success either way
+  // ── Always show success ───────────────────────────────────────────────────
   document.getElementById('contact-form').style.display = 'none';
   document.getElementById('cf-success').style.display   = 'block';
   btn.disabled = false;
 }
+
+function handleAttach(input) {
+  var file = input.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) {
+    alert('File too large. Maximum size is 5MB.');
+    input.value = '';
+    return;
+  }
+  document.getElementById('attach-label').textContent = '✓ ' + file.name + ' (' + (file.size/1024).toFixed(0) + ' KB)';
+  document.getElementById('attach-area').style.borderColor = 'rgba(0,212,170,.5)';
+  document.getElementById('attach-area').style.background  = 'rgba(0,212,170,.04)';
+}
+
 
 function showFormErr(msg) {
   var el = document.getElementById('cf-err') || document.createElement('div');
@@ -353,6 +383,33 @@ function showFormErr(msg) {
       .catch(function(){});
   } catch(e) {}
 })();
+
+// Drag and drop for attachment
+document.addEventListener('DOMContentLoaded', function() {
+  var area = document.getElementById('attach-area');
+  if (!area) return;
+  area.addEventListener('dragover', function(e) {
+    e.preventDefault();
+    area.classList.add('dragover');
+  });
+  area.addEventListener('dragleave', function() {
+    area.classList.remove('dragover');
+  });
+  area.addEventListener('drop', function(e) {
+    e.preventDefault();
+    area.classList.remove('dragover');
+    var file = e.dataTransfer.files[0];
+    if (file) {
+      var inp = document.getElementById('c-attach');
+      // DataTransfer trick to set files on input
+      var dt = new DataTransfer();
+      dt.items.add(file);
+      inp.files = dt.files;
+      handleAttach(inp);
+    }
+  });
+});
+
 </script>
 </body>
 </html>
