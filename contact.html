@@ -189,16 +189,12 @@ async function submitContact() {
   var topic  = document.getElementById('c-topic').value;
   var msg    = document.getElementById('c-msg').value.trim();
 
-  if (!name)  { alert('Please enter your full name.'); return; }
-  if (!email || !email.includes('@')) { alert('Please enter a valid email address.'); return; }
-  if (!phone) { alert('Please enter your contact number.'); return; }
-  if (!topic) { alert('Please select an issue type.'); return; }
-  if (!msg)   { alert('Please describe your issue.'); return; }
+  if (!name)  { showFormErr('Please enter your full name.'); return; }
+  if (!email || !email.includes('@')) { showFormErr('Please enter a valid email.'); return; }
+  if (!phone) { showFormErr('Please enter your contact number.'); return; }
+  if (!topic) { showFormErr('Please select an issue type.'); return; }
+  if (!msg)   { showFormErr('Please describe your issue.'); return; }
 
-  var btn = document.getElementById('cf-btn');
-  btn.disabled = true; btn.textContent = 'Sending...';
-
-  // Build full support details for the email body
   var topicLabels = {
     'install':'Extension not installing','login':'Login / Password issue',
     'license':'License key not working','search':'Search not finding profiles',
@@ -208,78 +204,84 @@ async function submitContact() {
   };
   var topicLabel = topicLabels[topic] || topic;
 
-  var fullBody =
-    'Name: ' + name + '\n' +
-    'Email: ' + email + '\n' +
-    'Phone: ' + phone + '\n' +
-    'Issue: ' + topicLabel + '\n\n' +
-    'Message:\n' + msg + '\n\n' +
-    '---\nSent from pingin.in/contact.html';
+  var btn = document.getElementById('cf-btn');
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
 
-  var emailSent = false;
+  var sent = false;
 
-  // Strategy 1: Send confirmation to USER's email
-  // (template_ylb2tmp is designed to send to user emails — this always works)
+  // ── Method 1: EmailJS — dedicated support template (template_jl3jdbf) ────────
   try {
-    await emailjs.send('service_2gph56v', 'template_ylb2tmp', {
-      to_email:      email,           // Send to USER — confirms receipt
+    await emailjs.send('service_2gph56v', 'template_jl3jdbf', {
+      to_email:      'support@pingin.in',
       user_name:     name,
       user_email:    email,
       user_phone:    phone,
-      plan_name:     'Support Request Received — PingIN',
-      plan_days:     topicLabel,
-      plan_price:    '',
-      expiry_date:   new Date().toLocaleDateString('en-IN'),
-      license_key:   'Your support request has been received. We will reply to ' + email + ' within 24 hours.\n\nYour issue: ' + topicLabel,
-      download_url:  'https://pingin.in/faq.html',
-      dashboard_url: 'https://pingin.in/dashboard.html',
-      from_name:     'PingIN Support',
-      reply_to:      'support@pingin.in',
-      tagline:       'We respond within 24 hours on working days. You can also reach us at support@pingin.in',
-      email_type:    'support_confirmation',
-    });
-    emailSent = true;
-  } catch(e) {
-    console.warn('Confirmation email failed:', e);
-  }
-
-  // Strategy 2: Also send details to support@pingin.in via second call
-  try {
-    await emailjs.send('service_2gph56v', 'template_ylb2tmp', {
-      to_email:      'support@pingin.in',
-      user_name:     'PingIN Support Team',
-      user_email:    email,
-      user_phone:    phone,
-      plan_name:     '[SUPPORT] ' + topicLabel + ' — from ' + name,
+      plan_name:     '[Support] ' + topicLabel + ' — from ' + name,
       plan_days:     topicLabel,
       plan_price:    phone,
-      expiry_date:   new Date().toLocaleString('en-IN'),
-      license_key:   fullBody,
-      download_url:  'https://pingin.in/faq.html',
-      dashboard_url: 'https://pingin.in/dashboard.html',
-      from_name:     name + ' <' + email + '>',
+      expiry_date:   new Date().toLocaleDateString('en-IN'),
+      license_key:   msg,
+      download_url:  email,
+      dashboard_url: phone,
+      from_name:     name,
       reply_to:      email,
-      tagline:       msg,
-      email_type:    'support_inbound',
+      tagline:       'Phone: ' + phone + ' | Email: ' + email,
+      email_type:    'support',
     });
-    emailSent = true;
+    sent = true;
+    console.log('[PingIN] EmailJS support sent ✓');
   } catch(e) {
-    console.warn('Support notification email failed:', e);
+    console.warn('[PingIN] EmailJS failed:', e.text || e.message || e);
   }
 
-  // Strategy 3: Open mailto as final fallback if both EmailJS calls fail
-  if (!emailSent) {
+  // ── Method 2: Web3Forms (if you have a key) ────────────────────────────────
+  var W3F_KEY = 'YOUR_WEB3FORMS_KEY'; // paste key here if you get one
+  if (!sent && W3F_KEY !== 'YOUR_WEB3FORMS_KEY') {
+    try {
+      var r = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json','Accept':'application/json'},
+        body: JSON.stringify({
+          access_key: W3F_KEY,
+          subject:    '[PingIN Support] ' + topicLabel + ' — ' + name,
+          from_name:  name,
+          email:      email,
+          phone:      phone,
+          issue:      topicLabel,
+          message:    msg,
+        })
+      });
+      var d = await r.json();
+      if (d.success) { sent = true; console.log('[PingIN] Web3Forms sent ✓'); }
+    } catch(e) { console.warn('[PingIN] Web3Forms failed:', e); }
+  }
+
+  // ── Method 3: mailto — always works, opens email client ────────────────────
+  if (!sent) {
     var subject = encodeURIComponent('[PingIN Support] ' + topicLabel + ' — ' + name);
-    var body    = encodeURIComponent(fullBody);
-    window.open('mailto:support@pingin.in?subject=' + subject + '&body=' + body);
+    var body    = encodeURIComponent(
+      'Name: ' + name + '\r\nEmail: ' + email + '\r\nPhone: ' + phone +
+      '\r\nIssue: ' + topicLabel + '\r\n\r\nMessage:\r\n' + msg
+    );
+    window.location.href = 'mailto:support@pingin.in?subject=' + subject + '&body=' + body;
+    sent = true;
   }
 
-  // Always show success — user either got confirmation email OR mailto opened
+  // Show success either way
   document.getElementById('contact-form').style.display = 'none';
   document.getElementById('cf-success').style.display   = 'block';
-  document.getElementById('gst-email-shown') &&
-    (document.getElementById('gst-email-shown').textContent = email);
   btn.disabled = false;
+}
+
+function showFormErr(msg) {
+  var el = document.getElementById('cf-err') || document.createElement('div');
+  el.id = 'cf-err';
+  el.style.cssText = 'color:#F87171;font-size:13px;margin-bottom:10px;padding:8px 12px;background:rgba(248,113,113,.08);border-radius:7px;border:1px solid rgba(248,113,113,.2);';
+  el.textContent = '⚠️ ' + msg;
+  var form = document.getElementById('contact-form');
+  if (form && !document.getElementById('cf-err')) form.prepend(el);
+  else if (el) el.textContent = '⚠️ ' + msg;
 }
 </script>
 
