@@ -30,13 +30,13 @@
 .plan-price sup{font-size:20px;font-weight:700;vertical-align:top;margin-top:9px;display:inline-block;}
 .plan-period{font-size:12px;color:var(--ts);margin-bottom:4px;}
 .plan-perday{font-size:11px;color:var(--accent);font-weight:700;margin-bottom:20px;}
-.plan-btn{width:100%;padding:13px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;border:none;font-family:inherit;transition:all .15s;margin-bottom:22px;}
-.plan-btn.primary{background:var(--blue);color:white;}
-.plan-btn.primary:hover{background:var(--blue-l);}
-.plan-btn.outline{background:transparent;color:var(--blue);border:2px solid var(--blue);}
-.plan-btn.outline:hover{background:rgba(0,119,181,.08);}
-.plan-btn.teal{background:linear-gradient(135deg,#009B7D,#00D4AA);color:white;}
-.plan-btn.teal:hover{opacity:.9;}
+.plan-btn{width:100%;padding:14px 20px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;border:2px solid transparent;font-family:inherit;transition:all .18s;margin-bottom:22px;letter-spacing:.01em;display:flex;align-items:center;justify-content:center;gap:6px;}
+.plan-btn.outline{background:transparent;color:var(--accent);border:2px solid var(--accent);box-shadow:0 0 0 0 rgba(0,212,170,0);}
+.plan-btn.outline:hover{background:rgba(0,212,170,.08);box-shadow:0 0 0 3px rgba(0,212,170,.15);transform:translateY(-1px);}
+.plan-btn.primary{background:linear-gradient(135deg,#0055CC,#0077B5);color:white;border-color:transparent;box-shadow:0 4px 14px rgba(0,85,204,.35);}
+.plan-btn.primary:hover{background:linear-gradient(135deg,#0066DD,#0088C6);box-shadow:0 6px 20px rgba(0,85,204,.45);transform:translateY(-1px);}
+.plan-btn.teal{background:linear-gradient(135deg,#009B7D,#00D4AA);color:white;border-color:transparent;box-shadow:0 4px 14px rgba(0,155,125,.35);}
+.plan-btn.teal:hover{box-shadow:0 6px 20px rgba(0,155,125,.45);transform:translateY(-1px);opacity:.95;}
 .plan-divider{height:1px;background:var(--border);margin-bottom:18px;}
 .plan-feats{display:flex;flex-direction:column;gap:8px;flex:1;}
 .pf{font-size:12.5px;color:var(--ts);padding-left:20px;position:relative;line-height:1.5;}
@@ -98,7 +98,7 @@
       <div class="plan-price"><sup>₹</sup>0</div>
       <div class="plan-period">5 days · no card needed</div>
       <div class="plan-perday">&nbsp;</div>
-      <button class="plan-btn outline" onclick="location.href='login.html'">Start Free Trial →</button>
+      <button class="plan-btn outline" onclick="location.href='login.html'">🚀 Start Free Trial</button>
       <div class="plan-divider"></div>
       <div class="plan-feats">
         <div class="pf"><strong>Smart Search only</strong></div>
@@ -123,7 +123,7 @@
       <div class="plan-price"><sup>₹</sup>650</div>
       <div class="plan-period">15 days</div>
       <div class="plan-perday">~₹43/day</div>
-      <button class="plan-btn outline" onclick="checkAuthThenPay('starter')">Get Starter — ₹650</button>
+      <button class="plan-btn primary" onclick="checkAuthThenPay('starter')">Get Starter — ₹650</button>
       <div class="plan-divider"></div>
       <div class="plan-feats">
         <div class="pf"><strong>Smart + Developer Search</strong></div>
@@ -151,7 +151,7 @@
       <div class="plan-price"><sup>₹</sup>1,200</div>
       <div class="plan-period">per month</div>
       <div class="plan-perday">~₹40/day · all 6 AI modes</div>
-      <button class="plan-btn primary" onclick="checkAuthThenPay('pro')">Start Pro — ₹1,200</button>
+      <button class="plan-btn primary" onclick="checkAuthThenPay('pro')">🔥 Start Pro — ₹1,200</button>
       <div class="plan-divider"></div>
       <div class="plan-feats">
         <div class="pf"><strong>All 6 search modes + AI</strong></div>
@@ -182,7 +182,7 @@
       <div class="plan-price" style="font-size:36px;"><sup>₹</sup>10,000</div>
       <div class="plan-period">1 year (365 days)</div>
       <div class="plan-perday">~₹27/day · Save ₹4,400 vs 12× Pro</div>
-      <button class="plan-btn teal" onclick="checkAuthThenPay('annual')">Get Annual — ₹10,000</button>
+      <button class="plan-btn teal" onclick="checkAuthThenPay('annual')">🏆 Get Annual — ₹10,000</button>
       <div class="plan-divider"></div>
       <div class="plan-feats">
         <div class="pf"><strong>Everything in Pro plan</strong></div>
@@ -294,7 +294,7 @@
       <div class="footer-brand"><a href="index.html" class="logo"><span style="display:inline-flex;width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#0055CC,#00A890);align-items:center;justify-content:center;flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 60 60" fill="none"><circle cx="30" cy="30" r="6" fill="white"/><circle cx="30" cy="30" r="14" fill="none" stroke="white" stroke-width="2.5" opacity=".7"/><circle cx="30" cy="30" r="22" fill="none" stroke="white" stroke-width="2" opacity=".35"/></svg></span><span class="logo-text">Ping<span style="background:linear-gradient(90deg,#1A9ADE,#00D4AA);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IN</span></span></a><p style="margin-top:12px;font-size:13px;color:var(--ts);line-height:1.7;">India's AI Talent Search Engine<br>Built for India 🇮🇳</p></div>
       <div class="footer-col"><div class="fc-title">Product</div><a href="extension.html">Chrome Extension</a><a href="pricing.html">Pricing</a></div>
       <div class="footer-col"><div class="fc-title">Legal</div><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms of Service</a></div>
-      <div class="footer-col"><div class="fc-title">Support</div><a href="contact.html">Contact Us</a><a href="mailto:support@pingin.in">support@pingin.in</a></div>
+      <div class="footer-col"><div class="fc-title">Support</div><a href="faq.html">FAQ</a><a href="contact.html">Contact Us</a><a href="mailto:support@pingin.in">support@pingin.in</a></div>
     </div>
     <div class="footer-bottom"><span>© 2026 PingIN · All rights reserved</span><span>Made with ❤️ in Hyderabad, India 🇮🇳</span></div>
   </div>

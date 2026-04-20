@@ -72,6 +72,13 @@ body{min-height:100vh;display:flex;align-items:stretch;background:#0A0C10;overfl
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 
 .forgot-link{font-size:11px;color:#1A9ADE;cursor:pointer;text-align:right;display:block;margin-top:-10px;margin-bottom:14px;font-weight:600;}
+#form-forgot{display:none;}
+.forgot-back{font-size:12px;color:#8B8FA8;cursor:pointer;margin-top:12px;text-align:center;display:block;}
+.forgot-back:hover{color:#1A9ADE;}
+.otp-row{display:flex;gap:8px;}
+.otp-input{flex:1;text-align:center;font-size:20px;font-weight:700;letter-spacing:4px;padding:12px;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1);border-radius:8px;color:#F0F2F8;font-family:inherit;}
+.otp-input:focus{outline:none;border-color:#0077B5;}
+.new-pass-wrap{position:relative;}
 .terms-note{font-size:11px;color:#4A4E62;text-align:center;margin-top:14px;line-height:1.7;}
 .terms-note a{color:#8B8FA8;}
 
@@ -150,6 +157,47 @@ body{min-height:100vh;display:flex;align-items:stretch;background:#0A0C10;overfl
     <p class="terms-note" style="margin-top:16px;">Don't have an account? <span style="color:#1A9ADE;cursor:pointer;font-weight:600;" onclick="switchTab('signup')">Create one free →</span></p>
   </div>
 
+  <!-- FORGOT PASSWORD -->
+  <div id="form-forgot">
+    <div style="text-align:center;margin-bottom:20px;">
+      <div style="font-size:32px;margin-bottom:8px;">🔐</div>
+      <div style="font-size:16px;font-weight:700;color:#F0F2F8;" id="forgot-title">Reset Your Password</div>
+      <div style="font-size:13px;color:#8B8FA8;margin-top:6px;" id="forgot-sub">We'll send a 6-digit OTP to your email</div>
+    </div>
+
+    <!-- Step 1: Enter email -->
+    <div id="forgot-step1">
+      <div class="f-group">
+        <label class="f-lbl">Email address</label>
+        <input class="f-inp" type="email" id="fp-email" placeholder="you@company.com">
+      </div>
+      <button class="f-btn primary" id="btn-send-otp" onclick="sendOTP()">Send OTP →</button>
+    </div>
+
+    <!-- Step 2: Enter OTP -->
+    <div id="forgot-step2" style="display:none;">
+      <div style="font-size:13px;color:#8B8FA8;margin-bottom:12px;text-align:center;" id="otp-sent-to"></div>
+      <div class="f-group">
+        <label class="f-lbl">Enter 6-digit OTP</label>
+        <input class="f-inp otp-input" type="text" id="fp-otp" placeholder="——————" maxlength="6" autocomplete="one-time-code">
+      </div>
+      <div class="f-group">
+        <label class="f-lbl">New Password</label>
+        <div class="pass-wrap">
+          <input class="f-inp" type="password" id="fp-newpass" placeholder="Min 6 characters">
+          <button class="show-pass" type="button" onclick="togglePass('fp-newpass',this)">Show</button>
+        </div>
+      </div>
+      <button class="f-btn primary" id="btn-reset-pass" onclick="resetPassword()">Reset Password →</button>
+      <div style="text-align:center;margin-top:10px;">
+        <span style="font-size:12px;color:#8B8FA8;">Didn't receive it? </span>
+        <span style="font-size:12px;color:#1A9ADE;cursor:pointer;font-weight:600;" onclick="sendOTP(true)">Resend OTP</span>
+      </div>
+    </div>
+
+    <span class="forgot-back" onclick="showLogin()">← Back to Sign In</span>
+  </div>
+
   <!-- SIGN UP -->
   <div id="form-signup" style="display:none;">
     <div class="f-group">
@@ -203,17 +251,54 @@ function clearMessages(){document.getElementById('err-msg').style.display='none'
 function setLoading(btnId,loading){const btn=document.getElementById(btnId);if(loading){btn._orig=btn.innerHTML;btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Please wait...';}else{btn.innerHTML=btn._orig||btn.innerHTML;btn.disabled=false;}}
 function togglePass(id,btn){const inp=document.getElementById(id);inp.type=inp.type==='password'?'text':'password';btn.textContent=inp.type==='password'?'Show':'Hide';}
 
+// ── Rate limiting: max 5 failed attempts, then 15-min lockout ──────────
+var _loginAttempts = 0;
+var _loginLockedUntil = 0;
+
+function checkLoginRateLimit() {
+  var now = Date.now();
+  // Check localStorage for persisted lockout
+  var stored = JSON.parse(localStorage.getItem('pingin_login_attempts') || '{"count":0,"lockedUntil":0}');
+  _loginAttempts = stored.count;
+  _loginLockedUntil = stored.lockedUntil;
+
+  if (_loginLockedUntil > now) {
+    var mins = Math.ceil((_loginLockedUntil - now) / 60000);
+    showErr('Too many failed attempts. Please wait ' + mins + ' minute' + (mins>1?'s':'') + ' before trying again.');
+    return false;
+  }
+  return true;
+}
+
+function recordFailedAttempt() {
+  _loginAttempts++;
+  var lockedUntil = _loginAttempts >= 5 ? Date.now() + 15 * 60 * 1000 : 0;
+  if (lockedUntil) _loginLockedUntil = lockedUntil;
+  localStorage.setItem('pingin_login_attempts', JSON.stringify({
+    count: _loginAttempts,
+    lockedUntil: lockedUntil
+  }));
+}
+
+function clearLoginAttempts() {
+  _loginAttempts = 0;
+  _loginLockedUntil = 0;
+  localStorage.removeItem('pingin_login_attempts');
+}
+
 async function doSignIn(){
   const email=document.getElementById('si-email').value.trim();
   const pass=document.getElementById('si-pass').value;
   if(!email){showErr('Please enter your email address.');return;}
   if(!pass){showErr('Please enter your password.');return;}
+  if (!checkLoginRateLimit()) return;
   setLoading('btn-signin',true);
   // Use async PingINDB (Firebase + localStorage)
   try {
     const result=await PingINDB.loginUser(email,pass);
-    if(!result.ok){showErr(result.error);setLoading('btn-signin',false);return;}
+    if(!result.ok){recordFailedAttempt();showErr(result.error);setLoading('btn-signin',false);return;}
     PingIN.saveSession({...result.user,loginAt:new Date().toISOString()});
+    clearLoginAttempts();
     showOk('✓ Signed in! Redirecting to dashboard...');
     setTimeout(()=>{
       var _plan=new URLSearchParams(location.search).get('plan');
@@ -274,10 +359,103 @@ async function doSignUp(){
   },1800);
 }
 
-function forgotPassword(){
-  const email=document.getElementById('si-email').value.trim();
-  if(!email){showErr('Enter your email address first.');return;}
-  showOk('Password reset instructions sent to '+email+'. Please check your inbox.');
+function forgotPassword() {
+  // Pre-fill email if already typed in sign-in form
+  var email = document.getElementById('si-email').value.trim();
+  if (email) document.getElementById('fp-email').value = email;
+
+  // Switch to forgot form
+  document.getElementById('form-signin').style.display  = 'none';
+  document.getElementById('form-signup').style.display  = 'none';
+  document.getElementById('form-forgot').style.display  = 'block';
+  document.getElementById('forgot-step1').style.display = 'block';
+  document.getElementById('forgot-step2').style.display = 'none';
+  document.getElementById('tab-signin').classList.remove('active');
+  document.getElementById('tab-signup').classList.remove('active');
+  clearMsgs();
+}
+
+function showLogin() {
+  document.getElementById('form-forgot').style.display = 'none';
+  switchTab('signin');
+}
+
+// Generate random 6-digit OTP
+function generateOTP() {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+}
+
+var _pendingOTP   = '';
+var _pendingEmail = '';
+
+async function sendOTP(isResend) {
+  var email = document.getElementById('fp-email').value.trim();
+  if (!email || !email.includes('@')) { showErr('Please enter a valid email address.'); return; }
+
+  // Check if email exists
+  var user = await PingINDB.findUserByEmail(email);
+  if (!user) { showErr('No account found with this email. Please sign up instead.'); return; }
+
+  setLoading('btn-send-otp', true);
+  _pendingOTP   = generateOTP();
+  _pendingEmail = email;
+
+  // Send OTP via EmailJS
+  try {
+    await emailjs.send('service_2gph56v', 'template_ylb2tmp', {
+      to_email:    email,
+      user_name:   user.name || 'there',
+      user_email:  email,
+      plan_name:   'Password Reset',
+      plan_days:   '',
+      plan_price:  '',
+      expiry_date: '',
+      license_key: 'Your OTP: ' + _pendingOTP + ' (valid for 10 minutes)',
+      download_url:'https://pingin.in/login.html',
+      dashboard_url:'https://pingin.in/login.html',
+      from_name:   'PingIN Team',
+      reply_to:    'support@pingin.in',
+      tagline:     "India's AI Talent Search Engine",
+      email_type:  isResend ? 'otp_resend' : 'otp_reset',
+    });
+
+    document.getElementById('otp-sent-to').textContent =
+      'OTP sent to ' + email + '. Check your inbox (and spam folder).';
+    document.getElementById('forgot-step1').style.display = 'none';
+    document.getElementById('forgot-step2').style.display = 'block';
+    if (isResend) showOk('New OTP sent! Check your inbox.');
+  } catch(e) {
+    showErr('Failed to send OTP. Please try again or contact support@pingin.in');
+  }
+  setLoading('btn-send-otp', false);
+}
+
+async function resetPassword() {
+  var otp     = document.getElementById('fp-otp').value.trim();
+  var newPass = document.getElementById('fp-newpass').value;
+
+  if (!otp)           { showErr('Please enter the OTP from your email.'); return; }
+  if (otp !== _pendingOTP) { showErr('Incorrect OTP. Please check your email and try again.'); return; }
+  if (!newPass || newPass.length < 6) { showErr('New password must be at least 6 characters.'); return; }
+
+  setLoading('btn-reset-pass', true);
+  try {
+    // Hash new password and update
+    var newHash = await PingINDB.sha256(newPass);
+    await PingINDB.updateUser(_pendingEmail, { passwordHash: newHash });
+
+    // Clear OTP so it can't be reused
+    _pendingOTP = '';
+
+    showOk('✅ Password reset successfully! You can now sign in with your new password.');
+    setTimeout(() => {
+      showLogin();
+      document.getElementById('si-email').value = _pendingEmail;
+    }, 2000);
+  } catch(e) {
+    showErr('Reset failed. Please try again or contact support@pingin.in');
+  }
+  setLoading('btn-reset-pass', false);
 }
 
 document.addEventListener('keydown',e=>{

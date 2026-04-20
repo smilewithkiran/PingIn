@@ -75,6 +75,53 @@ code{background:rgba(255,255,255,.06);padding:2px 7px;border-radius:4px;font-siz
 .up-card-btn.current-btn{background:rgba(0,119,181,.1);color:#1A9ADE;border:1px solid rgba(0,119,181,.2);}
 .popular-badge{font-size:9px;font-weight:700;background:rgba(255,153,0,.15);color:#EF9F27;padding:2px 8px;border-radius:100px;margin-bottom:6px;display:inline-block;}
 
+
+/* ── How to Use Guide ─────────────────────────────────────────── */
+.guide-card{background:#111318;border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:24px;margin-bottom:20px;}
+.guide-tabs{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap;}
+.guide-tab{padding:7px 16px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;border:1.5px solid rgba(255,255,255,.1);background:transparent;color:#8B8FA8;font-family:inherit;transition:all .15s;white-space:nowrap;}
+.guide-tab.active{background:#0077B5;border-color:#0077B5;color:#fff;}
+.guide-tab:hover:not(.active){border-color:rgba(0,119,181,.4);color:#1A9ADE;}
+.guide-panel{display:none;}
+.guide-panel.active{display:block;}
+
+/* Steps */
+.guide-steps{display:flex;flex-direction:column;gap:0;}
+.guide-step{display:flex;gap:16px;padding:16px 0;border-bottom:1px solid rgba(255,255,255,.05);position:relative;}
+.guide-step:last-child{border-bottom:none;padding-bottom:0;}
+.guide-step-num{
+  width:34px;height:34px;border-radius:50%;
+  background:linear-gradient(135deg,#0055CC,#00A090);
+  color:#fff;font-size:14px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;margin-top:2px;
+}
+.guide-step-body{flex:1;}
+.guide-step-title{font-size:14px;font-weight:700;color:#F0F2F8;margin-bottom:4px;display:flex;align-items:center;gap:8px;}
+.guide-step-title .step-tag{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:rgba(0,212,170,.1);color:#00D4AA;border:1px solid rgba(0,212,170,.2);}
+.guide-step-desc{font-size:13px;color:#8B8FA8;line-height:1.6;}
+.guide-step-tip{margin-top:8px;padding:9px 12px;background:rgba(0,119,181,.07);border:1px solid rgba(0,119,181,.15);border-radius:8px;font-size:12px;color:#1A9ADE;line-height:1.5;}
+
+/* Feature callout box */
+.guide-feature-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;}
+@media(max-width:500px){.guide-feature-grid{grid-template-columns:1fr;}}
+.guide-feat{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:12px 14px;}
+.guide-feat-icon{font-size:22px;margin-bottom:6px;}
+.guide-feat-name{font-size:13px;font-weight:700;color:#F0F2F8;}
+.guide-feat-desc{font-size:11px;color:#8B8FA8;margin-top:3px;line-height:1.5;}
+.guide-feat.locked{opacity:.45;position:relative;}
+.guide-feat.locked::after{content:'🔒 Upgrade to unlock';position:absolute;bottom:8px;right:10px;font-size:9px;color:#BA7517;font-weight:700;}
+
+/* Locked plan notice */
+.guide-locked-notice{
+  padding:14px 18px;background:rgba(186,117,23,.07);
+  border:1px solid rgba(186,117,23,.2);border-radius:10px;
+  font-size:13px;color:#BA7517;margin-top:12px;
+  display:flex;align-items:center;gap:10px;
+}
+.guide-unlock-btn{padding:6px 14px;background:#BA7517;color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0;}
+.guide-unlock-btn:hover{opacity:.85;}
+
 /* Account section */
 .acct-card{background:#111318;border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:24px;margin-bottom:20px;}
 .acct-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:13px;flex-wrap:wrap;gap:4px;}
@@ -101,6 +148,7 @@ code{background:rgba(255,255,255,.06);padding:2px 7px;border-radius:4px;font-siz
       <a href="index.html#features">Features</a>
       <a href="pricing.html">Pricing</a>
       <a href="extension.html">Chrome Extension</a>
+          <a href="faq.html">FAQ</a>
     </div>
     <div class="nav-cta">
       <button onclick="PingIN.signOut()" class="btn-ghost-sm">Sign out</button>
@@ -240,6 +288,244 @@ code{background:rgba(255,255,255,.06);padding:2px 7px;border-radius:4px;font-siz
     </div>
   </div>
 
+
+  <!-- ── HOW TO USE GUIDE ── -->
+  <div class="guide-card" id="how-to-use-guide">
+    <div class="dl-card-title" style="margin-bottom:4px;">📖 How to Use PingIN</div>
+    <div style="font-size:13px;color:#8B8FA8;margin-bottom:18px;">Step-by-step guide based on your plan — follow in order for best results.</div>
+
+    <!-- Tab navigation — shown/hidden based on plan -->
+    <div class="guide-tabs" id="guide-tabs">
+      <button class="guide-tab active" onclick="showGuideTab('tab-start')" data-tab="tab-start">🚀 Getting Started</button>
+      <button class="guide-tab" onclick="showGuideTab('tab-smart')" data-tab="tab-smart">🔍 Smart Search</button>
+      <button class="guide-tab" onclick="showGuideTab('tab-outreach')" data-tab="tab-outreach">📤 Smart Outreach</button>
+      <button class="guide-tab" onclick="showGuideTab('tab-pro')" data-tab="tab-pro" id="tab-btn-pro">🧬 Pro Features</button>
+      <button class="guide-tab" onclick="showGuideTab('tab-dev')" data-tab="tab-dev" id="tab-btn-dev">🐙 Developer Search</button>
+    </div>
+
+    <!-- ── TAB: Getting Started ── -->
+    <div class="guide-panel active" id="tab-start">
+      <div class="guide-steps">
+        <div class="guide-step">
+          <div class="guide-step-num">1</div>
+          <div class="guide-step-body">
+            <div class="guide-step-title">Download & Install the Extension <span class="step-tag">2 mins</span></div>
+            <div class="guide-step-desc">Click the Download button above to get your plan's extension ZIP file. Then go to <strong style="color:#F0F2F8;">chrome://extensions</strong> in Chrome, enable <strong style="color:#F0F2F8;">Developer mode</strong> (top-right toggle), click <strong style="color:#F0F2F8;">Load unpacked</strong>, and select the extracted folder.</div>
+            <div class="guide-step-tip">💡 Tip: Unzip the downloaded file first before loading it in Chrome. The folder should contain manifest.json inside.</div>
+          </div>
+        </div>
+        <div class="guide-step">
+          <div class="guide-step-num">2</div>
+          <div class="guide-step-body">
+            <div class="guide-step-title">Pin PingIN to Chrome Toolbar <span class="step-tag">30 secs</span></div>
+            <div class="guide-step-desc">After installing, click the puzzle piece 🧩 icon in Chrome's top-right corner. Find PingIN in the list and click the <strong style="color:#F0F2F8;">pin icon 📌</strong> next to it. This keeps PingIN always visible in your toolbar for one-click access.</div>
+          </div>
+        </div>
+        <div class="guide-step">
+          <div class="guide-step-num">3</div>
+          <div class="guide-step-body">
+            <div class="guide-step-title">Enter Your License Key <span class="step-tag">1 min</span></div>
+            <div class="guide-step-desc">Open PingIN by clicking its icon. On first launch, enter the license key shown above in your dashboard. For Free Trial — just click the extension and your 5-day trial starts automatically, no key needed.</div>
+            <div class="guide-step-tip">💡 Tip: Your license key was also emailed to you when you paid. Check your inbox if you can't find it here.</div>
+          </div>
+        </div>
+        <div class="guide-step">
+          <div class="guide-step-num">4</div>
+          <div class="guide-step-body">
+            <div class="guide-step-title">Open LinkedIn in the Same Chrome Window</div>
+            <div class="guide-step-desc">Go to <strong style="color:#F0F2F8;">linkedin.com</strong> and make sure you're logged in to your LinkedIn account. PingIN works by reading LinkedIn pages — it needs LinkedIn open to collect profiles and run outreach.</div>
+            <div class="guide-step-tip">💡 Tip: Use your regular LinkedIn account — PingIN sends connection requests as you, so make sure your profile is complete and professional.</div>
+          </div>
+        </div>
+        <div class="guide-step">
+          <div class="guide-step-num">5</div>
+          <div class="guide-step-body">
+            <div class="guide-step-title">You're Ready! Start with Smart Search ✅</div>
+            <div class="guide-step-desc">Click the 🔍 Smart Search card in PingIN. Enter a job title (e.g. "Software Engineer"), select a company or college, pick a city, and click <strong style="color:#F0F2F8;">Search & Collect Profiles</strong>. LinkedIn will open and PingIN will automatically collect matching profiles.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB: Smart Search ── -->
+    <div class="guide-panel" id="tab-smart">
+      <div class="guide-steps">
+        <div class="guide-step">
+          <div class="guide-step-num">1</div>
+          <div class="guide-step-body">
+            <div class="guide-step-title">Enter the Job Title / Keywords</div>
+            <div class="guide-step-desc">Type what you're looking for — e.g. <em style="color:#1A9ADE;">"Data Scientist"</em>, <em style="color:#1A9ADE;">"React Developer"</em>, <em style="color:#1A9ADE;">"Talent Acquisition Lead"</em>. Be specific for better results. Use quotes for exact matches.</div>
+            <div class="guide-step-tip">💡 Tip: Use the ⚡ Boolean Builder button to build complex queries like <strong>"Data Scientist" AND (Python OR SQL)</strong> without typing manually.</div>
+          </div>
+        </div>
+        <div class="guide-step">
+          <div class="guide-step-num">2</div>
+          <div class="guide-step-body">
+            <div class="guide-step-title">Add Companies (Multi-chip input)</div>
+            <div class="guide-step-desc">Type a company name and press <strong style="color:#F0F2F8;">Enter</strong> or <strong style="color:#F0F2F8;">comma</strong> to add it as a chip. Add multiple companies to search across all of them at once. Example: add Google, Amazon, Microsoft — PingIN searches all three.</div>
+          </div>
+        </div>
+        <div class="guide-step">
+          <div class="guide-step-num">3</div>
+          <div class="guide-step-body">
+            <div class="guide-step-title">Set Location & Experience Filters</div>
+            <div class="guide-step-desc">Select a city (Bengaluru, Hyderabad, Mumbai, etc.) and experience level (0-1 yr, 1-3 yr, 3-5 yr, 5-10 yr, 10+ yr). Optionally add a college filter for IIT/NIT/IIM candidates.</div>
+            <div class="guide-step-tip">💡 Tip: Leave company blank and search by college + role to find IIT/NIT alumni working anywhere in India — great for niche tech roles.</div>
+          </div>
+        </div>
+        <div class="guide-step">
+          <div class="guide-step-num">4</div>
+          <div class="guide-step-body">
+            <div class="guide-step-title">Click "Search & Collect Profiles"</div>
+            <div class="guide-step-desc">LinkedIn opens with your search. PingIN automatically scrolls through results and collects profiles. When done, click <strong style="color:#F0F2F8;">View Collected Profiles →</strong> (the green button that appears) to see everyone found.</div>
+          </div>
+        </div>
+        <div class="guide-step">
+          <div class="guide-step-num">5</div>
+          <div class="guide-step-body">
+            <div class="guide-step-title">Save Searches with Search History 🕐</div>
+            <div class="guide-step-desc">Click the 🕐 Search History button to save your current search. PingIN saves your last 15 searches — one click to re-run any previous search without re-entering all filters.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB: Smart Outreach ── -->
+    <div class="guide-panel" id="tab-outreach">
+      <div class="guide-steps">
+        <div class="guide-step">
+          <div class="guide-step-num">1</div>
+          <div class="guide-step-body">
+            <div class="guide-step-title">Collect Profiles First</div>
+            <div class="guide-step-desc">Run a Smart Search and collect at least 10-20 profiles. All collected profiles appear in the Profiles tab. These are the people PingIN will reach out to on your behalf.</div>
+            <div class="guide-step-tip">💡 Tip: Quality over quantity — 20 targeted profiles convert better than 50 random ones. Filter by experience and location before collecting.</div>
+          </div>
+        </div>
+        <div class="guide-step">
+          <div class="guide-step-num">2</div>
+          <div class="guide-step-body">
+            <div class="guide-step-title">Go to Outreach → Choose Campaign Type</div>
+            <div class="guide-step-desc">From the Profiles screen, click <strong style="color:#F0F2F8;">Start Outreach</strong>. Choose your campaign type:<br>• <strong style="color:#F0F2F8;">Connect</strong> — sends connection requests only (safest, highest acceptance)<br>• <strong style="color:#F0F2F8;">Message</strong> — sends a message to existing 1st connections<br>• <strong style="color:#F0F2F8;">Visit</strong> — visits profiles to signal interest before connecting</div>
+          </div>
+        </div>
+        <div class="guide-step">
+          <div class="guide-step-num">3</div>
+          <div class="guide-step-body">
+            <div class="guide-step-title">Write Your Connection Note (Optional but Recommended)</div>
+            <div class="guide-step-desc">Write a short personalised note (up to 300 chars). Keep it human, specific, not salesy. Example: <em style="color:#1A9ADE;">"Hi [Name], saw your work at [Company] — we're hiring [Role] at [Your Company] and think your background is a great fit. Would love to connect!"</em></div>
+            <div class="guide-step-tip">💡 Tip: Personalised notes get 3× more acceptance than blank requests. Mention something specific about their role or company.</div>
+          </div>
+        </div>
+        <div class="guide-step">
+          <div class="guide-step-num">4</div>
+          <div class="guide-step-body">
+            <div class="guide-step-title">Set Daily Limit — Keep it Safe <span class="step-tag">Important</span></div>
+            <div class="guide-step-desc">Set your daily limit to <strong style="color:#F0F2F8;">20-50 requests</strong>. LinkedIn allows ~100/day but PingIN caps at 50 to keep your account safe. Don't send 50 every single day — vary between 20-40 to appear natural.</div>
+            <div class="guide-step-tip">⚠️ Warning: Sending too many requests too fast can trigger LinkedIn restrictions. Start with 20/day for your first week, then increase gradually.</div>
+          </div>
+        </div>
+        <div class="guide-step">
+          <div class="guide-step-num">5</div>
+          <div class="guide-step-body">
+            <div class="guide-step-title">Monitor with Pause / Resume / Stop</div>
+            <div class="guide-step-desc">During outreach, PingIN shows live progress. Use <strong style="color:#F0F2F8;">Pause</strong> if you need to stop temporarily (LinkedIn page loads slowly etc.), <strong style="color:#F0F2F8;">Resume</strong> to continue, or <strong style="color:#F0F2F8;">Stop</strong> to end the campaign. All sent profiles are tracked — PingIN never sends to the same profile twice.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB: Pro Features ── -->
+    <div class="guide-panel" id="tab-pro">
+      <div id="guide-pro-locked" style="display:none;">
+        <div class="guide-locked-notice">
+          🔒 These features require Pro or Annual plan.
+          <button class="guide-unlock-btn" onclick="location.href='payment.html?plan=pro'">Upgrade to Pro →</button>
+        </div>
+      </div>
+      <div id="guide-pro-content">
+        <div class="guide-steps">
+          <div class="guide-step">
+            <div class="guide-step-num">1</div>
+            <div class="guide-step-body">
+              <div class="guide-step-title">🧬 AI Clone Search — Find 100 Similar Profiles</div>
+              <div class="guide-step-desc">Go to Clone Search. Paste any LinkedIn profile URL of someone whose background you want to replicate. PingIN reads their headline, role, and education, then uses AI to find 100 similar professionals on LinkedIn.</div>
+              <div class="guide-step-tip">💡 Best use case: You just made a great hire. Paste their LinkedIn URL — find 20 more exactly like them.</div>
+            </div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-step-num">2</div>
+            <div class="guide-step-body">
+              <div class="guide-step-title">📄 JD Search — Paste Any Job Description</div>
+              <div class="guide-step-desc">Click JD Search. Paste or upload any job description. PingIN's AI extracts the role, required skills, experience, and location — then builds the perfect LinkedIn search automatically. No need to manually translate JDs into search queries.</div>
+              <div class="guide-step-tip">💡 Tip: Save frequently used JDs in the 📁 JD Library (save up to 10). One click to reuse any saved JD without repasting.</div>
+            </div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-step-num">3</div>
+            <div class="guide-step-body">
+              <div class="guide-step-title">🎯 Predictive Sourcing — Find Passive Candidates</div>
+              <div class="guide-step-desc">Click Predictive Sourcing. PingIN looks for candidates who show signals of being open to switching — recent activity patterns, profile views spike, recent company changes. These passive candidates are often the best hires because they're not being bombarded with offers.</div>
+            </div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-step-num">4</div>
+            <div class="guide-step-body">
+              <div class="guide-step-title">📝 Candidate Notes — Never Forget Anyone</div>
+              <div class="guide-step-desc">On any collected profile, click the 📝 note icon. Write private notes about the candidate — interview status, salary expectations, feedback. Notes are saved permanently and visible whenever you see that profile again.</div>
+              <div class="guide-step-tip">💡 Pro tip: Use notes to track pipeline stages: "Messaged 15 Apr → Replied 16 Apr → Interview scheduled"</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB: Developer Search ── -->
+    <div class="guide-panel" id="tab-dev">
+      <div id="guide-dev-locked" style="display:none;">
+        <div class="guide-locked-notice">
+          🔒 Developer Search requires Starter, Pro or Annual plan.
+          <button class="guide-unlock-btn" onclick="location.href='payment.html?plan=starter'">Upgrade to Starter →</button>
+        </div>
+      </div>
+      <div id="guide-dev-content">
+        <div class="guide-steps">
+          <div class="guide-step">
+            <div class="guide-step-num">1</div>
+            <div class="guide-step-body">
+              <div class="guide-step-title">🐙 GitHub Multi-Skill Search — Find Real Developers</div>
+              <div class="guide-step-desc">Go to Developer Search → GitHub tab. Enter 1 to 3 technical skills (e.g. React, Node.js, Python). PingIN searches GitHub for developers who actually use those skills in their real code — not just what they write on their CV.</div>
+              <div class="guide-step-tip">💡 Why GitHub? A developer who commits React code every day is better evidence than "React" listed on LinkedIn. GitHub doesn't lie.</div>
+            </div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-step-num">2</div>
+            <div class="guide-step-body">
+              <div class="guide-step-title">Use the PingIN GitHub Panel</div>
+              <div class="guide-step-desc">When you open any GitHub profile, a PingIN panel slides in from the right. It shows the developer's bio, skills, and top languages. Click <strong style="color:#F0F2F8;">Find LinkedIn</strong> — PingIN scans their GitHub page for a LinkedIn link and opens their exact LinkedIn profile.</div>
+              <div class="guide-step-tip">💡 Many developers put their LinkedIn link in their GitHub README or bio. PingIN finds it automatically — no manual searching.</div>
+            </div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-step-num">3</div>
+            <div class="guide-step-body">
+              <div class="guide-step-title">Stack Overflow Top Experts</div>
+              <div class="guide-step-desc">From Developer Search, switch to the Stack Overflow tab. Search for top contributors in a specific technology tag (e.g. "react", "python", "kubernetes"). These are your highest-quality leads — people who answer questions publicly are experts who keep learning.</div>
+            </div>
+          </div>
+          <div class="guide-step">
+            <div class="guide-step-num">4</div>
+            <div class="guide-step-body">
+              <div class="guide-step-title">Add to List → Connect via Smart Outreach</div>
+              <div class="guide-step-desc">In the GitHub panel, click <strong style="color:#F0F2F8;">+ Add to List</strong> for each developer you want to reach. Once you've added several, click <strong style="color:#F0F2F8;">Smart Outreach</strong> to run a campaign to connect with all of them on LinkedIn at once.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <!-- ── END HOW TO USE GUIDE ── -->
+
   <!-- ── UPGRADE PLANS ── -->
   <div class="dl-card">
     <div class="dl-card-title">💳 Plans & Pricing</div>
@@ -257,6 +543,27 @@ code{background:rgba(255,255,255,.06);padding:2px 7px;border-radius:4px;font-siz
     <div class="acct-row"><span class="acct-label">Email</span><span class="acct-value" id="acct-email">—</span></div>
     <div class="acct-row"><span class="acct-label">Phone</span><span class="acct-value" id="acct-phone">—</span></div>
     <div class="acct-row"><span class="acct-label">Member since</span><span class="acct-value" id="acct-since">—</span></div>
+    <div style="height:1px;background:var(--border);margin:16px 0;"></div>
+    <div style="font-size:13px;font-weight:700;color:var(--tp);margin-bottom:10px;">🧾 GST Invoice</div>
+    <div style="font-size:12px;color:var(--ts);margin-bottom:12px;line-height:1.6;">Need a GST invoice for your company? Fill in your details below and we'll email the invoice to you within 2 business days.</div>
+    <div id="gst-form">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+        <div>
+          <label style="font-size:10px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:4px;">Company Name *</label>
+          <input type="text" id="gst-company" placeholder="Acme Pvt Ltd" style="width:100%;padding:8px 10px;background:var(--surf2);border:1px solid var(--border2);border-radius:7px;color:var(--tp);font-size:12px;font-family:inherit;outline:none;">
+        </div>
+        <div>
+          <label style="font-size:10px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:4px;">GSTIN *</label>
+          <input type="text" id="gst-gstin" placeholder="22AAAAA0000A1Z5" maxlength="15" style="width:100%;padding:8px 10px;background:var(--surf2);border:1px solid var(--border2);border-radius:7px;color:var(--tp);font-size:12px;font-family:inherit;outline:none;text-transform:uppercase;">
+        </div>
+      </div>
+      <div style="margin-bottom:10px;">
+        <label style="font-size:10px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:4px;">Billing Address *</label>
+        <textarea id="gst-address" rows="2" placeholder="Full billing address with city, state and PIN code" style="width:100%;padding:8px 10px;background:var(--surf2);border:1px solid var(--border2);border-radius:7px;color:var(--tp);font-size:12px;font-family:inherit;outline:none;resize:none;"></textarea>
+      </div>
+      <button onclick="requestGSTInvoice()" id="gst-btn" style="padding:9px 20px;background:var(--blue);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;">Request GST Invoice →</button>
+      <div id="gst-ok" style="display:none;margin-top:10px;padding:10px 12px;background:rgba(0,212,170,.08);border:1px solid rgba(0,212,170,.2);border-radius:8px;font-size:12px;color:#00D4AA;">✅ Invoice request sent! We'll email it to <strong id="gst-email-shown"></strong> within 2 business days.</div>
+    </div>
     <div class="acct-row"><span class="acct-label">License Key</span><span class="acct-value" id="acct-key" style="font-family:monospace;color:#00D4AA;font-size:13px;">—</span></div>
   </div>
 
@@ -484,7 +791,86 @@ function renewNow() {
   window.location.href = 'pricing.html';
 }
 
+
+
+// ── Expiry Reminder Emails ────────────────────────────────────────────────────
+// Checks plan expiry and sends reminder emails at 7 days, 3 days, and 0 days
+// Each reminder is sent only ONCE — tracked in localStorage
+async function checkAndSendExpiryReminders() {
+  if (!user || !user.planExpiry || !user.email) return;
+  if (user.plan === 'none' || !user.plan) return;
+
+  const now       = Date.now();
+  const expiry    = new Date(user.planExpiry).getTime();
+  const daysLeft  = Math.ceil((expiry - now) / 86400000);
+  const planName  = user.plan === 'free' ? 'Free Trial'
+                  : user.plan === 'starter' ? 'Starter Plan'
+                  : user.plan === 'pro'     ? 'Pro Plan'
+                  : user.plan === 'annual'  ? 'Annual Plan' : 'Plan';
+
+  // Reminder keys — each reminder sent only once per expiry date
+  const keyBase = 'pingin_reminder_' + (user.planExpiry || '').slice(0,10);
+  const sent7   = localStorage.getItem(keyBase + '_7d');
+  const sent3   = localStorage.getItem(keyBase + '_3d');
+  const sent0   = localStorage.getItem(keyBase + '_0d');
+
+  let reminderType = null;
+  let reminderKey  = null;
+  let subject      = '';
+  let bodyNote     = '';
+
+  if (daysLeft <= 7 && daysLeft > 3 && !sent7) {
+    reminderType = '7d';
+    reminderKey  = keyBase + '_7d';
+    subject      = '⏰ 7 days left on your PingIN ' + planName;
+    bodyNote     = 'Your PingIN ' + planName + ' expires in 7 days. Renew now to keep sourcing without interruption.';
+  } else if (daysLeft <= 3 && daysLeft > 0 && !sent3) {
+    reminderType = '3d';
+    reminderKey  = keyBase + '_3d';
+    subject      = '⚠️ Only ' + daysLeft + ' day' + (daysLeft>1?'s':'') + ' left on your PingIN ' + planName;
+    bodyNote     = 'URGENT: Your PingIN ' + planName + ' expires in just ' + daysLeft + ' day' + (daysLeft>1?'s':'')+'. Renew immediately to avoid losing access.';
+  } else if (daysLeft <= 0 && !sent0) {
+    reminderType = '0d';
+    reminderKey  = keyBase + '_0d';
+    subject      = '❌ Your PingIN ' + planName + ' has expired';
+    bodyNote     = 'Your PingIN ' + planName + ' has expired today. Renew now to continue using all AI search features.';
+  }
+
+  if (!reminderType) return; // No reminder needed
+
+  try {
+    await emailjs.send('service_2gph56v', 'template_ylb2tmp', {
+      to_email:      user.email,
+      user_name:     (user.name || 'there').split(' ')[0],
+      user_email:    user.email,
+      plan_name:     planName + ' — Renewal Reminder',
+      plan_days:     daysLeft > 0 ? daysLeft + ' days remaining' : 'EXPIRED',
+      plan_price:    '',
+      expiry_date:   new Date(user.planExpiry).toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'}),
+      license_key:   bodyNote,
+      download_url:  'https://pingin.in/pricing.html',
+      dashboard_url: 'https://pingin.in/dashboard.html',
+      from_name:     'PingIN Team',
+      reply_to:      'support@pingin.in',
+      tagline:       'Renew at pingin.in/pricing.html — Pay via GPay / PhonePe / Paytm',
+      email_type:    'renewal_reminder_' + reminderType,
+    });
+    // Mark as sent so we don't spam
+    localStorage.setItem(reminderKey, '1');
+    console.log('[PingIN] Renewal reminder sent:', reminderType);
+  } catch(e) {
+    console.warn('[PingIN] Reminder email failed:', e);
+  }
+}
+
+function renewNow() {
+  var plan = user?.plan || 'pro';
+  window.location.href = 'payment.html?plan=' + plan;
+}
+
 initDash();
+// Run expiry reminders in background (non-blocking)
+setTimeout(checkAndSendExpiryReminders, 2000);
 </script>
 
 <!-- PingIN Visitor Tracking -->
@@ -516,6 +902,112 @@ initDash();
       .catch(function(){});
   } catch(e) {}
 })();
+
+// ── How to Use Guide ─────────────────────────────────────────────
+function showGuideTab(tabId) {
+  // Switch panels
+  document.querySelectorAll('.guide-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.guide-tab').forEach(t => t.classList.remove('active'));
+  var panel = document.getElementById(tabId);
+  if (panel) panel.classList.add('active');
+  var btn = document.querySelector('[data-tab="'+tabId+'"]');
+  if (btn) btn.classList.add('active');
+}
+
+function initGuide() {
+  var plan = (PingIN.getSession()?.plan || 'none').toLowerCase();
+  var isPro     = ['pro','annual'].includes(plan);
+  var isStarter = ['starter','pro','annual'].includes(plan);
+  var isFree    = plan === 'free' || plan === 'none' || plan === 'trial';
+
+  // Pro tab — lock for free/starter
+  var proLocked  = document.getElementById('guide-pro-locked');
+  var proContent = document.getElementById('guide-pro-content');
+  var proTabBtn  = document.getElementById('tab-btn-pro');
+  if (proLocked && proContent) {
+    if (!isPro) {
+      proLocked.style.display  = 'block';
+      proContent.style.display = 'none';
+      if (proTabBtn) proTabBtn.textContent = '🔒 Pro Features';
+    } else {
+      proLocked.style.display  = 'none';
+      proContent.style.display = 'block';
+    }
+  }
+
+  // Dev tab — lock for free only
+  var devLocked  = document.getElementById('guide-dev-locked');
+  var devContent = document.getElementById('guide-dev-content');
+  var devTabBtn  = document.getElementById('tab-btn-dev');
+  if (devLocked && devContent) {
+    if (!isStarter) {
+      devLocked.style.display  = 'block';
+      devContent.style.display = 'none';
+      if (devTabBtn) devTabBtn.textContent = '🔒 Developer Search';
+    } else {
+      devLocked.style.display  = 'none';
+      devContent.style.display = 'block';
+    }
+  }
+
+  // Scroll guide into view on first visit
+  var shown = sessionStorage.getItem('guide_seen');
+  if (!shown) {
+    sessionStorage.setItem('guide_seen', '1');
+  }
+}
+
+// Call after dashboard loads
+document.addEventListener('DOMContentLoaded', function() {
+  // Small delay to let session load first
+  setTimeout(initGuide, 600);
+});
+
+
+// ── GST Invoice Request ───────────────────────────────────────────────────────
+async function requestGSTInvoice() {
+  var company = (document.getElementById('gst-company')?.value || '').trim();
+  var gstin   = (document.getElementById('gst-gstin')?.value   || '').trim().toUpperCase();
+  var address = (document.getElementById('gst-address')?.value || '').trim();
+
+  if (!company) { alert('Please enter your company name.'); return; }
+  if (!gstin || gstin.length !== 15) { alert('Please enter a valid 15-character GSTIN.'); return; }
+  if (!address) { alert('Please enter your billing address.'); return; }
+
+  var btn = document.getElementById('gst-btn');
+  btn.disabled = true; btn.textContent = 'Sending...';
+
+  var planName = user?.plan === 'free' ? 'Free Trial'
+               : user?.plan === 'starter' ? 'Starter Plan (₹650)'
+               : user?.plan === 'pro'     ? 'Pro Plan (₹1,200)'
+               : user?.plan === 'annual'  ? 'Annual Plan (₹10,000)' : 'Plan';
+
+  try {
+    await emailjs.send('service_2gph56v', 'template_ylb2tmp', {
+      to_email:      'support@pingin.in',
+      user_name:     user?.name || '',
+      user_email:    user?.email || '',
+      plan_name:     'GST Invoice Request — ' + planName,
+      plan_days:     '',
+      plan_price:    '',
+      expiry_date:   '',
+      license_key:   'GSTIN: ' + gstin + ' | Company: ' + company + ' | Address: ' + address,
+      download_url:  '',
+      dashboard_url: '',
+      from_name:     company + ' via PingIN Dashboard',
+      reply_to:      user?.email || 'support@pingin.in',
+      tagline:       'Billing Address: ' + address,
+      email_type:    'gst_invoice_request',
+    });
+    document.getElementById('gst-ok').style.display = 'block';
+    document.getElementById('gst-email-shown').textContent = user?.email || '';
+    btn.style.display = 'none';
+  } catch(e) {
+    btn.disabled = false; btn.textContent = 'Request GST Invoice →';
+    alert('Failed to send. Please email support@pingin.in directly with your GSTIN and company details.');
+  }
+}
+
 </script>
 </body>
 </html>

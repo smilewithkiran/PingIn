@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FAQ — PingIN</title>
+<meta name="description" content="Frequently asked questions about PingIN — India's AI Talent Search Engine.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/main.css">
+<style>
+.faq-hero{padding:80px 0 40px;text-align:center;}
+.faq-hero h1{font-family:'Syne',sans-serif;font-size:clamp(36px,5vw,58px);font-weight:900;color:var(--tp);margin-bottom:12px;}
+.faq-hero h1 span{background:linear-gradient(90deg,#1A9ADE,#00D4AA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.faq-hero p{font-size:17px;color:var(--ts);max-width:540px;margin:0 auto;}
+
+.faq-search{max-width:480px;margin:24px auto 0;position:relative;}
+.faq-search input{width:100%;padding:13px 48px 13px 18px;background:var(--surf);border:1.5px solid var(--border2);border-radius:12px;font-size:14px;color:var(--tp);font-family:inherit;outline:none;}
+.faq-search input:focus{border-color:#0077B5;}
+.faq-search-icon{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--tm);font-size:16px;}
+
+.faq-body{max-width:780px;margin:0 auto;padding:0 20px 80px;}
+
+.faq-cat{margin-bottom:40px;}
+.faq-cat-title{font-size:12px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.faq-cat-title::after{content:'';flex:1;height:1px;background:var(--border);}
+
+.faq-item{border:1px solid var(--border);border-radius:12px;margin-bottom:8px;overflow:hidden;transition:border-color .2s;}
+.faq-item:hover{border-color:rgba(0,119,181,.3);}
+.faq-item.open{border-color:rgba(0,119,181,.4);}
+.faq-q{padding:16px 20px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;gap:12px;}
+.faq-q-text{font-size:15px;font-weight:600;color:var(--tp);line-height:1.4;}
+.faq-icon{font-size:18px;color:var(--tm);flex-shrink:0;transition:transform .25s;}
+.faq-item.open .faq-icon{transform:rotate(45deg);color:#1A9ADE;}
+.faq-a{display:none;padding:0 20px 18px;font-size:14px;color:var(--ts);line-height:1.7;}
+.faq-item.open .faq-a{display:block;}
+.faq-a a{color:#1A9ADE;text-decoration:none;}
+.faq-a a:hover{text-decoration:underline;}
+.faq-a strong{color:var(--tp);}
+.faq-a ul{margin:10px 0 0 18px;display:flex;flex-direction:column;gap:4px;}
+.faq-a .tag{display:inline-block;padding:2px 9px;background:rgba(0,212,170,.1);color:#00D4AA;border:1px solid rgba(0,212,170,.2);border-radius:10px;font-size:11px;font-weight:700;margin-left:6px;vertical-align:middle;}
+.faq-a .warn-tag{background:rgba(186,117,23,.1);color:#BA7517;border-color:rgba(186,117,23,.2);}
+
+.faq-cta{text-align:center;padding:40px 20px;background:var(--surf);border-radius:16px;border:1px solid var(--border);margin-top:40px;}
+.faq-cta p{font-size:15px;color:var(--ts);margin-bottom:16px;}
+.faq-cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+</style>
+</head>
+<body>
+<nav class="nav" id="nav" style="position:relative;"></nav>
+<script src="js/nav.js"></script>
+
+<div class="faq-hero">
+  <h1>Frequently Asked <span>Questions</span></h1>
+  <p>Everything you need to know about PingIN. Can't find your answer? <a href="contact.html" style="color:#1A9ADE;">Contact support →</a></p>
+  <div class="faq-search">
+    <input type="text" id="faq-search-input" placeholder="Search questions..." oninput="filterFAQ(this.value)">
+    <div class="faq-search-icon">🔍</div>
+  </div>
+</div>
+
+<div class="faq-body">
+
+  <!-- Getting Started -->
+  <div class="faq-cat" data-cat>
+    <div class="faq-cat-title">🚀 Getting Started</div>
+
+    <div class="faq-item" onclick="toggleFAQ(this)">
+      <div class="faq-q"><div class="faq-q-text">How do I install PingIN?</div><div class="faq-icon">+</div></div>
+      <div class="faq-a">
+        PingIN is a Chrome Extension. Here's how to install it:
+        <ul>
+          <li>Download your plan's ZIP file from your <strong>Dashboard</strong></li>
+          <li>Unzip the file on your computer</li>
+          <li>Open Chrome and go to <strong>chrome://extensions</strong></li>
+          <li>Enable <strong>Developer mode</strong> (toggle in top-right corner)</li>
+          <li>Click <strong>Load unpacked</strong> and select the unzipped folder</li>
+          <li>PingIN appears in your Chrome toolbar — pin it for easy access</li>
+        </ul>
+        The whole process takes under 2 minutes.
+      </div>
+    </div>
+
+    <div class="faq-item" onclick="toggleFAQ(this)">
+      <div class="faq-q"><div class="faq-q-text">Does PingIN work with a free LinkedIn account?</div><div class="faq-icon">+</div></div>
+      <div class="faq-a">
+        <strong>Yes!</strong> PingIN works with a completely free LinkedIn account. You do NOT need LinkedIn Premium or LinkedIn Recruiter. PingIN enhances what a free LinkedIn account can already do — it just automates and speeds it up dramatically.
+      </div>
+    </div>
+
+    <div class="faq-item" onclick="toggleFAQ(this)">
+      <div class="faq-q"><div class="faq-q-text">Will LinkedIn ban or restrict my account?</div><div class="faq-icon">+</div></div>
+      <div class="faq-a">
+        PingIN is designed to stay within LinkedIn's safe usage limits:
+        <ul>
+          <li>Maximum <strong>50 connection requests per day</strong> (LinkedIn's informal safe limit is ~100)</li>
+          <li>All actions are paced naturally — not instant rapid-fire</li>
+          <li>No fake profiles, no scraping against ToS</li>
+        </ul>
+        <strong>Best practices to stay safe:</strong> Start with 20 requests/day for your first week, then increase gradually. Avoid sending all 50 to the same company in one day. Keep your LinkedIn profile complete and professional.
+        <br><br>
+        <em>Note: LinkedIn's terms prohibit automated tools. While PingIN users have used it safely, we cannot guarantee LinkedIn will never flag your account. Use responsibly.</em>
+      </div>
+    </div>
+
+    <div class="faq-item" onclick="toggleFAQ(this)">
+      <div class="faq-q"><div class="faq-q-text">Can I use PingIN on multiple computers?</div><div class="faq-icon">+</div></div>
+      <div class="faq-a">
+        Your license key can be used on <strong>one computer at a time</strong>. If you switch computers, simply install the extension on the new machine and enter the same license key. To use on multiple computers simultaneously, you would need multiple licenses.
+      </div>
+    </div>
+
+    <div class="faq-item" onclick="toggleFAQ(this)">
+      <div class="faq-q"><div class="faq-q-text">Does PingIN work on mobile?</div><div class="faq-icon">+</div></div>
+      <div class="faq-a">
+        PingIN is a <strong>Chrome desktop extension</strong> — it works only on Chrome on Windows, Mac, and Linux computers. It does not work on mobile Chrome or any mobile browser. The website (pingin.in) works on mobile for account management and dashboard access.
+      </div>
+    </div>
+  </div>
+
+  <!-- Plans & Billing -->
+  <div class="faq-cat" data-cat>
+    <div class="faq-cat-title">💳 Plans &amp; Billing</div>
+
+    <div class="faq-item" onclick="toggleFAQ(this)">
+      <div class="faq-q"><div class="faq-q-text">What happens after my free trial ends?</div><div class="faq-icon">+</div></div>
+      <div class="faq-a">
+        When your 5-day free trial ends, the extension automatically locks and you will not be able to run searches or outreach. Your collected profiles and notes are preserved. To continue using PingIN, simply purchase any plan from your Dashboard or <a href="pricing.html">Pricing page</a> and your extension reactivates with your new plan's license key.
+        <br><br>
+        <strong>We send reminder emails:</strong> 3 days before expiry, 1 day before, and on the day of expiry — so you are never caught off guard.
+      </div>
+    </div>
+
+    <div class="faq-item" onclick="toggleFAQ(this)">
+      <div class="faq-q"><div class="faq-q-text">Do plans auto-renew?</div><div class="faq-icon">+</div></div>
+      <div class="faq-a">
+        <strong>No — plans do NOT auto-renew.</strong> PingIN uses one-time UPI payments. When your plan expires, it simply stops. There is no subscription, no auto-debit, and no surprise charges. You choose to renew manually whenever you're ready.
+      </div>
+    </div>
+
+    <div class="faq-item" onclick="toggleFAQ(this)">
+      <div class="faq-q"><div class="faq-q-text">What payment methods are accepted?</div><div class="faq-icon">+</div></div>
+      <div class="faq-a">
+        PingIN accepts all major UPI payment apps:
+        <ul>
+          <li>GPay (Google Pay)</li>
+          <li>PhonePe</li>
+          <li>Paytm</li>
+          <li>BHIM UPI</li>
+          <li>Any bank's UPI app</li>
+        </ul>
+        Payments are processed securely via Razorpay. <strong>No credit card or debit card required.</strong>
+      </div>
+    </div>
+
+    <div class="faq-item" onclick="toggleFAQ(this)">
+      <div class="faq-q"><div class="faq-q-text">Can I get a GST invoice?</div><div class="faq-icon">+</div></div>
+      <div class="faq-a">
+        Yes! Email us at <a href="mailto:support@pingin.in">support@pingin.in</a> with your payment confirmation, company name, GSTIN, and billing address. We will send you a proper GST invoice within 2 business days.
+      </div>
+    </div>
+
+    <div class="faq-item" onclick="toggleFAQ(this)">
+      <div class="faq-q"><div class="faq-q-text">What is your cancellation and payment policy?</div><div class="faq-icon">+</div></div>
+      <div class="faq-a">
+        All purchases are final. Since PingIN is a digital software product that is immediately accessible after payment, we do not offer refunds or cancellations. Plans do not auto-renew — you simply don't renew when your plan expires.
+        <br><br>
+        <strong>If you face a technical issue</strong> — the extension not working, license key not activating, etc. — email <a href="mailto:support@pingin.in">support@pingin.in</a> with screenshots and we will resolve it for you. We stand behind our product.
+      </div>
+    </div>
+  </div>
+
+  <!-- Extension Features -->
+  <div class="faq-cat" data-cat>
+    <div class="faq-cat-title">🔌 Extension Features</div>
+
+    <div class="faq-item" onclick="toggleFAQ(this)">
+      <div class="faq-q"><div class="faq-q-text">What is Smart Search and how does it work?</div><div class="faq-icon">+</div></div>
+      <div class="faq-a">
+        Smart Search lets you search LinkedIn by <strong>job title, company, city, experience level, and college</strong> in one go. You can add multiple companies as chips (press Enter after each). PingIN builds the optimal LinkedIn search URL and opens it, then automatically collects all matching profiles into your list.
+        <br><br>
+        It searches across 886+ Indian companies and 60+ top colleges including IIT, NIT, IIM, BITS, and more.
+      </div>
+    </div>
+
+    <div class="faq-item" onclick="toggleFAQ(this)">
+      <div class="faq-q"><div class="faq-q-text">How does AI Clone Search work?</div><div class="faq-icon">+</div></div>
+      <div class="faq-a">
+        Clone Search <span class="tag">Pro / Annual</span> lets you paste any LinkedIn profile URL. PingIN reads that person's headline, role, and education, then uses AI to find 100 similar profiles on LinkedIn. Perfect for when you've just made a great hire and want to find more like them.
+      </div>
+    </div>
+
+    <div class="faq-item" onclick="toggleFAQ(this)">
+      <div class="faq-q"><div class="faq-q-text">Is my LinkedIn password stored by PingIN?</div><div class="faq-icon">+</div></div>
+      <div class="faq-a">
+        <strong>No — never.</strong> PingIN does not ask for, store, or transmit your LinkedIn password. It works by reading the LinkedIn pages you're already viewing in your browser — the same way you'd read them yourself. Your LinkedIn login session remains entirely in your browser.
+      </div>
+    </div>
+
+    <div class="faq-item" onclick="toggleFAQ(this)">
+      <div class="faq-q"><div class="faq-q-text">What does "50 messages per day" mean?</div><div class="faq-icon">+</div></div>
+      <div class="faq-a">
+        On paid plans, PingIN allows up to <strong>50 automated connection requests or messages per day</strong>. This counter resets every 24 hours. The free trial allows 5 per day. This limit is enforced to keep your LinkedIn account safe and avoid LinkedIn rate-limiting your account.
+      </div>
+    </div>
+
+    <div class="faq-item" onclick="toggleFAQ(this)">
+      <div class="faq-q"><div class="faq-q-text">Can I export collected profiles?</div><div class="faq-icon">+</div></div>
+      <div class="faq-a">
+        Yes <span class="tag">Starter and above</span>. From the Profiles tab in the extension, click the <strong>Export CSV</strong> button to download all collected profiles as a spreadsheet. The CSV includes name, headline, location, profile URL, and any notes you've added. You can open it in Excel, Google Sheets, or any spreadsheet tool.
+      </div>
+    </div>
+  </div>
+
+  <!-- Technical -->
+  <div class="faq-cat" data-cat>
+    <div class="faq-cat-title">🔧 Technical</div>
+
+    <div class="faq-item" onclick="toggleFAQ(this)">
+      <div class="faq-q"><div class="faq-q-text">Why does Chrome show a warning when installing?</div><div class="faq-icon">+</div></div>
+      <div class="faq-a">
+        Because PingIN is currently installed as an "unpacked extension" (not yet on the Chrome Web Store), Chrome shows a warning: <em>"This extension can read and change your data on linkedin.com."</em>
+        <br><br>
+        <strong>This is expected and safe.</strong> PingIN needs to read LinkedIn pages to collect profile data — that's exactly what it does, and only on linkedin.com. It cannot read any other website. We are in the process of submitting PingIN to the Chrome Web Store for official listing.
+      </div>
+    </div>
+
+    <div class="faq-item" onclick="toggleFAQ(this)">
+      <div class="faq-q"><div class="faq-q-text">PingIN is not finding any profiles — what do I do?</div><div class="faq-icon">+</div></div>
+      <div class="faq-a">
+        Try these steps:
+        <ul>
+          <li>Make sure you're <strong>logged in to LinkedIn</strong> in the same Chrome browser</li>
+          <li>Try a broader search — remove college or experience filters first</li>
+          <li>Check that your LinkedIn account is in good standing (no restrictions)</li>
+          <li>Reload the extension: go to chrome://extensions, find PingIN, click the reload icon</li>
+          <li>Try a different search — some company names need exact spelling</li>
+        </ul>
+        Still not working? Email <a href="mailto:support@pingin.in">support@pingin.in</a> with a screenshot.
+      </div>
+    </div>
+
+    <div class="faq-item" onclick="toggleFAQ(this)">
+      <div class="faq-q"><div class="faq-q-text">My license key isn't working — what do I do?</div><div class="faq-icon">+</div></div>
+      <div class="faq-a">
+        First, check your email inbox and spam folder for the license key email. Make sure you're copying the key exactly — no extra spaces. If the issue persists, email <a href="mailto:support@pingin.in">support@pingin.in</a> with your registered email address and payment screenshot and we'll sort it out immediately.
+      </div>
+    </div>
+  </div>
+
+  <!-- Contact CTA -->
+  <div class="faq-cta">
+    <p style="font-size:18px;font-weight:700;color:var(--tp);margin-bottom:8px;">Still have a question?</p>
+    <p>Our support team responds within 24 hours on working days.</p>
+    <div class="faq-cta-btns">
+      <a href="contact.html" class="btn-primary">✉️ Contact Support</a>
+      <a href="dashboard.html" class="btn-secondary">📖 View Dashboard</a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function toggleFAQ(el) {
+  var isOpen = el.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(function(item) {
+    item.classList.remove('open');
+  });
+  if (!isOpen) el.classList.add('open');
+}
+
+function filterFAQ(q) {
+  var term = q.toLowerCase().trim();
+  document.querySelectorAll('.faq-item').forEach(function(item) {
+    var text = item.textContent.toLowerCase();
+    item.style.display = (!term || text.includes(term)) ? 'block' : 'none';
+  });
+  document.querySelectorAll('.faq-cat').forEach(function(cat) {
+    var visible = Array.from(cat.querySelectorAll('.faq-item')).some(function(i){ return i.style.display !== 'none'; });
+    cat.style.display = visible ? 'block' : 'none';
+  });
+}
+</script>
+<script src="js/nav.js"></script>
+</body>
+</html>

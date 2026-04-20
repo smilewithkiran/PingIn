@@ -35,6 +35,7 @@
         <a href="pricing.html">Pricing</a>
         
         <a href="extension.html">Chrome Extension</a>
+          <a href="faq.html">FAQ</a>
       </div>
       <div class="nav-cta">
         <a href="login.html" class="btn-ghost-sm">Sign in</a>
@@ -117,7 +118,8 @@
 
       <!-- Right: Contact form -->
       <div class="contact-form-card">
-        <div class="cf-title">Send us a message</div>
+        <div class="cf-title">Get Support</div>
+        <div style="font-size:12px;color:var(--tm);margin-bottom:6px;">📖 First, check our <a href="faq.html" style="color:var(--blue);font-weight:600;">FAQ page</a> — your question may already be answered.</div>
         <div class="cf-sub">Fill the form below and we'll get back to you quickly.</div>
 
         <div id="contact-form">
@@ -150,7 +152,7 @@
         <div class="cf-success" id="cf-success">
           <div style="font-size:40px;margin-bottom:12px;">✅</div>
           <h3 style="color:var(--tp);margin-bottom:8px;">Message received!</h3>
-          <p style="color:var(--ts);font-size:14px;line-height:1.7;">Thank you for reaching out! We'll reply to your email within 4 business hours.</p>
+          <p style="color:var(--ts);font-size:14px;line-height:1.7;">Thank you for reaching out. We'll reply to <strong id="cf-reply-email"></strong> within 24 hours on working days.<br><br>For urgent issues, you can also email us directly at <a href="mailto:support@pingin.in" style="color:var(--blue);">support@pingin.in</a> with screenshots.</p>
         </div>
       </div>
     </div>
@@ -180,18 +182,47 @@
   </div>
 </section>
 <script>
-function submitContact() {
-  const name  = document.getElementById("c-name").value.trim();
-  const email = document.getElementById("c-email").value.trim();
-  const topic = document.getElementById("c-topic").value;
-  const msg   = document.getElementById("c-msg").value.trim();
-  if (!name || !email || !topic || !msg) { alert("Please fill all required fields."); return; }
-  const btn = document.getElementById("cf-btn");
-  btn.disabled = true; btn.textContent = "Sending...";
-  setTimeout(() => {
-    document.getElementById("contact-form").style.display = "none";
-    document.getElementById("cf-success").style.display  = "block";
-  }, 1200);
+async function submitContact() {
+  var name   = document.getElementById('c-name').value.trim();
+  var email  = document.getElementById('c-email').value.trim();
+  var phone  = document.getElementById('c-mobile').value.trim();
+  var topic  = document.getElementById('c-topic').value;
+  var msg    = document.getElementById('c-msg').value.trim();
+
+  if (!name)  { alert('Please enter your full name.'); return; }
+  if (!email || !email.includes('@')) { alert('Please enter a valid email address.'); return; }
+  if (!phone) { alert('Please enter your contact number.'); return; }
+  if (!topic) { alert('Please select an issue type.'); return; }
+  if (!msg)   { alert('Please describe your issue.'); return; }
+
+  var btn = document.getElementById('cf-btn');
+  btn.disabled = true; btn.textContent = 'Sending...';
+
+  try {
+    await emailjs.send('service_2gph56v', 'template_ylb2tmp', {
+      to_email:      'support@pingin.in',
+      user_name:     name,
+      user_email:    email,
+      user_phone:    phone,
+      plan_name:     'Support Request',
+      plan_days:     topic,
+      plan_price:    phone,
+      expiry_date:   new Date().toLocaleDateString('en-IN'),
+      license_key:   'Issue: ' + topic + ' | Phone: ' + phone,
+      download_url:  'https://pingin.in/faq.html',
+      dashboard_url: 'https://pingin.in/dashboard.html',
+      from_name:     name + ' via PingIN Contact Form',
+      reply_to:      email,
+      tagline:       msg.substring(0, 300),
+      email_type:    'support_request',
+    });
+    document.getElementById('contact-form').style.display = 'none';
+    document.getElementById('cf-success').style.display   = 'block';
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = 'Send to Support Team →';
+    alert('Failed to send. Please email us directly at support@pingin.in');
+  }
 }
 </script>
 
@@ -208,6 +239,7 @@ function submitContact() {
         <div class="footer-col">
           <div class="fc-title">Product</div>
           <a href="extension.html">Chrome Extension</a>
+          <a href="faq.html">FAQ</a>
           
           <a href="pricing.html">Pricing</a>
         </div>
