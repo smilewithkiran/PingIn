@@ -144,6 +144,71 @@ const PingINDB = {
     } catch(e) { PingIN.updateUser(email, { plan, licenseKey, planExpiry }); }
   },
 
+
+  // ── Server-side plan validation ──────────────────────────────────
+  // Called by extension (via background message) to verify plan is still active
+  // This prevents users from tampering with local plan data
+  async validatePlan(email, licenseKey) {
+    try {
+      const emailKey = (email || '').toLowerCase().trim();
+      if (!emailKey || !licenseKey) return { valid: false, reason: 'missing_params' };
+
+      // Get user from Firebase (authoritative source)
+      const user = await this.findUserByEmail(emailKey);
+      if (!user) return { valid: false, reason: 'user_not_found' };
+
+      // Check license key matches
+      if (user.licenseKey !== licenseKey) {
+        return { valid: false, reason: 'invalid_key' };
+      }
+
+      // Check plan exists
+      if (!user.plan || user.plan === 'none') {
+        return { valid: false, reason: 'no_plan' };
+      }
+
+      // Check expiry
+      if (user.planExpiry) {
+        const now    = Date.now();
+        const expiry = new Date(user.planExpiry).getTime();
+        if (now > expiry) {
+          return { valid: false, reason: 'expired', expiredAt: user.planExpiry };
+        }
+      }
+
+      return {
+        valid:      true,
+        plan:       user.plan,
+        planExpiry: user.planExpiry,
+        name:       user.name,
+      };
+    } catch(e) {
+      // On any error, return valid (fail-open) so user isn't blocked by network issues
+      console.warn('[PingINDB] validatePlan error (fail-open):', e);
+      return { valid: true, reason: 'validation_error_fail_open' };
+    }
+  },
+
+  // ── Check if email already has an active plan (prevent double-trial) ─────
+  async checkExistingPlan(email) {
+    try {
+      const user = await this.findUserByEmail((email||'').toLowerCase().trim());
+      if (!user) return { hasPlan: false };
+
+      const hasActivePlan = user.plan && user.plan !== 'none';
+      const isExpired     = user.planExpiry && Date.now() > new Date(user.planExpiry).getTime();
+      const trialUsed     = user.trialUsed === true;
+
+      return {
+        hasPlan:        hasActivePlan && !isExpired,
+        trialUsed:      trialUsed,
+        plan:           user.plan,
+        planExpiry:     user.planExpiry,
+        isExpired:      isExpired,
+      };
+    } catch(e) { return { hasPlan: false }; }
+  },
+
   // ── Trial abuse check ─────────────────────────────────────────────
   async hasUsedTrial(email, phone) {
     try {

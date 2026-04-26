@@ -4,12 +4,12 @@
 // ═══════════════════════════════════════════════════════════════════
 
 const FIREBASE_CONFIG = {
-  apiKey:            "AIzaSyDf7EY6c4vuysukC7TJGRQ51GTQj_exL5w",
+  apiKey:            "YOUR_API_KEY",
   authDomain:        "pingin-in.firebaseapp.com",
   projectId:         "pingin-in",
   storageBucket:     "pingin-in.appspot.com",
-  messagingSenderId: "1010877641840",
-  appId:             "1:1010877641840:web:b4a10767fc40fbeaab70b5"
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId:             "YOUR_APP_ID"
 };
 
 // Firebase state
