@@ -216,8 +216,8 @@ body{min-height:100vh;display:flex;align-items:stretch;background:#0A0C10;overfl
       </div>
     </div>
     <div class="f-group">
-      <label class="f-lbl">WhatsApp Number <span style="color:#4A4E62;font-weight:400;text-transform:none;">(for license key delivery)</span></label>
-      <input class="f-inp" type="tel" id="su-phone" placeholder="WhatsApp number">
+      <label class="f-lbl">Contact Number *</label>
+      <input class="f-inp" type="tel" id="su-phone" placeholder="+91 98765 43210">
     </div>
     <button class="f-btn primary" id="btn-signup" onclick="doSignUp()">Create Free Account →</button>
     <p class="terms-note">By signing up you agree to our <a href="terms.html">Terms</a> and <a href="privacy.html">Privacy Policy</a>.<br>Your 5-day free trial starts immediately.</p>
@@ -318,7 +318,7 @@ async function doSignUp(){
   if(!name){showErr('Please enter your full name.');return;}
   if(!email||!email.includes('@')){showErr('Please enter a valid email address.');return;}
   if(!pass||pass.length<6){showErr('Password must be at least 6 characters.');return;}
-  if(!phone){showErr('Please enter your WhatsApp number.');return;}
+  if(!phone){showErr('Please enter your contact number.');return;}
   setLoading('btn-signup',true);
   // Check for duplicate email/phone and trial abuse
   const trialCheck = await PingINDB.hasUsedTrial(email.toLowerCase(), phone);
