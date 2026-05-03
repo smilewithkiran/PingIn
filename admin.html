@@ -774,8 +774,8 @@ function renderUsers() {
     const msgsDay = msgMap[planKey] || '—';
     const msgsColor = planKey === 'free' ? '#D97706' : planKey === 'expired' || planKey === 'none' ? '#4A4E62' : '#00D4AA';
 
-    return `<tr>
-      <td style="color:#F0F2F8;font-weight:500;">${escH(u.name||'—')}</td>
+    return `<tr style="${u.banned ? 'opacity:.55;background:rgba(220,50,50,.04);' : ''}">
+      <td style="color:#F0F2F8;font-weight:500;">${escH(u.name||'—')} ${u.banned ? '<span style="font-size:10px;background:rgba(220,50,50,.15);color:#F87171;border:1px solid rgba(220,50,50,.3);border-radius:8px;padding:2px 7px;margin-left:4px;font-weight:700;">BANNED</span>' : ''}</td>
       <td style="color:#8B8FA8;">${escH(u.email||'—')}</td>
       <td style="color:#8B8FA8;">${escH(u.phone||'—')}</td>
       <td><span class="plan-tag ${planKey}">${planKey}</span></td>
@@ -786,6 +786,12 @@ function renderUsers() {
         <div style="display:flex;gap:4px;flex-wrap:wrap;">
           <button class="a-btn blue" onclick="editUser('${escAttr(u.email)}')">Edit</button>
           <button class="a-btn green" onclick="genKeyFor('${escAttr(u.email)}')">Key</button>
+          ${u.banned
+            ? `<button class="a-btn green" onclick="unbanUser('${escAttr(u.email)}')">Unban</button>`
+            : `<button class="a-btn orange" onclick="expireUser('${escAttr(u.email)}')">Expire</button>`
+          }
+          <button class="a-btn red" style="padding:6px 10px;" onclick="banUser('${escAttr(u.email)}','${escAttr(u.name||'')}')">Ban</button>
+          <button class="a-btn red" style="padding:6px 10px;background:#7F1D1D;border-color:#7F1D1D;" onclick="removeUser('${escAttr(u.email)}','${escAttr(u.name||'')}')">🗑 Remove</button>
         </div>
       </td>
     </tr>`;
@@ -940,6 +946,146 @@ function saveUser() {
   renderStats(); renderUsers(); renderRevenue();
   closeModal();
   alert('✅ User updated successfully!');
+}
+
+// ── Ban user — marks as banned in Firebase + localStorage ────────────────────
+async function banUser(email, name) {
+  if (!email) return;
+  const confirmed = confirm(
+    'BAN USER: ' + (name||email) + '\n\n' +
+    'This will:\n' +
+    '• Mark their account as BANNED in the database\n' +
+    '• Their extension will lock on next startup\n' +
+    '• They cannot log in or use any features\n\n' +
+    'Are you sure?'
+  );
+  if (!confirmed) return;
+
+  try {
+    // Update in Firebase
+    if (typeof PingINDB !== 'undefined') {
+      await PingINDB.updateUser(email, {
+        banned:     true,
+        bannedAt:   new Date().toISOString(),
+        bannedBy:   'admin',
+        plan:       'banned',
+        planExpiry: new Date(Date.now() - 86400000).toISOString(), // expired yesterday
+      });
+    }
+    // Update locally
+    const users = PingIN.getUsers();
+    const idx = users.findIndex(u => u.email === email);
+    if (idx > -1) {
+      users[idx].banned     = true;
+      users[idx].bannedAt   = new Date().toISOString();
+      users[idx].plan       = 'banned';
+      users[idx].planExpiry = new Date(Date.now() - 86400000).toISOString();
+      localStorage.setItem('pingin_users', JSON.stringify(users));
+    }
+    allUsers = PingIN.getUsers();
+    renderStats(); renderUsers(); renderRevenue();
+    alert('✓ User banned. Their extension will lock on next startup.');
+  } catch(e) {
+    alert('Error: ' + e.message + '\nPlease try again.');
+  }
+}
+
+// ── Unban user ─────────────────────────────────────────────────────────────
+async function unbanUser(email) {
+  if (!email) return;
+  if (!confirm('Unban ' + email + '? Their account will be restored.')) return;
+
+  try {
+    if (typeof PingINDB !== 'undefined') {
+      await PingINDB.updateUser(email, {
+        banned:  false,
+        plan:    'none',
+        planExpiry: '',
+      });
+    }
+    const users = PingIN.getUsers();
+    const idx = users.findIndex(u => u.email === email);
+    if (idx > -1) {
+      users[idx].banned    = false;
+      users[idx].plan      = 'none';
+      users[idx].planExpiry = '';
+      localStorage.setItem('pingin_users', JSON.stringify(users));
+    }
+    allUsers = PingIN.getUsers();
+    renderStats(); renderUsers(); renderRevenue();
+    alert('✓ User unbanned. They can log in again.');
+  } catch(e) {
+    alert('Error: ' + e.message);
+  }
+}
+
+// ── Expire user — sets plan expiry to now so extension locks immediately ────
+async function expireUser(email) {
+  if (!email) return;
+  if (!confirm('Expire plan for ' + email + '?\n\nTheir extension will lock on next startup.')) return;
+
+  const yesterday = new Date(Date.now() - 86400000).toISOString();
+  try {
+    if (typeof PingINDB !== 'undefined') {
+      await PingINDB.updateUser(email, { planExpiry: yesterday });
+    }
+    const users = PingIN.getUsers();
+    const idx = users.findIndex(u => u.email === email);
+    if (idx > -1) {
+      users[idx].planExpiry = yesterday;
+      localStorage.setItem('pingin_users', JSON.stringify(users));
+    }
+    allUsers = PingIN.getUsers();
+    renderStats(); renderUsers(); renderRevenue();
+    alert('✓ Plan expired. Their extension will lock on next startup.');
+  } catch(e) {
+    alert('Error: ' + e.message);
+  }
+}
+
+async function removeUser(email, name) {
+  if (!email) return;
+  var label = name ? name + ' (' + email + ')' : email;
+  if (!confirm(
+    'REMOVE USER: ' + label + '\n\n' +
+    'This will:\n' +
+    '• Immediately expire their plan (extension locks now)\n' +
+    '• Delete their account from the database\n' +
+    '• They cannot log in or use PingIN again\n\n' +
+    'This CANNOT be undone. Continue?'
+  )) return;
+
+  try {
+    // Step 1: Set plan as expired yesterday so extension locks immediately
+    var yesterday = new Date(Date.now() - 86400000).toISOString();
+
+    // Step 2: Remove from Firebase
+    if (typeof PingINDB !== 'undefined' && PingINDB.deleteUser) {
+      await PingINDB.deleteUser(email);
+    } else if (typeof PingINDB !== 'undefined' && PingINDB.updateUser) {
+      // Fallback: mark as banned + expired if delete not available
+      await PingINDB.updateUser(email.toLowerCase().trim(), {
+        planExpiry: yesterday,
+        plan: 'none',
+        banned: true,
+        removedAt: new Date().toISOString(),
+        licenseKey: 'REVOKED',
+      });
+    }
+
+    // Step 3: Remove from localStorage
+    var users = PingIN.getUsers().filter(function(u) {
+      return u.email.toLowerCase() !== email.toLowerCase();
+    });
+    PingIN.saveUsers(users);
+
+    // Refresh UI
+    allUsers = users;
+    renderStats(); renderUsers(); renderRevenue();
+    alert('✓ User removed.\n\nTheir extension will lock immediately on next use.');
+  } catch(e) {
+    alert('Error removing user: ' + (e.message || e));
+  }
 }
 
 function deleteUser() {
