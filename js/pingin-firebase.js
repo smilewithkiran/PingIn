@@ -209,6 +209,55 @@ const PingINDB = {
     } catch(e) { return { hasPlan: false }; }
   },
 
+  // ── Delete user from Firebase ──────────────────────────────────
+  async deleteUser(email) {
+    const emailKey = (email || '').toLowerCase().trim();
+    if (!emailKey) return false;
+
+    // Method 1: Firestore REST API delete
+    if (this._db) {
+      try {
+        const { doc, deleteDoc } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+        await deleteDoc(doc(this._db, 'users', emailKey));
+        console.log('[PingINDB] User deleted from Firestore:', emailKey);
+        return true;
+      } catch(e) {
+        console.warn('[PingINDB] Firestore delete failed, trying REST:', e);
+      }
+    }
+
+    // Method 2: Firestore REST API (works without SDK import)
+    try {
+      const cfg = this._cfg || {};
+      if (cfg.projectId && cfg.apiKey) {
+        const url = `https://firestore.googleapis.com/v1/projects/${cfg.projectId}/databases/(default)/documents/users/${encodeURIComponent(emailKey)}?key=${cfg.apiKey}`;
+        const resp = await fetch(url, { method: 'DELETE' });
+        if (resp.ok || resp.status === 404) {
+          console.log('[PingINDB] User deleted via REST API:', emailKey);
+          return true;
+        }
+      }
+    } catch(e) {
+      console.warn('[PingINDB] REST delete failed:', e);
+    }
+
+    // Method 3: Mark as revoked (if delete fails, still prevents login)
+    try {
+      await this.updateUser(emailKey, {
+        plan: 'none',
+        planExpiry: new Date(Date.now() - 86400000).toISOString(),
+        banned: true,
+        licenseKey: 'REVOKED',
+        removedAt: new Date().toISOString(),
+      });
+      console.log('[PingINDB] User marked as revoked:', emailKey);
+      return true;
+    } catch(e) {
+      console.warn('[PingINDB] Revoke fallback failed:', e);
+      return false;
+    }
+  },
+
   // ── Trial abuse check ─────────────────────────────────────────────
   async hasUsedTrial(email, phone) {
     try {
