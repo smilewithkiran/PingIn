@@ -9,10 +9,10 @@ const EMAILJS_KEY      = 'OboQTWg4MMuVOJWWt';
 //   expiry_date, license_key, download_url, dashboard_url, from_name, reply_to, email_type
 
 const PLANS = {
-  free:    { name:'Free Trial',    days:5,   price:0,      priceStr:'₹0',        label:'5 Days Free',  dailyMsgs:5  },
-  starter: { name:'Starter',       days:15,  price:650,    priceStr:'₹650',      label:'15 Days',      dailyMsgs:50 },
-  pro:     { name:'Pro',           days:30,  price:1200,   priceStr:'₹1,200',    label:'Per Month',    dailyMsgs:50 },
-  annual:  { name:'Annual',        days:365, price:10000,  priceStr:'₹10,000',   label:'1 Year',       dailyMsgs:50 },
+  free:    { name:'Free Trial',    days:5,   price:0,      priceStr:'₹0',        label:'5 Days Free'  },
+  starter: { name:'Starter',       days:15,  price:650,    priceStr:'₹650',      label:'15 Days'      },
+  pro:     { name:'Pro',           days:30,  price:1200,   priceStr:'₹1,200',    label:'Per Month'    },
+  annual:  { name:'Annual',        days:365, price:10000,  priceStr:'₹10,000',   label:'1 Year'       },
 };
 
 const PingIN = {

@@ -154,7 +154,7 @@ body{font-family:'DM Sans','Inter',system-ui,sans-serif;background:#0A0C10 !impo
             <option value="login">Login / Password issue</option>
             <option value="license">License key not working</option>
             <option value="search">Search not finding profiles</option>
-            <option value="outreach">Outreach / Campaign issue</option>
+            <option value="outreach">LinkedIn Connection issue</option>
             <option value="payment">Payment / Billing query</option>
             <option value="invoice">Need GST Invoice</option>
             <option value="export">Profile export issue</option>
@@ -245,7 +245,7 @@ async function submitContact() {
   if (!msg)                         { alert('Please describe your issue.'); return; }
 
   var L = {install:'Extension not installing',login:'Login / Password issue',license:'License key not working',
-    search:'Search not finding profiles',outreach:'Outreach / Campaign issue',payment:'Payment / Billing query',
+    search:'Search not finding profiles',outreach:'LinkedIn Connection issue',payment:'Payment / Billing query',
     invoice:'Need GST Invoice',export:'Profile export issue',feature:'Feature request',other:'Other'};
   var tl = L[topic]||topic;
 

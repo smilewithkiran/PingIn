@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Chrome Extension — PingIN</title>
-<meta name="description" content="Download PingIN Chrome Extension — AI-powered recruiter tool with Smart Search, Clone Search, JD Parsing, Developer Search on GitHub & Stack Overflow, Smart Outreach campaigns.">
+<meta name="description" content="Download PingIN Chrome Extension — AI-powered recruiter tool with Smart Search, Clone Search, JD Parsing, Developer Search on GitHub & Stack Overflow.">
 <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
@@ -81,10 +81,10 @@
 <div class="page-hero">
   <div style="display:inline-flex;align-items:center;gap:7px;background:rgba(0,212,170,.08);border:1px solid rgba(0,212,170,.2);border-radius:100px;padding:5px 16px;font-size:11px;color:#00D4AA;font-weight:600;margin-bottom:20px;letter-spacing:.05em;">
     <span style="width:6px;height:6px;border-radius:50%;background:#00D4AA;animation:pulse 2s infinite;"></span>
-    v2.9.3 — GitHub Multi-Skill Search · Smart Outreach · Candidate Notes · JD Library · Boolean Builder
+    v2.9.4 — GitHub Multi-Skill Search · Candidate Notes · JD Library · Boolean Builder
   </div>
   <h1 class="page-title">The Chrome Extension<br>that <span class="grad">finds the right people.</span></h1>
-  <p style="font-size:16px;color:var(--ts);max-width:580px;margin:0 auto 36px;line-height:1.7;">6 AI search modes · Smart Outreach campaigns · GitHub & Stack Overflow developer search · Candidate notes · JD Library · Boolean Builder — all in one extension.</p>
+  <p style="font-size:16px;color:var(--ts);max-width:580px;margin:0 auto 36px;line-height:1.7;">6 AI search modes · GitHub & Stack Overflow developer search · Candidate notes · JD Library · Boolean Builder — all in one extension.</p>
   <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
     <a href="login.html" class="btn-primary btn-lg" style="background:linear-gradient(135deg,#0055CC,#00A890);border:none;">Start Free Trial →</a>
   </div>
@@ -181,13 +181,299 @@
       <p class="section-sub">v2.9.3 — the most powerful version yet. Here's everything PingIN can do.</p>
     </div>
 
-    <!-- Smart Outreach NEW -->
+    <!-- NEW -->
     <div class="feat-block new reveal">
       <div class="feat-block-header">
         <div class="feat-block-icon">📤</div>
         <div>
-          <div class="feat-block-title">Smart Outreach Campaign <span class="new-tag">NEW v2.4</span></div>
-          <div class="feat-block-sub">Run fully automated LinkedIn outreach campaigns directly from PingIN. No new windows, no tab switching — PingIN navigates your existing LinkedIn tab, sends personalised messages, and tracks every action.</div>
+          <div class="feat-block-title">Campaign <span class="new-tag">NEW v2.4</span></div>
+          <div class="feat-block-sub"></div>
+        </div>
+      </div>
+      <div class="feat-block-points">
+        <div class="fbp">Navigates existing LinkedIn tab — fast, natural, and LinkedIn-safe</div>
+        <div class="fbp">Campaign state persists — close popup, switch tabs, reopen and it continues where it left off</div>
+        <div class="fbp">Zero duplicate sends — permanent URL tracking across all sessions</div>
+        <div class="fbp">3 campaign types: Connect, Message, Visit</div>
+        <div class="fbp">Personalised templates with {{first_name}}, {{company}}, {{role}}, {{location}}</div>
+        <div class="fbp">GitHub-specific "Found your work on GitHub" template for developer outreach</div>
+        <div class="fbp">Daily safety limit: up to 50 messages/day within LinkedIn's safe zone</div>
+        <div class="fbp">Live campaign dashboard — sent, pending, failed — visible even after popup close</div>
+      </div>
+    </div>
+
+    <!-- Developer Search NEW -->
+    <div class="feat-block dev reveal">
+      <div class="feat-block-header">
+        <div class="feat-block-icon">🐙</div>
+        <div>
+          <div class="feat-block-title">Developer Search <span class="new-tag p">NEW v2.6</span></div>
+          <div class="feat-block-sub">Find developers where they actually live — GitHub and Stack Overflow. Verified by real code, commits and answers. No login needed. Completely free platforms.</div>
+        </div>
+      </div>
+      <div class="feat-block-points">
+        <div class="fbp"><strong>GitHub Smart Search</strong> — builds: language:Python location:Bangalore followers:>=100 repos:>=20 — opens ranked by most active</div>
+        <div class="fbp"><strong>Stack Overflow Top Experts</strong> — opens stackoverflow.com/tags/react/topusers — top 20 ranked experts for any skill tag</div>
+        <div class="fbp"><strong>GitHub Multi-Skill Search (1-3 skills)</strong> — search by Skill 1 + Skill 2 + Skill 3. GitHub finds developers mentioning ALL entered skills in their profile bio. Results sorted by most followers first.</div>
+        <div class="fbp"><strong>GitHub Profile Banner</strong> — PingIN floating panel appears on every github.com/username page automatically — Find LinkedIn, Add to List buttons</div>
+        <div class="fbp">3-level LinkedIn fallback: direct link → name search → "Direct profile not found. Opened LinkedIn with matching skills — you might find someone even better."</div>
+      </div>
+    </div>
+
+    <!-- New productivity features -->
+    <div class="feat-block new reveal">
+      <div class="feat-block-header">
+        <div class="feat-block-icon">⚡</div>
+        <div>
+          <div class="feat-block-title">4 New Productivity Features <span class="new-tag">NEW v2.8</span></div>
+          <div class="feat-block-sub">Search History, Candidate Notes, Boolean Builder and JD Library — four features that save hours every week.</div>
+        </div>
+      </div>
+      <div class="feat-block-points">
+        <div class="fbp"><strong>⚡ Boolean Builder</strong> — add skill chips, choose OR/AND logic, click Apply → PingIN builds the Boolean string automatically. No Boolean experience needed.</div>
+        <div class="fbp"><strong>🕐 Search History</strong> — last 15 searches saved automatically. Click any to instantly re-run it — fills all fields and searches. Never type the same search twice.</div>
+        <div class="fbp"><strong>📝 Candidate Notes</strong> — private notes on every profile card. Preview shows under the name. "Called 12 Jan — expects 28L, follow up March." Persists forever.</div>
+        <div class="fbp"><strong>📁 JD Library</strong> — save up to 10 job descriptions. Click any saved JD to load and auto-analyse. Works with JD Search — paste once, reuse forever.</div>
+      </div>
+    </div>
+
+    <!-- Smart Search -->
+    <div class="feat-block reveal">
+      <div class="feat-block-header">
+        <div class="feat-block-icon">🔍</div>
+        <div>
+          <div class="feat-block-title">Smart Search — LinkedIn People Search</div>
+          <div class="feat-block-sub">The most powerful LinkedIn search panel available. 20+ filters designed specifically for Indian recruitment.</div>
+        </div>
+      </div>
+      <div class="feat-block-points">
+        <div class="fbp">Boolean search with AND, OR, NOT, quotes, parentheses — plus visual Boolean Builder</div>
+        <div class="fbp">Experience filter: 0–2, 2–5, 5–10, 10+ years</div>
+        <div class="fbp">Degree type: B.Tech, MBA, B.Sc, BCA, MCA and more</div>
+        <div class="fbp">Profile type: Open to Work, Freshers, Women Leaders, IIT/IIM Alumni and 7 more</div>
+        <div class="fbp">College filter: 60+ premium colleges (IIT, NIT, IIM, IIIT, BITS, ISB, XLRI)</div>
+        <div class="fbp">Company search: 886+ companies across 18 categories — type to filter instantly</div>
+        <div class="fbp">Location: 11 major Indian cities + All India</div>
+        <div class="fbp">Multi-page scraping: collect 10–1000+ profiles per search depending on plan</div>
+      </div>
+    </div>
+
+    <!-- AI Clone + JD + Predictive -->
+    <div class="feat-block reveal">
+      <div class="feat-block-header">
+        <div class="feat-block-icon">🧬</div>
+        <div>
+          <div class="feat-block-title">AI Clone Search · JD Parsing · Predictive Sourcing</div>
+          <div class="feat-block-sub">Three Claude AI-powered search modes. Available on Pro and Annual plans.</div>
+        </div>
+      </div>
+      <div class="feat-block-points">
+        <div class="fbp"><strong>Clone Search</strong> — paste any LinkedIn URL → Claude AI analyses the profile → finds 100+ similar candidates automatically</div>
+        <div class="fbp"><strong>JD Parsing</strong> — paste or fetch any job description URL → Claude extracts role, skills, experience, location → searches LinkedIn instantly. JD Library stores your favourite JDs.</div>
+        <div class="fbp"><strong>Predictive Sourcing</strong> — finds passive candidates based on signals: job tenure nearing 2 years, recent promotions, new certifications, layoff activity</div>
+      </div>
+    </div>
+
+    <!-- Profile Scoring + Export -->
+    <div class="feat-block reveal">
+      <div class="feat-block-header">
+        <div class="feat-block-icon">⭐</div>
+        <div>
+          <div class="feat-block-title">Profile Scoring 0–100 · Export · Notes</div>
+          <div class="feat-block-sub">Every collected profile is automatically scored, ranked and ready for export.</div>
+        </div>
+      </div>
+      <div class="feat-block-points">
+        <div class="fbp">Auto-scoring: role keyword match, Open to Work status, company tier (FAANG/Unicorn/MNC), connection degree, city match</div>
+        <div class="fbp">🔥 90+ = Hot · ⭐ 75+ = Strong · ✅ 60+ = Good — colour-coded on every card</div>
+        <div class="fbp">Filter by status: Top Picks, All, Pending, Sent, Failed</div>
+        <div class="fbp">Export to CSV or Excel in one click</div>
+        <div class="fbp">📝 Candidate Notes — add private notes per profile, preview shows on card</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section" style="background:var(--surf);border-top:1px solid var(--border);">
+  <div class="container">
+    <div style="background:linear-gradient(135deg,rgba(0,55,204,.15),rgba(0,168,144,.08));border:1px solid rgba(0,85,204,.2);border-radius:20px;padding:52px 40px;text-align:center;" class="reveal">
+      <h2 style="font-family:'Syne',sans-serif;font-size:clamp(22px,3vw,38px);color:var(--tp);margin-bottom:12px;">Ready to hire faster?</h2>
+      <p style="font-size:15px;color:var(--ts);margin-bottom:28px;">5-day free trial · No credit card · GitHub + LinkedIn + Stack Overflow</p>
+      <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+        <a href="login.html" class="btn-primary btn-lg" style="background:linear-gradient(135deg,#0055CC,#00A890);border:none;">Start Free Trial →</a>
+        <a href="pricing.html" class="btn-outline btn-lg">View Pricing</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand"><a href="index.html" class="logo"><span style="display:inline-flex;width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#0055CC,#00A890);align-items:center;justify-content:center;flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 60 60" fill="none"><circle cx="30" cy="30" r="6" fill="white"/><circle cx="30" cy="30" r="14" fill="none" stroke="white" stroke-width="2.5" opacity=".7"/><circle cx="30" cy="30" r="22" fill="none" stroke="white" stroke-width="2" opacity=".35"/></svg></span><span class="logo-text">Ping<span style="background:linear-gradient(90deg,#1A9ADE,#00D4AA);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IN</span></span></a><p style="margin-top:12px;font-size:13px;color:var(--ts);line-height:1.7;">India's AI Talent Search Engine<br>Built for India 🇮🇳 · Made in Hyderabad</p></div>
+      <div class="footer-col"><div class="fc-title">Product</div><a href="extension.html">Chrome Extension</a><a href="pricing.html">Pricing</a></div>
+      <div class="footer-col"><div class="fc-title">Legal</div><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms of Service</a></div>
+      <div class="footer-col"><div class="fc-title">Support</div><a href="faq.html">FAQ</a><a href="contact.html">Contact Us</a><a href="mailto:support@pingin.in">support@pingin.in</a></div>
+    </div>
+    <div class="footer-bottom"><span>© 2026 PingIN · All rights reserved</span><span>Made with ❤️ in Hyderabad 🇮🇳</span></div>
+  </div>
+</footer>
+<script src="js/pingin.js"></script>
+<script src="js/nav.js"></script>
+<script>
+const obs=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('visible');obs.unobserve(x.target);}});},{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+
+<!-- PingIN Visitor Tracking -->
+<script>
+(function() {
+  try {
+    // Page key from URL
+    var page = location.pathname.replace(/\/$/,'').split('/').pop().replace('.html','') || 'home';
+    if (!page || page === '') page = 'home';
+    var NS = 'pingin-in-v1';
+
+    // Hit: total page view
+    fetch('https://api.countapi.xyz/hit/' + NS + '/' + page)
+      .catch(function(){});
+
+    // Hit: total site visits (all pages combined)
+    fetch('https://api.countapi.xyz/hit/' + NS + '/total')
+      .catch(function(){});
+
+    // Hit: today's visits using date key
+    var today = new Date().toISOString().slice(0,10).replace(/-/g,'');
+    fetch('https://api.countapi.xyz/hit/' + NS + '/day-' + today)
+      .catch(function(){});
+
+    // Hit: this week
+    var d = new Date();
+    var week = d.getFullYear() + 'W' + Math.ceil((((d - new Date(d.getFullYear(),0,1))/864e5)+1)/7);
+    fetch('https://api.countapi.xyz/hit/' + NS + '/week-' + week)
+      .catch(function(){});
+  } catch(e) {}
+})();
+</script>
+</body>
+</html>
+  <div class="mobile-menu" id="mobile-menu" style="position:relative;z-index:999;">
+    <a href="index.html">Home</a><a href="pricing.html">Pricing</a><a href="extension.html">Extension</a><a href="login.html">Sign in</a>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div style="display:inline-flex;align-items:center;gap:7px;background:rgba(0,212,170,.08);border:1px solid rgba(0,212,170,.2);border-radius:100px;padding:5px 16px;font-size:11px;color:#00D4AA;font-weight:600;margin-bottom:20px;letter-spacing:.05em;">
+    <span style="width:6px;height:6px;border-radius:50%;background:#00D4AA;animation:pulse 2s infinite;"></span>
+    v2.9.4 — GitHub Multi-Skill Search · Candidate Notes · JD Library · Boolean Builder
+  </div>
+  <h1 class="page-title">The Chrome Extension<br>that <span class="grad">finds the right people.</span></h1>
+  <p style="font-size:16px;color:var(--ts);max-width:580px;margin:0 auto 36px;line-height:1.7;">6 AI search modes · GitHub & Stack Overflow developer search · Candidate notes · JD Library · Boolean Builder — all in one extension.</p>
+  <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+    <a href="login.html" class="btn-primary btn-lg" style="background:linear-gradient(135deg,#0055CC,#00A890);border:none;">Start Free Trial →</a>
+  </div>
+</div>
+
+<!-- DOWNLOAD BOX -->
+<section class="section" style="padding-top:20px;padding-bottom:40px;">
+  <div class="container">
+    <div class="download-box reveal">
+      <div class="dl-version">Extension v2.9.3 · Login required to download</div>
+
+      <div style="background:rgba(0,119,181,.08);border:1px solid rgba(0,119,181,.2);border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:12px;color:#8B8FA8;line-height:1.6;text-align:left;">
+        🔐 <strong style="color:#F0F2F8;">Login required to download.</strong> Sign in to your account — your plan-specific extension is available in your Dashboard. No account? Start a free 5-day trial — no card needed.
+      </div>
+
+      <div class="dl-plans">
+        <a class="dl-plan" href="login.html?plan=free">
+          <div class="dl-plan-name">Free Trial</div>
+          <div class="dl-plan-price">₹0 · 5 days</div>
+          <div style="font-size:9px;color:var(--ts);margin-top:3px;">Sign in to activate</div>
+        </a>
+        <a class="dl-plan" href="login.html?plan=starter">
+          <div class="dl-plan-name">Starter</div>
+          <div class="dl-plan-price">₹650 · 15 days</div>
+          <div style="font-size:9px;color:var(--ts);margin-top:3px;">Sign in then pay</div>
+        </a>
+        <a class="dl-plan featured" href="login.html?plan=pro">
+          <div class="dl-plan-badge">🔥 POPULAR</div>
+          <div class="dl-plan-name">Pro</div>
+          <div class="dl-plan-price">₹1,200/month</div>
+          <div style="font-size:9px;color:#00D4AA;margin-top:3px;">Sign in then pay</div>
+        </a>
+        <a class="dl-plan" href="login.html?plan=annual">
+          <div class="dl-plan-badge" style="background:rgba(0,212,170,.1);color:#00D4AA;">🏆 BEST VALUE</div>
+          <div class="dl-plan-name">Annual</div>
+          <div class="dl-plan-price">₹10,000/year</div>
+          <div style="font-size:9px;color:var(--ts);margin-top:3px;">Sign in then pay</div>
+        </a>
+      </div>
+
+      <div id="ext-loggedin-btn" style="display:none;margin-top:12px;">
+        <a href="dashboard.html" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px;background:linear-gradient(135deg,#009B7D,#00D4AA);border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:700;text-decoration:none;">
+          📥 Go to Dashboard → Download Your Extension
+        </a>
+      </div>
+
+      <div class="dl-note" style="margin-top:12px;">Your extension downloads from your Dashboard after login. Works only on LinkedIn.</div>
+    </div>
+    <script>
+    try {
+      var _s = JSON.parse(localStorage.getItem('pingin_session')||'null');
+      if (_s && _s.email && _s.loginAt) {
+        var _b = document.getElementById('ext-loggedin-btn');
+        if (_b) _b.style.display = 'block';
+      }
+    } catch(e) {}
+    </script>
+  </div>
+</section>
+
+<!-- INSTALL STEPS -->
+<section class="section" style="background:var(--surf);border-top:1px solid var(--border);padding-bottom:60px;">
+  <div class="container">
+    <div class="section-center reveal">
+      <div class="section-tag">Quick Install</div>
+      <h2 class="section-title">Up and running in 3 steps</h2>
+    </div>
+    <div class="install-steps reveal">
+      <div class="install-step">
+        <div class="install-num">1</div>
+        <div class="install-title">Download & Extract</div>
+        <div class="install-desc">Download your plan ZIP file above. Extract it to a folder on your computer — remember where you saved it.</div>
+      </div>
+      <div class="install-step">
+        <div class="install-num">2</div>
+        <div class="install-title">Load in Chrome</div>
+        <div class="install-desc">Open Chrome → go to chrome://extensions → enable Developer Mode (top-right) → click Load Unpacked → select the extracted folder.</div>
+      </div>
+      <div class="install-step">
+        <div class="install-num">3</div>
+        <div class="install-title">Open LinkedIn & Go</div>
+        <div class="install-desc">Open LinkedIn in Chrome. Click the PingIN icon in your toolbar. Enter your license key, choose a search mode and start finding candidates instantly.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ALL FEATURES -->
+<section class="features-section">
+  <div class="container">
+    <div class="section-center reveal">
+      <div class="section-tag">What's inside</div>
+      <h2 class="section-title">Every feature, explained</h2>
+      <p class="section-sub">v2.9.3 — the most powerful version yet. Here's everything PingIN can do.</p>
+    </div>
+
+    <!-- NEW -->
+    <div class="feat-block new reveal">
+      <div class="feat-block-header">
+        <div class="feat-block-icon">📤</div>
+        <div>
+          <div class="feat-block-title">Campaign <span class="new-tag">NEW v2.4</span></div>
+          <div class="feat-block-sub"></div>
         </div>
       </div>
       <div class="feat-block-points">
