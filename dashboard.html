@@ -543,27 +543,7 @@ code{background:rgba(255,255,255,.06);padding:2px 7px;border-radius:4px;font-siz
     <div class="acct-row"><span class="acct-label">Email</span><span class="acct-value" id="acct-email">—</span></div>
     <div class="acct-row"><span class="acct-label">Phone</span><span class="acct-value" id="acct-phone">—</span></div>
     <div class="acct-row"><span class="acct-label">Member since</span><span class="acct-value" id="acct-since">—</span></div>
-    <div style="height:1px;background:var(--border);margin:16px 0;"></div>
-    <div style="font-size:13px;font-weight:700;color:var(--tp);margin-bottom:10px;">🧾 GST Invoice</div>
-    <div style="font-size:12px;color:var(--ts);margin-bottom:12px;line-height:1.6;">Need a GST invoice for your company? Fill in your details below and we'll email the invoice to you within 2 business days.</div>
-    <div id="gst-form">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
-        <div>
-          <label style="font-size:10px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:4px;">Company Name *</label>
-          <input type="text" id="gst-company" placeholder="Acme Pvt Ltd" style="width:100%;padding:8px 10px;background:var(--surf2);border:1px solid var(--border2);border-radius:7px;color:var(--tp);font-size:12px;font-family:inherit;outline:none;">
-        </div>
-        <div>
-          <label style="font-size:10px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:4px;">GSTIN *</label>
-          <input type="text" id="gst-gstin" placeholder="22AAAAA0000A1Z5" maxlength="15" style="width:100%;padding:8px 10px;background:var(--surf2);border:1px solid var(--border2);border-radius:7px;color:var(--tp);font-size:12px;font-family:inherit;outline:none;text-transform:uppercase;">
-        </div>
-      </div>
-      <div style="margin-bottom:10px;">
-        <label style="font-size:10px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:4px;">Billing Address *</label>
-        <textarea id="gst-address" rows="2" placeholder="Full billing address with city, state and PIN code" style="width:100%;padding:8px 10px;background:var(--surf2);border:1px solid var(--border2);border-radius:7px;color:var(--tp);font-size:12px;font-family:inherit;outline:none;resize:none;"></textarea>
-      </div>
-      <button onclick="requestGSTInvoice()" id="gst-btn" style="padding:9px 20px;background:var(--blue);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;">Request GST Invoice →</button>
-      <div id="gst-ok" style="display:none;margin-top:10px;padding:10px 12px;background:rgba(0,212,170,.08);border:1px solid rgba(0,212,170,.2);border-radius:8px;font-size:12px;color:#00D4AA;">✅ Invoice request sent! We'll email it to <strong id="gst-email-shown"></strong> within 2 business days.</div>
-    </div>
+
     <div class="acct-row"><span class="acct-label">License Key</span><span class="acct-value" id="acct-key" style="font-family:monospace;color:#00D4AA;font-size:13px;">—</span></div>
   </div>
 
@@ -964,49 +944,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
-// ── GST Invoice Request ───────────────────────────────────────────────────────
-async function requestGSTInvoice() {
-  var company = (document.getElementById('gst-company')?.value || '').trim();
-  var gstin   = (document.getElementById('gst-gstin')?.value   || '').trim().toUpperCase();
-  var address = (document.getElementById('gst-address')?.value || '').trim();
 
-  if (!company) { alert('Please enter your company name.'); return; }
-  if (!gstin || gstin.length !== 15) { alert('Please enter a valid 15-character GSTIN.'); return; }
-  if (!address) { alert('Please enter your billing address.'); return; }
-
-  var btn = document.getElementById('gst-btn');
-  btn.disabled = true; btn.textContent = 'Sending...';
-
-  var planName = user?.plan === 'free' ? 'Free Trial'
-               : user?.plan === 'starter' ? 'Starter Plan (₹650)'
-               : user?.plan === 'pro'     ? 'Pro Plan (₹1,200)'
-               : user?.plan === 'annual'  ? 'Annual Plan (₹10,000)' : 'Plan';
-
-  try {
-    await emailjs.send('service_2gph56v', 'template_ylb2tmp', {
-      to_email:      'support@pingin.in',
-      user_name:     user?.name || '',
-      user_email:    user?.email || '',
-      plan_name:     'GST Invoice Request — ' + planName,
-      plan_days:     '',
-      plan_price:    '',
-      expiry_date:   '',
-      license_key:   'GSTIN: ' + gstin + ' | Company: ' + company + ' | Address: ' + address,
-      download_url:  '',
-      dashboard_url: '',
-      from_name:     company + ' via PingIN Dashboard',
-      reply_to:      user?.email || 'support@pingin.in',
-      tagline:       'Billing Address: ' + address,
-      email_type:    'gst_invoice_request',
-    });
-    document.getElementById('gst-ok').style.display = 'block';
-    document.getElementById('gst-email-shown').textContent = user?.email || '';
-    btn.style.display = 'none';
-  } catch(e) {
-    btn.disabled = false; btn.textContent = 'Request GST Invoice →';
-    alert('Failed to send. Please email support@pingin.in directly with your GSTIN and company details.');
-  }
-}
 
 </script>
 </body>

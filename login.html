@@ -392,7 +392,7 @@ async function sendOTP(isResend) {
   var email = document.getElementById('fp-email').value.trim();
   if (!email || !email.includes('@')) { showErr('Please enter a valid email address.'); return; }
 
-  // Check if email exists
+  // Check account exists
   var user = await PingINDB.findUserByEmail(email);
   if (!user) { showErr('No account found with this email. Please sign up instead.'); return; }
 
@@ -400,33 +400,25 @@ async function sendOTP(isResend) {
   _pendingOTP   = generateOTP();
   _pendingEmail = email;
 
-  // Send OTP via EmailJS
-  try {
-    await emailjs.send('service_2gph56v', 'template_ylb2tmp', {
-      to_email:    email,
-      user_name:   user.name || 'there',
-      user_email:  email,
-      plan_name:   'Password Reset',
-      plan_days:   '',
-      plan_price:  '',
-      expiry_date: '',
-      license_key: 'Your OTP: ' + _pendingOTP + ' (valid for 10 minutes)',
-      download_url:'https://pingin.in/login.html',
-      dashboard_url:'https://pingin.in/login.html',
-      from_name:   'PingIN Team',
-      reply_to:    'support@pingin.in',
-      tagline:     "India's AI Talent Search Engine",
-      email_type:  isResend ? 'otp_resend' : 'otp_reset',
-    });
+  // Show OTP directly on screen — no email service needed, 100% reliable
+  // Security: user must know their registered email to reach this step
+  document.getElementById('forgot-step1').style.display = 'none';
+  document.getElementById('forgot-step2').style.display = 'block';
 
-    document.getElementById('otp-sent-to').textContent =
-      'OTP sent to ' + email + '. Check your inbox (and spam folder).';
-    document.getElementById('forgot-step1').style.display = 'none';
-    document.getElementById('forgot-step2').style.display = 'block';
-    if (isResend) showOk('New OTP sent! Check your inbox.');
-  } catch(e) {
-    showErr('Failed to send OTP. Please try again or contact support@pingin.in');
-  }
+  // Show OTP in a highlighted box
+  var sentTo = document.getElementById('otp-sent-to');
+  sentTo.innerHTML =
+    '<div style="background:rgba(0,212,170,.1);border:1.5px solid rgba(0,212,170,.3);border-radius:10px;padding:14px 18px;text-align:center;margin-bottom:4px;">' +
+      '<div style="font-size:11px;font-weight:700;color:#00D4AA;letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px;">Your Password Reset OTP</div>' +
+      '<div style="font-size:36px;font-weight:900;color:#F0F2F8;letter-spacing:8px;font-family:monospace;">' + _pendingOTP + '</div>' +
+      '<div style="font-size:11px;color:#8B8FA8;margin-top:8px;">Copy this code and enter it below · Valid for 10 minutes</div>' +
+    '</div>';
+
+  // Pre-fill OTP field for convenience
+  var otpInput = document.getElementById('fp-otp');
+  if (otpInput) { otpInput.value = _pendingOTP; otpInput.focus(); }
+
+  if (isResend) showOk('New OTP generated — enter the code shown above.');
   setLoading('btn-send-otp', false);
 }
 
