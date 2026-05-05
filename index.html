@@ -22,7 +22,7 @@
 .hero-actions{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:20px;}
 .hero-trust{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;font-size:12px;color:#4A4E62;margin-bottom:56px;}
 .hero-trust strong{color:#8B8FA8;}
-.hero-stats{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid rgba(255,255,255,.07);border-radius:18px;overflow:hidden;max-width:660px;margin:0 auto;background:rgba(17,19,24,.8);}
+.hero-stats{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid rgba(255,255,255,.07);border-radius:18px;overflow:hidden;max-width:660px;margin:0 auto;background:rgba(17,19,24,.8);}
 .hs{padding:22px 16px;text-align:center;border-right:1px solid rgba(255,255,255,.06);}
 .hs:last-child{border-right:none;}
 .hs-n{font-family:'Syne',sans-serif;font-size:30px;font-weight:900;color:#F0F2F8;line-height:1;margin-bottom:5px;}
@@ -46,9 +46,9 @@
 .feat-badge.p{background:rgba(124,58,237,.15);color:#A78BFA;border-color:rgba(124,58,237,.25);}
 .feat-desc{font-size:13px;color:#8B8FA8;line-height:1.65;}
 
-.how-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;max-width:960px;margin:0 auto;}
-@media(max-width:800px){.how-grid{grid-template-columns:repeat(2,1fr);}}
-@media(max-width:480px){.how-grid{grid-template-columns:1fr;}}
+.how-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:36px;}
+@media(max-width:800px){.how-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:36px;}}
+@media(max-width:480px){.how-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:36px;}}
 .how-step{text-align:center;padding:24px 16px;}
 .how-num{width:50px;height:50px;border-radius:50%;background:rgba(0,119,181,.12);color:#1A9ADE;font-size:21px;font-weight:900;font-family:'Syne',sans-serif;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;border:1px solid rgba(0,119,181,.2);}
 .how-title{font-size:15px;font-weight:700;color:#F0F2F8;margin-bottom:8px;}
@@ -86,7 +86,7 @@
 .st-go{background:rgba(0,119,181,.12);color:#5BB5FF;border:1px solid rgba(0,119,181,.2);}
 .st-q{background:rgba(255,255,255,.05);color:#4A4E62;border:1px solid rgba(255,255,255,.08);}
 
-.pricing-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;align-items:start;}
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;align-items:start;}
 @media(max-width:1000px){.pricing-grid{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:560px){.pricing-grid{grid-template-columns:1fr;}}
 
@@ -146,7 +146,7 @@
   <div class="hero-inner">
     <div class="hero-tag" style="flex-wrap:wrap;text-align:center;max-width:90vw;line-height:1.6;"><span class="hero-tag-dot" style="flex-shrink:0;"></span>GitHub &amp; Stack Overflow · Developer Search · v2.9.3</div>
     <h1 class="hero-title">Stop Searching.<br>Start <span class="grad">Finding.</span></h1>
-    <p class="hero-sub">India's most powerful AI recruiter Chrome Extension. Smart Search, Clone Search, JD Parsing, Developer Search on GitHub & Stack Overflow . Find the right candidate in minutes, not days.</p>
+    <p class="hero-sub">India's most powerful AI recruiter Chrome Extension.<br>Smart Search · AI Clone Search · JD Parsing · GitHub Dev Search<br>Find the right candidate in minutes, not days.</p>
     <div class="hero-actions">
       <a href="login.html" class="btn-primary btn-lg" style="background:linear-gradient(135deg,#0055CC,#00A890);border:none;">Get Started Free — No Card Needed →</a>
       <a href="extension.html" class="btn-outline btn-lg">Download Extension</a>
@@ -285,7 +285,7 @@
   <div class="container">
     <div class="section-center reveal">
       <div class="section-tag">How it works</div>
-      <h2 class="section-title">From search to hire in 4 steps</h2>
+      <h2 class="section-title">From search to hire in 3 steps</h2>
     </div>
     <div class="how-grid">
       <div class="how-step reveal"><div class="how-num">1</div><div class="how-title">Install in 2 minutes</div><div class="how-desc">Download PingIN, add to Chrome. Open LinkedIn — the extension activates automatically. No setup required.</div></div>
@@ -337,9 +337,9 @@
     </div>
     <div class="pricing-grid">
       <div class="price-card reveal"><div class="price-name">Free Trial</div><div class="price-amt">₹0</div><div class="price-period">5 days · no card needed</div><button class="price-btn outline" onclick="location.href='login.html'">Start Free Trial</button><div class="price-feats"><div class="pf">Smart Search</div><div class="pf">~10 profiles/search</div><div class="pf">Profile Scoring 0–100</div><div class="pf">Boolean Builder ⚡</div><div class="pf">Search History 🕐</div><div class="pf">Candidate Notes 📝</div><div class="pf no">AI modes</div></div></div>
-      <div class="price-card reveal"><div class="price-name">Starter</div><div class="price-amt">₹650</div><div class="price-period">15 days · ~₹43/day</div><button class="price-btn outline" onclick="checkAuthThenPay('starter')">Get Starter</button><div class="price-feats"><div class="pf">Smart + Developer Search</div><div class="pf">~50 profiles/search</div><div class="pf">JD Library 📁</div><div class="pf">Boolean Builder ⚡</div><div class="pf">Search History 🕐</div><div class="pf no">AI Clone / JD / Predictive</div></div></div>
-      <div class="price-card featured reveal"><div class="price-badge">🔥 Most Popular</div><div class="price-name">Pro</div><div class="price-amt">₹1,200</div><div class="price-period">per month · ~₹40/day</div><button class="price-btn primary" onclick="checkAuthThenPay('pro')">Start Pro</button><div class="price-feats"><div class="pf"><strong>All 6 search modes + AI</strong></div><div class="pf">Unlimited profiles</div><div class="pf">AI Clone + JD + Predictive</div><div class="pf">Developer Search (GitHub + SO)</div><div class="pf">JD Library + Notes + History</div></div></div>
-      <div class="price-card reveal" style="border-color:rgba(0,212,170,.3);"><div class="price-badge" style="background:linear-gradient(90deg,#009B7D,#00D4AA);">🏆 Best Value</div><div class="price-name">Annual</div><div class="price-amt" style="font-size:30px;">₹10,000</div><div class="price-period">365 days · ~₹27/day</div><button class="price-btn primary" style="background:linear-gradient(90deg,#0099CC,#00D4AA);" onclick="checkAuthThenPay('annual')">Get Annual</button><div class="price-feats"><div class="pf">Everything in Pro</div><div class="pf">All features · all year</div><div class="pf"></div><div class="pf">Save ₹4,400 vs monthly</div></div></div>
+      <div class="price-card reveal"><div class="price-name">Starter</div><div class="price-amt">₹650</div><div class="price-period">15 days · ~₹43/day</div><button class="price-btn primary" onclick="checkAuthThenPay('starter')">Get Starter</button><div class="price-feats"><div class="pf">Smart + Developer Search</div><div class="pf">~50 profiles/search</div><div class="pf">JD Library 📁</div><div class="pf">Boolean Builder ⚡</div><div class="pf">Search History 🕐</div><div class="pf no">AI Clone / JD / Predictive</div></div></div>
+      <div class="price-card featured reveal"><div class="price-badge">🔥 Most Popular</div><div class="price-name">Pro</div><div class="price-amt">₹1,200</div><div class="price-period">per month · ~₹40/day</div><button class="price-btn primary" onclick="checkAuthThenPay('pro')">Get Pro</button><div class="price-feats"><div class="pf"><strong>All 6 search modes + AI</strong></div><div class="pf">Unlimited profiles</div><div class="pf">AI Clone + JD + Predictive</div><div class="pf">Developer Search (GitHub + SO)</div><div class="pf">JD Library + Notes + History</div></div></div>
+      <div class="price-card reveal" style="border-color:rgba(0,212,170,.3);"><div class="price-badge" style="background:linear-gradient(90deg,#009B7D,#00D4AA);">🏆 Best Value</div><div class="price-name">Annual</div><div class="price-amt" style="font-size:30px;">₹10,000</div><div class="price-period">365 days · ~₹27/day</div><button class="price-btn" onclick="checkAuthThenPay('annual')" style="background:linear-gradient(135deg,#009B7D,#00D4AA);">Get Annual</button><div class="price-feats"><div class="pf">Everything in Pro</div><div class="pf">All features · all year</div><div class="pf"></div><div class="pf">Save ₹4,400 vs monthly</div></div></div>
     </div>
     <div style="text-align:center;margin-top:20px;"><a href="pricing.html" style="font-size:13px;color:#1A9ADE;font-weight:600;">View full comparison →</a></div>
   </div>

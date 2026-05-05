@@ -296,7 +296,20 @@ async function doSignIn(){
   // Use async PingINDB (Firebase + localStorage)
   try {
     const result=await PingINDB.loginUser(email,pass);
-    if(!result.ok){recordFailedAttempt();showErr(result.error);setLoading('btn-signin',false);return;}
+    if(!result.ok){
+      recordFailedAttempt();
+      var msg = result.error || 'Sign in failed.';
+      // If account not found, suggest they may need Firebase configured
+      if (msg.toLowerCase().includes('no account') || msg.toLowerCase().includes('not found')) {
+        msg = 'No account found with this email in this browser. ' +
+              'If you registered on a different browser or device, ' +
+              'your account is saved there. Please use the same browser you registered with, ' +
+              'or contact support@pingin.in with your registered email to recover your account.';
+      }
+      showErr(msg);
+      setLoading('btn-signin',false);
+      return;
+    }
     PingIN.saveSession({...result.user,loginAt:new Date().toISOString()});
     clearLoginAttempts();
     showOk('✓ Signed in! Redirecting to dashboard...');
