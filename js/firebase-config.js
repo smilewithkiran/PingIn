@@ -6,7 +6,7 @@
 // ═══════════════════════════════════════════════════════════════════
 
 const FIREBASE_CONFIG = {
-  apiKey:   "AIzaSyDf7EY6c4vuysukC7TJGRQ51GTQj_exL5w",   // ← only this needs to change
+  apiKey:   "YOUR_API_KEY",   // ← only this needs to change
   rtdbUrl:  "https://pingin-in-default-rtdb.asia-southeast1.firebasedatabase.app"
 };
 

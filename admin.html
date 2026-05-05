@@ -598,15 +598,19 @@ function changeAdminPassword() {
 }
 
 
-// ── Visitor Analytics via CountAPI ─────────────────────────────────────────
-const VISITOR_NS = 'pingin-in-v1';
-
+// ── Visitor Analytics via Firebase RTDB ─────────────────────────────────────
 async function fetchCount(key) {
   try {
-    const r = await fetch('https://api.countapi.xyz/get/' + VISITOR_NS + '/' + key);
+    if (typeof FIREBASE_CONFIG === 'undefined' || FIREBASE_CONFIG.apiKey === 'YOUR_API_KEY') return 0;
+    const base = FIREBASE_CONFIG.rtdbUrl;
+    const akey = FIREBASE_CONFIG.apiKey;
+    const path = key.startsWith('pages/') ? key : (
+      key.startsWith('day-') || key.startsWith('week-') ? key : key
+    );
+    const r = await fetch(`${base}/analytics/${path}.json?auth=${akey}`);
     if (!r.ok) return 0;
     const d = await r.json();
-    return d.value || 0;
+    return typeof d === 'number' ? d : 0;
   } catch(e) { return 0; }
 }
 
@@ -619,6 +623,16 @@ function fmtNum(n) {
 async function loadVisitorStats() {
   const btn = document.getElementById('refresh-visitors-btn');
   if (btn) { btn.textContent = '↻ Loading...'; btn.disabled = true; }
+  // Show zero and note if Firebase not configured
+  if (typeof FIREBASE_CONFIG === 'undefined' || FIREBASE_CONFIG.apiKey === 'YOUR_API_KEY') {
+    ['vt-total','vt-today','vt-week','vt-home'].forEach(id => {
+      const el = document.getElementById(id); if(el) el.innerHTML = '0';
+    });
+    const grid = document.getElementById('visitor-pages-grid');
+    if (grid) grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;font-size:12px;color:#4A4E62;padding:16px;">Add Firebase API key to enable visitor tracking</div>';
+    if (btn) { btn.textContent = '↻ Refresh'; btn.disabled = false; }
+    return;
+  }
 
   // Today + this week keys
   const today = new Date().toISOString().slice(0,10).replace(/-/g,'');
@@ -632,13 +646,13 @@ async function loadVisitorStats() {
     fetchCount('total'),
     fetchCount('day-' + today),
     fetchCount('week-' + week),
-    fetchCount('index'),
-    fetchCount('pricing'),
-    fetchCount('extension'),
-    fetchCount('login'),
-    fetchCount('payment'),
-    fetchCount('dashboard'),
-    fetchCount('contact'),
+    fetchCount('pages/index'),
+    fetchCount('pages/pricing'),
+    fetchCount('pages/extension'),
+    fetchCount('pages/login'),
+    fetchCount('pages/payment'),
+    fetchCount('pages/dashboard'),
+    fetchCount('pages/contact'),
   ]);
 
   // Set main tiles

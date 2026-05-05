@@ -151,7 +151,7 @@ code{background:rgba(255,255,255,.06);padding:2px 7px;border-radius:4px;font-siz
           <a href="faq.html">FAQ</a>
     </div>
     <div class="nav-cta">
-      <button onclick="PingIN.signOut()" class="btn-ghost-sm">Sign out</button>
+
     </div>
   </div>
 </nav>
@@ -230,10 +230,7 @@ code{background:rgba(255,255,255,.06);padding:2px 7px;border-radius:4px;font-siz
         <div style="font-size:13px;font-weight:700;color:#F0F2F8;margin-bottom:4px;">🐙 Developer Search</div>
         <div style="font-size:11px;color:#8B8FA8;line-height:1.5;">GitHub Smart Search + Stack Overflow Top Experts + LinkedIn Extractor</div>
       </div>
-      <div style="background:#0D0F14;border-radius:9px;padding:12px 14px;border:1px solid rgba(255,255,255,.05);">
 
-        <div style="font-size:11px;color:#8B8FA8;line-height:1.5;">AI-powered talent sourcing for Indian recruiters</div>
-      </div>
       <div style="background:#0D0F14;border-radius:9px;padding:12px 14px;border:1px solid rgba(255,255,255,.05);">
         <div style="font-size:13px;font-weight:700;color:#F0F2F8;margin-bottom:4px;">⚡ Boolean Builder</div>
         <div style="font-size:11px;color:#8B8FA8;line-height:1.5;">Add skill chips, choose AND/OR logic — Boolean string built automatically</div>
@@ -815,26 +812,26 @@ setTimeout(checkAndSendExpiryReminders, 2000);
     // Page key from URL
     var page = location.pathname.replace(/\/$/,'').split('/').pop().replace('.html','') || 'home';
     if (!page || page === '') page = 'home';
-    var NS = 'pingin-in-v1';
+    // Track visits via Firebase RTDB — works across all pages
+    if (typeof FIREBASE_CONFIG === 'undefined' || FIREBASE_CONFIG.apiKey === 'YOUR_API_KEY') return;
+    var base = FIREBASE_CONFIG.rtdbUrl;
+    var akey = FIREBASE_CONFIG.apiKey;
+    var today2 = new Date().toISOString().slice(0,10).replace(/-/g,'');
+    var d2 = new Date();
+    var week2 = d2.getFullYear() + 'W' + String(Math.ceil((((d2 - new Date(d2.getFullYear(),0,1))/864e5)+1)/7)).padStart(2,'0');
 
-    // Hit: total page view
-    fetch('https://api.countapi.xyz/hit/' + NS + '/' + page)
-      .catch(function(){});
+    function rtdbInc(path) {
+      var url = base + '/analytics/' + path + '.json?auth=' + akey;
+      fetch(url).then(function(r){ return r.json(); }).then(function(cur){
+        return fetch(url, {method:'PUT', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify((typeof cur === 'number' ? cur : 0) + 1)});
+      }).catch(function(){});
+    }
 
-    // Hit: total site visits (all pages combined)
-    fetch('https://api.countapi.xyz/hit/' + NS + '/total')
-      .catch(function(){});
-
-    // Hit: today's visits using date key
-    var today = new Date().toISOString().slice(0,10).replace(/-/g,'');
-    fetch('https://api.countapi.xyz/hit/' + NS + '/day-' + today)
-      .catch(function(){});
-
-    // Hit: this week
-    var d = new Date();
-    var week = d.getFullYear() + 'W' + Math.ceil((((d - new Date(d.getFullYear(),0,1))/864e5)+1)/7);
-    fetch('https://api.countapi.xyz/hit/' + NS + '/week-' + week)
-      .catch(function(){});
+    rtdbInc('total');
+    rtdbInc('pages/' + page);
+    rtdbInc('day-' + today2);
+    rtdbInc('week-' + week2);
   } catch(e) {}
 })();
 
