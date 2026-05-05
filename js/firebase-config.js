@@ -1,92 +1,87 @@
 // ═══════════════════════════════════════════════════════════════════
-// PingIN — Firebase Configuration
-// Replace YOUR_* values with your Firebase project credentials
+// PingIN — Firebase Realtime Database (REST API)
+// Uses your existing RTDB: pingin-in-default-rtdb
+// No Firestore needed. No rules setup needed.
+// Just replace YOUR_API_KEY below with your real key.
 // ═══════════════════════════════════════════════════════════════════
 
 const FIREBASE_CONFIG = {
-  apiKey:            "YOUR_API_KEY",
-  authDomain:        "pingin-in.firebaseapp.com",
-  projectId:         "pingin-in",
-  storageBucket:     "pingin-in.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId:             "YOUR_APP_ID"
+  apiKey:   "YOUR_API_KEY",   // ← only this needs to change
+  rtdbUrl:  "https://pingin-in-default-rtdb.asia-southeast1.firebasedatabase.app"
 };
 
-// Firebase state
-let _db  = null;
-let _fbReady = false;
-let _fbFailed = false;
+// ── Simple RTDB REST helpers ─────────────────────────────────────────────────
+// No SDK imports needed — just fetch() calls
 
-async function initFirebase() {
-  if (_fbReady)  return true;
-  if (_fbFailed) return false;
+function _rtdbReady() {
+  return FIREBASE_CONFIG.apiKey !== 'YOUR_API_KEY' && FIREBASE_CONFIG.rtdbUrl;
+}
 
-  // Don't try if not configured
-  if (FIREBASE_CONFIG.apiKey === 'YOUR_API_KEY') {
-    _fbFailed = true;
-    return false;
-  }
-
-  try {
-    const { initializeApp } = await import(
-      "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"
-    );
-    const { getFirestore } = await import(
-      "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"
-    );
-    const app = initializeApp(FIREBASE_CONFIG);
-    _db = getFirestore(app);
-    _fbReady = true;
-    console.log('[PingIN] Firebase ready ✓');
-    return true;
-  } catch(e) {
-    console.warn('[PingIN] Firebase unavailable — using localStorage', e.message);
-    _fbFailed = true;
-    return false;
-  }
+function _rtdbKey(email) {
+  // Firebase keys can't have . so encode email
+  return encodeURIComponent(email.toLowerCase().trim())
+    .replace(/\./g, '%2E').replace(/@/g, '%40');
 }
 
 async function fbGet(col, docId) {
-  if (!_db) return null;
+  if (!_rtdbReady()) return null;
   try {
-    const { doc, getDoc } = await import(
-      "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"
-    );
-    const snap = await getDoc(doc(_db, col, docId));
-    return snap.exists() ? snap.data() : null;
+    const url = `${FIREBASE_CONFIG.rtdbUrl}/${col}/${_rtdbKey(docId)}.json?auth=${FIREBASE_CONFIG.apiKey}`;
+    const r = await fetch(url);
+    if (!r.ok) return null;
+    const data = await r.json();
+    return data || null;
   } catch(e) { return null; }
 }
 
 async function fbSet(col, docId, data) {
-  if (!_db) return false;
+  if (!_rtdbReady()) return false;
   try {
-    const { doc, setDoc } = await import(
-      "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"
-    );
-    await setDoc(doc(_db, col, docId), data, { merge: true });
-    return true;
+    // GET existing first to merge
+    const existing = await fbGet(col, docId) || {};
+    const merged = { ...existing, ...data };
+    const url = `${FIREBASE_CONFIG.rtdbUrl}/${col}/${_rtdbKey(docId)}.json?auth=${FIREBASE_CONFIG.apiKey}`;
+    const r = await fetch(url, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(merged)
+    });
+    return r.ok;
   } catch(e) { return false; }
 }
 
 async function fbGetAll(col) {
-  if (!_db) return [];
+  if (!_rtdbReady()) return [];
   try {
-    const { collection, getDocs } = await import(
-      "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"
-    );
-    const snap = await getDocs(collection(_db, col));
-    return snap.docs.map(d => d.data());
+    const url = `${FIREBASE_CONFIG.rtdbUrl}/${col}.json?auth=${FIREBASE_CONFIG.apiKey}`;
+    const r = await fetch(url);
+    if (!r.ok) return [];
+    const data = await r.json();
+    if (!data) return [];
+    return Object.values(data);
   } catch(e) { return []; }
 }
 
-async function fbFindByPhone(phone) {
-  if (!_db || !phone) return null;
+async function fbDelete(col, docId) {
+  if (!_rtdbReady()) return false;
   try {
-    const { collection, getDocs, query, where } = await import(
-      "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"
-    );
-    const q = query(collection(_db, 'users'), where('phone', '==', phone));
-    const snap = await getDocs(q);
-    return snap.empty ? null : snap.docs[0].data();
+    const url = `${FIREBASE_CONFIG.rtdbUrl}/${col}/${_rtdbKey(docId)}.json?auth=${FIREBASE_CONFIG.apiKey}`;
+    const r = await fetch(url, { method: 'DELETE' });
+    return r.ok;
+  } catch(e) { return false; }
+}
+
+async function fbFindByPhone(phone) {
+  if (!_rtdbReady() || !phone) return null;
+  try {
+    // RTDB doesn't support queries without indexing — fetch all and filter
+    const all = await fbGetAll('users');
+    return all.find(u => u.phone === phone) || null;
   } catch(e) { return null; }
 }
+
+// Compatibility shims (pingin-firebase.js calls these)
+async function initFirebase() { return _rtdbReady(); }
+const _db = null;
+const _fbReady = false;
+const _fbFailed = false;

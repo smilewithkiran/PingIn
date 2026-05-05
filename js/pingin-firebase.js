@@ -8,6 +8,7 @@ const PingINDB = {
   async isFirebaseReady() {
     if (typeof FIREBASE_CONFIG === 'undefined') return false;
     if (FIREBASE_CONFIG.apiKey === 'YOUR_API_KEY') return false;
+    if (typeof _rtdbReady === 'function') return _rtdbReady();
     return await initFirebase();
   },
 
@@ -69,7 +70,7 @@ const PingINDB = {
       const passwordHash = await this.sha256(password);
       const user         = await this.findUserByEmail(emailKey);
 
-      if (!user) return { ok:false, error:'No account found. Please register first.' };
+      if (!user) return { ok:false, error:'No account found with this email. If you registered on a different browser or device, please use the same browser you signed up with, or contact support@pingin.in.' };
 
       const matchSHA    = user.passwordHash === passwordHash;
       const matchLegacy = user.passwordHash === btoa(password);
@@ -214,34 +215,17 @@ const PingINDB = {
     const emailKey = (email || '').toLowerCase().trim();
     if (!emailKey) return false;
 
-    // Method 1: Firestore REST API delete
-    if (this._db) {
-      try {
-        const { doc, deleteDoc } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
-        await deleteDoc(doc(this._db, 'users', emailKey));
-        console.log('[PingINDB] User deleted from Firestore:', emailKey);
-        return true;
-      } catch(e) {
-        console.warn('[PingINDB] Firestore delete failed, trying REST:', e);
-      }
-    }
-
-    // Method 2: Firestore REST API (works without SDK import)
+    // Delete from Realtime Database
     try {
-      const cfg = this._cfg || {};
-      if (cfg.projectId && cfg.apiKey) {
-        const url = `https://firestore.googleapis.com/v1/projects/${cfg.projectId}/databases/(default)/documents/users/${encodeURIComponent(emailKey)}?key=${cfg.apiKey}`;
-        const resp = await fetch(url, { method: 'DELETE' });
-        if (resp.ok || resp.status === 404) {
-          console.log('[PingINDB] User deleted via REST API:', emailKey);
-          return true;
-        }
+      const deleted = await fbDelete('users', emailKey);
+      if (deleted) {
+        console.log('[PingINDB] User deleted from RTDB:', emailKey);
+        return true;
       }
     } catch(e) {
-      console.warn('[PingINDB] REST delete failed:', e);
+      console.warn('[PingINDB] RTDB delete failed:', e);
     }
-
-    // Method 3: Mark as revoked (if delete fails, still prevents login)
+    // Fallback: mark as revoked
     try {
       await this.updateUser(emailKey, {
         plan: 'none',
@@ -250,12 +234,8 @@ const PingINDB = {
         licenseKey: 'REVOKED',
         removedAt: new Date().toISOString(),
       });
-      console.log('[PingINDB] User marked as revoked:', emailKey);
       return true;
-    } catch(e) {
-      console.warn('[PingINDB] Revoke fallback failed:', e);
-      return false;
-    }
+    } catch(e) { return false; }
   },
 
   // ── Trial abuse check ─────────────────────────────────────────────
