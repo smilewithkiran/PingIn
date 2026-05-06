@@ -596,11 +596,13 @@ function initDash() {
 }
 
 function setupExtensionDownload(plan, info) {
+  // Use absolute URL so download works from any page location on GitHub Pages
+  var _base = window.location.origin + window.location.pathname.replace(/\/[^/]*$/, '/');
   const PLAN_EXT = {
-    free:    { zip:'pingin-extension-free.zip',    label:'Download Free Trial Extension',  color:'#1A9ADE', features:['✅ Smart Search (LinkedIn profiles)','✅ 1 page per search (~10 profiles)','✅ Profile scoring 0–100','✅ ⚡ Boolean Builder','✅ 🕐 Search History (last 15)','✅ 📝 Candidate Notes','✅ CSV export','🔒 Developer Search (GitHub/SO) — locked','🔒 📁 JD Library — locked','🔒 AI Clone / JD / Predictive — locked'] },
-    starter: { zip:'pingin-extension-starter.zip', label:'Download Starter Extension',     color:'#1A9ADE', features:['✅ Smart Search — unlimited','✅ 🐙 GitHub Multi-Skill Search (1-3 skills)','✅ 📚 Stack Overflow Top Experts','✅ 🔍 GitHub Multi-Skill Search (1-3)','✅ Up to 5 pages per search (~50 profiles)','✅ ⚡ Boolean Builder','✅ 🕐 Search History','✅ 📝 Candidate Notes','✅ 📁 JD Library (save 10 JDs)','✅ CSV + Excel export','🔒 AI Clone / JD / Predictive — locked'] },
-    pro:     { zip:'pingin-extension-pro.zip',     label:'Download Pro Extension',         color:'#00D4AA', features:['✅ All 6 search modes + AI unlocked','✅ 🐙 GitHub Multi-Skill Search (1-3 skills)','✅ 📚 Stack Overflow Top Experts','✅ 🔍 GitHub Multi-Skill Search (1-3)','✅ 🐙 GitHub Profile Floating Banner','✅ ⚡ Boolean Builder','✅ 🕐 Search History','✅ 📝 Candidate Notes','✅ 📁 JD Library (save 10 JDs)','✅ Unlimited pages per search (1000+ profiles)','✅ AI Clone Search (Claude-powered)','✅ AI JD Parsing (Claude-powered)','✅ Predictive Sourcing','✅ CSV + Excel export'] },
-    annual:  { zip:'pingin-extension-annual.zip',  label:'Download Annual Extension',      color:'#00D4AA', features:['✅ EVERYTHING in Pro — all year','✅ 🐙 GitHub Smart Search + Profile Banner','✅ 📚 Stack Overflow Top Experts','✅ 🔍 GitHub Multi-Skill Search (1-3)','✅ ⚡ Boolean Builder','✅ 🕐 Search History','✅ 📝 Candidate Notes','✅ 📁 JD Library (save 10 JDs)','✅ Unlimited pages — all year','✅ All AI modes — all year','✅ Saves ₹4,400 vs 12× Pro'] },
+    free:    { zip:_base+'pingin-extension-free.zip',    label:'Download Free Trial Extension',  color:'#1A9ADE', features:['✅ Smart Search (LinkedIn profiles)','✅ 1 page per search (~10 profiles)','✅ Profile scoring 0–100','✅ ⚡ Boolean Builder','✅ 🕐 Search History (last 15)','✅ 📝 Candidate Notes','✅ CSV export','🔒 Developer Search (GitHub/SO) — locked','🔒 📁 JD Library — locked','🔒 AI Clone / JD / Predictive — locked'] },
+    starter: { zip:_base+'pingin-extension-starter.zip', label:'Download Starter Extension',     color:'#1A9ADE', features:['✅ Smart Search — unlimited','✅ 🐙 GitHub Multi-Skill Search (1-3 skills)','✅ 📚 Stack Overflow Top Experts','✅ 🔍 GitHub Multi-Skill Search (1-3)','✅ Up to 5 pages per search (~50 profiles)','✅ ⚡ Boolean Builder','✅ 🕐 Search History','✅ 📝 Candidate Notes','✅ 📁 JD Library (save 10 JDs)','✅ CSV + Excel export','🔒 AI Clone / JD / Predictive — locked'] },
+    pro:     { zip:_base+'pingin-extension-pro.zip',     label:'Download Pro Extension',         color:'#00D4AA', features:['✅ All 6 search modes + AI unlocked','✅ 🐙 GitHub Multi-Skill Search (1-3 skills)','✅ 📚 Stack Overflow Top Experts','✅ 🔍 GitHub Multi-Skill Search (1-3)','✅ 🐙 GitHub Profile Floating Banner','✅ ⚡ Boolean Builder','✅ 🕐 Search History','✅ 📝 Candidate Notes','✅ 📁 JD Library (save 10 JDs)','✅ Unlimited pages per search (1000+ profiles)','✅ AI Clone Search (Claude-powered)','✅ AI JD Parsing (Claude-powered)','✅ Predictive Sourcing','✅ CSV + Excel export'] },
+    annual:  { zip:_base+'pingin-extension-annual.zip',  label:'Download Annual Extension',      color:'#00D4AA', features:['✅ EVERYTHING in Pro — all year','✅ 🐙 GitHub Smart Search + Profile Banner','✅ 📚 Stack Overflow Top Experts','✅ 🔍 GitHub Multi-Skill Search (1-3)','✅ ⚡ Boolean Builder','✅ 🕐 Search History','✅ 📝 Candidate Notes','✅ 📁 JD Library (save 10 JDs)','✅ Unlimited pages — all year','✅ All AI modes — all year','✅ Saves ₹4,400 vs 12× Pro'] },
   };
 
   const btnEl   = document.getElementById('dl-btn-ext');
@@ -625,8 +627,39 @@ function setupExtensionDownload(plan, info) {
   const ext = PLAN_EXT[plan] || PLAN_EXT['free'];
 
   if (btnEl) {
-    btnEl.href     = ext.zip;
-    btnEl.download = ext.zip;
+    // Use fetch+blob for reliable download on GitHub Pages
+    btnEl.onclick = function(e) {
+      e.preventDefault();
+      var zipUrl = ext.zip;
+      btnEl.style.opacity = '0.6';
+      labelEl.textContent = 'Preparing download...';
+      fetch(zipUrl)
+        .then(function(r) {
+          if (!r.ok) throw new Error('File not found');
+          return r.blob();
+        })
+        .then(function(blob) {
+          var a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = zipUrl;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(a.href);
+          btnEl.style.opacity = '1';
+          labelEl.textContent = ext.label;
+        })
+        .catch(function(err) {
+          console.error('Download failed:', err);
+          // Fallback: direct navigation
+          window.location.href = zipUrl;
+          btnEl.style.opacity = '1';
+          labelEl.textContent = ext.label;
+        });
+      return false;
+    };
+    btnEl.href = '#';
+    btnEl.removeAttribute('download');
     btnEl.style.background = plan === 'pro' || plan === 'annual'
       ? 'linear-gradient(135deg,#009B7D,#00D4AA)'
       : 'linear-gradient(135deg,#0055B5,#0099DD)';
