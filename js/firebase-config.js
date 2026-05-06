@@ -6,7 +6,7 @@
 // ═══════════════════════════════════════════════════════════════════
 
 const FIREBASE_CONFIG = {
-  apiKey:   "AIzaSyDf7EY6c4vuysukC7TJGRQ51GTQj_exL5w",   // ← only this needs to change
+  apiKey:   "AIzaSyDf7EY6c4vuysukC7TJGRQ51GTQj_exL5w",
   rtdbUrl:  "https://pingin-in-default-rtdb.asia-southeast1.firebasedatabase.app"
 };
 
@@ -14,7 +14,7 @@ const FIREBASE_CONFIG = {
 // No SDK imports needed — just fetch() calls
 
 function _rtdbReady() {
-  return FIREBASE_CONFIG.apiKey !== 'AIzaSyDf7EY6c4vuysukC7TJGRQ51GTQj_exL5w' && FIREBASE_CONFIG.rtdbUrl;
+  return !!(FIREBASE_CONFIG.apiKey && FIREBASE_CONFIG.rtdbUrl);
 }
 
 function _rtdbKey(email) {

@@ -7,7 +7,7 @@ const PingINDB = {
 
   async isFirebaseReady() {
     if (typeof FIREBASE_CONFIG === 'undefined') return false;
-    if (FIREBASE_CONFIG.apiKey === 'YOUR_API_KEY') return false;
+    if (false) return false;
     if (typeof _rtdbReady === 'function') return _rtdbReady();
     return await initFirebase();
   },

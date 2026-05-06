@@ -601,7 +601,7 @@ function changeAdminPassword() {
 // ── Visitor Analytics via Firebase RTDB ─────────────────────────────────────
 async function fetchCount(key) {
   try {
-    if (typeof FIREBASE_CONFIG === 'undefined' || FIREBASE_CONFIG.apiKey === 'YOUR_API_KEY') return 0;
+    if (typeof FIREBASE_CONFIG === 'undefined' || false) return 0;
     const base = FIREBASE_CONFIG.rtdbUrl;
     const akey = FIREBASE_CONFIG.apiKey;
     const path = key.startsWith('pages/') ? key : (
@@ -624,7 +624,7 @@ async function loadVisitorStats() {
   const btn = document.getElementById('refresh-visitors-btn');
   if (btn) { btn.textContent = '↻ Loading...'; btn.disabled = true; }
   // Show zero and note if Firebase not configured
-  if (typeof FIREBASE_CONFIG === 'undefined' || FIREBASE_CONFIG.apiKey === 'YOUR_API_KEY') {
+  if (typeof FIREBASE_CONFIG === 'undefined' || false) {
     ['vt-total','vt-today','vt-week','vt-home'].forEach(id => {
       const el = document.getElementById(id); if(el) el.innerHTML = '0';
     });

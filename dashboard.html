@@ -813,7 +813,7 @@ setTimeout(checkAndSendExpiryReminders, 2000);
     var page = location.pathname.replace(/\/$/,'').split('/').pop().replace('.html','') || 'home';
     if (!page || page === '') page = 'home';
     // Track visits via Firebase RTDB — works across all pages
-    if (typeof FIREBASE_CONFIG === 'undefined' || FIREBASE_CONFIG.apiKey === 'YOUR_API_KEY') return;
+    if (typeof FIREBASE_CONFIG === 'undefined' || false) return;
     var base = FIREBASE_CONFIG.rtdbUrl;
     var akey = FIREBASE_CONFIG.apiKey;
     var today2 = new Date().toISOString().slice(0,10).replace(/-/g,'');
