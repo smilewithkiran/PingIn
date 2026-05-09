@@ -628,38 +628,10 @@ function setupExtensionDownload(plan, info) {
 
   if (btnEl) {
     // Use fetch+blob for reliable download on GitHub Pages
-    btnEl.onclick = function(e) {
-      e.preventDefault();
-      var zipUrl = ext.zip;
-      btnEl.style.opacity = '0.6';
-      labelEl.textContent = 'Preparing download...';
-      fetch(zipUrl)
-        .then(function(r) {
-          if (!r.ok) throw new Error('File not found');
-          return r.blob();
-        })
-        .then(function(blob) {
-          var a = document.createElement('a');
-          a.href = URL.createObjectURL(blob);
-          a.download = zipUrl;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          URL.revokeObjectURL(a.href);
-          btnEl.style.opacity = '1';
-          labelEl.textContent = ext.label;
-        })
-        .catch(function(err) {
-          console.error('Download failed:', err);
-          // Fallback: direct navigation
-          window.location.href = zipUrl;
-          btnEl.style.opacity = '1';
-          labelEl.textContent = ext.label;
-        });
-      return false;
-    };
-    btnEl.href = '#';
-    btnEl.removeAttribute('download');
+    // Direct href download — most reliable approach for GitHub Pages same-origin files
+    btnEl.onclick = null;
+    btnEl.href = ext.zip;
+    btnEl.setAttribute('download', ext.zip.split('/').pop());
     btnEl.style.background = plan === 'pro' || plan === 'annual'
       ? 'linear-gradient(135deg,#009B7D,#00D4AA)'
       : 'linear-gradient(135deg,#0055B5,#0099DD)';
