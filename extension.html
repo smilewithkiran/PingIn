@@ -334,27 +334,33 @@ document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
     // Page key from URL
     var page = location.pathname.replace(/\/$/,'').split('/').pop().replace('.html','') || 'home';
     if (!page || page === '') page = 'home';
-    // Track visits via Firebase RTDB — works across all pages
-    if (!FIREBASE_CONFIG?.rtdbUrl || !FIREBASE_CONFIG?.apiKey) return;
-    var base = FIREBASE_CONFIG.rtdbUrl;
-    var akey = FIREBASE_CONFIG.apiKey;
-    var today2 = new Date().toISOString().slice(0,10).replace(/-/g,'');
-    var d2 = new Date();
-    var week2 = d2.getFullYear() + 'W' + String(Math.ceil((((d2 - new Date(d2.getFullYear(),0,1))/864e5)+1)/7)).padStart(2,'0');
+    // ── Page view tracking via Firebase RTDB ──────────────────────────────
+    try {
+      if (!window.FIREBASE_CONFIG || !FIREBASE_CONFIG.rtdbUrl || !FIREBASE_CONFIG.apiKey) return;
+      var _rtdbBase = FIREBASE_CONFIG.rtdbUrl;
+      var _rtdbKey  = FIREBASE_CONFIG.apiKey;
+      var _today    = new Date().toISOString().slice(0,10).replace(/-/g,'');
+      var _d        = new Date();
+      var _week     = _d.getFullYear() + 'W' + String(Math.ceil(((((_d - new Date(_d.getFullYear(),0,1))/864e5)+1)/7))).padStart(2,'0');
 
-    function rtdbInc(path) {
-      var url = base + '/analytics/' + path + '.json?auth=' + akey;
-      fetch(url).then(function(r){ return r.json(); }).then(function(cur){
-        return fetch(url, {method:'PUT', headers:{'Content-Type':'application/json'},
-          body: JSON.stringify((typeof cur === 'number' ? cur : 0) + 1)});
-      }).catch(function(){});
-    }
+      function _inc(path) {
+        var url = _rtdbBase + '/analytics/' + path + '.json?auth=' + _rtdbKey;
+        fetch(url)
+          .then(function(r){ return r.ok ? r.json() : 0; })
+          .then(function(cur){
+            return fetch(url, {
+              method: 'PUT',
+              headers: {'Content-Type':'application/json'},
+              body: String(((typeof cur === 'number' ? cur : 0) + 1))
+            });
+          }).catch(function(){});
+      }
 
-    rtdbInc('total');
-    rtdbInc('pages/' + page);
-    rtdbInc('day-' + today2);
-    rtdbInc('week-' + week2);
-  } catch(e) {}
+      _inc('total');
+      _inc('pages/' + page);
+      _inc('day-' + _today);
+      _inc('week-' + _week);
+    } catch(e) {}
 })();
 </script>
 </body>

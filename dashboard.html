@@ -262,7 +262,7 @@ code{background:rgba(255,255,255,.06);padding:2px 7px;border-radius:4px;font-siz
     </div>
 
     <!-- Download button — href set dynamically by JS -->
-    <a id="dl-btn-ext" href="#" class="dl-btn" download>
+    <a id="dl-btn-ext" href="#" class="dl-btn">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 15V7M8 11l4 4 4-4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 19h14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
       <span id="dl-btn-label">Download Extension (ZIP)</span>
     </a>
@@ -596,15 +596,6 @@ function initDash() {
 }
 
 function setupExtensionDownload(plan, info) {
-  // Use absolute URL so download works from any page location on GitHub Pages
-  var _base = window.location.origin + window.location.pathname.replace(/\/[^/]*$/, '/');
-  const PLAN_EXT = {
-    free:    { zip:_base+'pingin-extension-free.zip',    label:'Download Free Trial Extension',  color:'#1A9ADE', features:['✅ Smart Search (LinkedIn profiles)','✅ 1 page per search (~10 profiles)','✅ Profile scoring 0–100','✅ ⚡ Boolean Builder','✅ 🕐 Search History (last 15)','✅ 📝 Candidate Notes','✅ CSV export','🔒 Developer Search (GitHub/SO) — locked','🔒 📁 JD Library — locked','🔒 AI Clone / JD / Predictive — locked'] },
-    starter: { zip:_base+'pingin-extension-starter.zip', label:'Download Starter Extension',     color:'#1A9ADE', features:['✅ Smart Search — unlimited','✅ 🐙 GitHub Multi-Skill Search (1-3 skills)','✅ 📚 Stack Overflow Top Experts','✅ 🔍 GitHub Multi-Skill Search (1-3)','✅ Up to 5 pages per search (~50 profiles)','✅ ⚡ Boolean Builder','✅ 🕐 Search History','✅ 📝 Candidate Notes','✅ 📁 JD Library (save 10 JDs)','✅ CSV + Excel export','🔒 AI Clone / JD / Predictive — locked'] },
-    pro:     { zip:_base+'pingin-extension-pro.zip',     label:'Download Pro Extension',         color:'#00D4AA', features:['✅ All 6 search modes + AI unlocked','✅ 🐙 GitHub Multi-Skill Search (1-3 skills)','✅ 📚 Stack Overflow Top Experts','✅ 🔍 GitHub Multi-Skill Search (1-3)','✅ 🐙 GitHub Profile Floating Banner','✅ ⚡ Boolean Builder','✅ 🕐 Search History','✅ 📝 Candidate Notes','✅ 📁 JD Library (save 10 JDs)','✅ Unlimited pages per search (1000+ profiles)','✅ AI Clone Search (Claude-powered)','✅ AI JD Parsing (Claude-powered)','✅ Predictive Sourcing','✅ CSV + Excel export'] },
-    annual:  { zip:_base+'pingin-extension-annual.zip',  label:'Download Annual Extension',      color:'#00D4AA', features:['✅ EVERYTHING in Pro — all year','✅ 🐙 GitHub Smart Search + Profile Banner','✅ 📚 Stack Overflow Top Experts','✅ 🔍 GitHub Multi-Skill Search (1-3)','✅ ⚡ Boolean Builder','✅ 🕐 Search History','✅ 📝 Candidate Notes','✅ 📁 JD Library (save 10 JDs)','✅ Unlimited pages — all year','✅ All AI modes — all year','✅ Saves ₹4,400 vs 12× Pro'] },
-  };
-
   const btnEl   = document.getElementById('dl-btn-ext');
   const labelEl = document.getElementById('dl-btn-label');
   const subEl   = document.getElementById('dl-sub');
@@ -612,49 +603,67 @@ function setupExtensionDownload(plan, info) {
   const featList= document.getElementById('plan-features-list');
   const noplan  = document.getElementById('dl-no-plan');
 
+  // ZIP filenames — must exist at GitHub repo root
+  const ZIPS = {
+    free:    'pingin-extension-free.zip',
+    starter: 'pingin-extension-starter.zip',
+    pro:     'pingin-extension-pro.zip',
+    annual:  'pingin-extension-annual.zip',
+  };
+  const LABELS = {
+    free:    'Download Free Trial Extension',
+    starter: 'Download Starter Extension',
+    pro:     'Download Pro Extension',
+    annual:  'Download Annual Extension',
+  };
+  const COLORS = {
+    free: 'linear-gradient(135deg,#0055B5,#0099DD)',
+    starter: 'linear-gradient(135deg,#0055B5,#0099DD)',
+    pro: 'linear-gradient(135deg,#009B7D,#00D4AA)',
+    annual: 'linear-gradient(135deg,#009B7D,#00D4AA)',
+  };
+  const FEATURES = {
+    free:    ['✅ Smart Search','✅ Boolean Builder','✅ Search History','✅ Candidate Notes','✅ CSV export','🔒 Developer Search — locked','🔒 AI Clone / JD / Predictive — locked'],
+    starter: ['✅ Smart Search — unlimited','✅ Developer Search (GitHub + SO)','✅ 5 pages per search','✅ Boolean Builder','✅ JD Library','✅ Candidate Notes','✅ CSV + Excel export','🔒 AI Clone / JD / Predictive — locked'],
+    pro:     ['✅ All 6 AI search modes','✅ Developer Search (GitHub + SO)','✅ Unlimited pages','✅ AI Clone Search','✅ AI JD Parsing','✅ Predictive Sourcing','✅ Boolean Builder','✅ JD Library','✅ Candidate Notes','✅ CSV + Excel export'],
+    annual:  ['✅ EVERYTHING in Pro — all year','✅ All 6 AI modes','✅ Developer Search','✅ Unlimited pages','✅ Boolean Builder','✅ JD Library','✅ Candidate Notes','✅ Saves ₹4,400 vs 12× Pro'],
+  };
+
   if (!plan || plan === 'none') {
-    if (btnEl)  btnEl.style.display  = 'none';
+    if (btnEl)  btnEl.style.display = 'none';
     if (noplan) noplan.style.display = 'block';
     return;
   }
 
   if (info && info.expired) {
-    if (btnEl)  btnEl.style.display  = 'none';
+    if (btnEl)  btnEl.style.display = 'none';
     if (noplan) { noplan.style.display = 'block'; noplan.innerHTML = '❌ Your plan has expired. <a href="pricing.html" style="color:#F09595;font-weight:700;">Renew now →</a>'; }
     return;
   }
 
-  const ext = PLAN_EXT[plan] || PLAN_EXT['free'];
+  var zipFile = ZIPS[plan] || ZIPS['free'];
+  var label   = LABELS[plan] || LABELS['free'];
 
   if (btnEl) {
-    // Use fetch+blob for reliable download on GitHub Pages
-    // window.location.href triggers download for same-origin ZIP on GitHub Pages
-    btnEl.href = '#';
-    btnEl.removeAttribute('download');
-    btnEl.onclick = function(e) {
-      e.preventDefault();
-      // Create invisible anchor and click — most reliable cross-browser download
-      var a = document.createElement('a');
-      a.href = ext.zip;
-      a.download = ext.zip.split('/').pop();
-      a.style.display = 'none';
-      document.body.appendChild(a);
-      a.click();
-      setTimeout(function(){ document.body.removeChild(a); }, 100);
-    };
-    btnEl.style.background = plan === 'pro' || plan === 'annual'
-      ? 'linear-gradient(135deg,#009B7D,#00D4AA)'
-      : 'linear-gradient(135deg,#0055B5,#0099DD)';
+    // Simple direct href + download attribute on the anchor
+    // Works for same-origin files on GitHub Pages
+    btnEl.href     = zipFile;
+    btnEl.setAttribute('download', zipFile);
+    btnEl.style.display    = 'inline-flex';
+    btnEl.style.background = COLORS[plan] || COLORS['free'];
+    btnEl.onclick = null; // let the native anchor handle it
   }
-  if (labelEl) labelEl.textContent = ext.label;
-  if (subEl)   subEl.textContent   = 'Your ' + (PLAN_EXT[plan]?.label?.replace('Download ','')?.replace(' Extension','') || plan) + ' extension is ready — features are pre-activated inside.';
 
-  // Show plan feature list
+  if (labelEl) labelEl.textContent = label;
+  if (subEl)   subEl.textContent   = 'Your extension is ready — plan features are pre-activated inside.';
+
+  // Feature list
   if (featBox && featList) {
     featBox.style.display = 'block';
-    featList.innerHTML = ext.features.map(f => {
-      const isLocked = f.startsWith('🔒');
-      return '<div style="display:flex;align-items:flex-start;gap:8px;color:' + (isLocked ? '#4A4E62' : '#E0E3F0') + ';font-size:12px;">' + f + '</div>';
+    var feats = FEATURES[plan] || FEATURES['free'];
+    featList.innerHTML = feats.map(function(f) {
+      var locked = f.startsWith('🔒');
+      return '<div style="display:flex;align-items:flex-start;gap:8px;color:' + (locked ? '#4A4E62' : '#E0E3F0') + ';font-size:12px;margin-bottom:4px;">' + f + '</div>';
     }).join('');
   }
 }
@@ -827,27 +836,33 @@ setTimeout(checkAndSendExpiryReminders, 2000);
     // Page key from URL
     var page = location.pathname.replace(/\/$/,'').split('/').pop().replace('.html','') || 'home';
     if (!page || page === '') page = 'home';
-    // Track visits via Firebase RTDB — works across all pages
-    if (!FIREBASE_CONFIG?.rtdbUrl || !FIREBASE_CONFIG?.apiKey) return;
-    var base = FIREBASE_CONFIG.rtdbUrl;
-    var akey = FIREBASE_CONFIG.apiKey;
-    var today2 = new Date().toISOString().slice(0,10).replace(/-/g,'');
-    var d2 = new Date();
-    var week2 = d2.getFullYear() + 'W' + String(Math.ceil((((d2 - new Date(d2.getFullYear(),0,1))/864e5)+1)/7)).padStart(2,'0');
+    // ── Page view tracking via Firebase RTDB ──────────────────────────────
+    try {
+      if (!window.FIREBASE_CONFIG || !FIREBASE_CONFIG.rtdbUrl || !FIREBASE_CONFIG.apiKey) return;
+      var _rtdbBase = FIREBASE_CONFIG.rtdbUrl;
+      var _rtdbKey  = FIREBASE_CONFIG.apiKey;
+      var _today    = new Date().toISOString().slice(0,10).replace(/-/g,'');
+      var _d        = new Date();
+      var _week     = _d.getFullYear() + 'W' + String(Math.ceil(((((_d - new Date(_d.getFullYear(),0,1))/864e5)+1)/7))).padStart(2,'0');
 
-    function rtdbInc(path) {
-      var url = base + '/analytics/' + path + '.json?auth=' + akey;
-      fetch(url).then(function(r){ return r.json(); }).then(function(cur){
-        return fetch(url, {method:'PUT', headers:{'Content-Type':'application/json'},
-          body: JSON.stringify((typeof cur === 'number' ? cur : 0) + 1)});
-      }).catch(function(){});
-    }
+      function _inc(path) {
+        var url = _rtdbBase + '/analytics/' + path + '.json?auth=' + _rtdbKey;
+        fetch(url)
+          .then(function(r){ return r.ok ? r.json() : 0; })
+          .then(function(cur){
+            return fetch(url, {
+              method: 'PUT',
+              headers: {'Content-Type':'application/json'},
+              body: String(((typeof cur === 'number' ? cur : 0) + 1))
+            });
+          }).catch(function(){});
+      }
 
-    rtdbInc('total');
-    rtdbInc('pages/' + page);
-    rtdbInc('day-' + today2);
-    rtdbInc('week-' + week2);
-  } catch(e) {}
+      _inc('total');
+      _inc('pages/' + page);
+      _inc('day-' + _today);
+      _inc('week-' + _week);
+    } catch(e) {}
 })();
 
 // ── How to Use Guide ─────────────────────────────────────────────
