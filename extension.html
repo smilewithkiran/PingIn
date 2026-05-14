@@ -335,7 +335,7 @@ document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
     var page = location.pathname.replace(/\/$/,'').split('/').pop().replace('.html','') || 'home';
     if (!page || page === '') page = 'home';
     // Track visits via Firebase RTDB — works across all pages
-    if (typeof FIREBASE_CONFIG === 'undefined' || false) return;
+    if (!FIREBASE_CONFIG?.rtdbUrl || !FIREBASE_CONFIG?.apiKey) return;
     var base = FIREBASE_CONFIG.rtdbUrl;
     var akey = FIREBASE_CONFIG.apiKey;
     var today2 = new Date().toISOString().slice(0,10).replace(/-/g,'');
@@ -621,7 +621,7 @@ document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
     var page = location.pathname.replace(/\/$/,'').split('/').pop().replace('.html','') || 'home';
     if (!page || page === '') page = 'home';
     // Track visits via Firebase RTDB — works across all pages
-    if (typeof FIREBASE_CONFIG === 'undefined' || false) return;
+    if (!FIREBASE_CONFIG?.rtdbUrl || !FIREBASE_CONFIG?.apiKey) return;
     var base = FIREBASE_CONFIG.rtdbUrl;
     var akey = FIREBASE_CONFIG.apiKey;
     var today2 = new Date().toISOString().slice(0,10).replace(/-/g,'');

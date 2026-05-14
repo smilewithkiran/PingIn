@@ -142,17 +142,10 @@ body{min-height:100vh;display:flex;align-items:stretch;background:#0A0C10;overfl
   <!-- SIGN IN -->
   <div id="form-signin">
     <div class="f-group">
-      <label class="f-lbl">Email address</label>
-      <input class="f-inp" type="email" id="si-email" placeholder="you@company.com">
+      <label class="f-lbl">Contact Number *</label>
+      <input class="f-inp" type="tel" id="si-phone" placeholder="+91 98765 43210" autocomplete="tel">
+      <div style="font-size:11px;color:#4A4E62;margin-top:5px;">Enter the phone number you registered with</div>
     </div>
-    <div class="f-group">
-      <label class="f-lbl">Password</label>
-      <div class="pass-wrap">
-        <input class="f-inp" type="password" id="si-pass" placeholder="Your password">
-        <button class="show-pass" type="button" onclick="togglePass('si-pass',this)">Show</button>
-      </div>
-    </div>
-    <span class="forgot-link" onclick="forgotPassword()">Forgot password?</span>
     <button class="f-btn primary" id="btn-signin" onclick="doSignIn()">Sign In →</button>
     <p class="terms-note" style="margin-top:16px;">Don't have an account? <span style="color:#1A9ADE;cursor:pointer;font-weight:600;" onclick="switchTab('signup')">Create one free →</span></p>
   </div>
@@ -201,19 +194,12 @@ body{min-height:100vh;display:flex;align-items:stretch;background:#0A0C10;overfl
   <!-- SIGN UP -->
   <div id="form-signup" style="display:none;">
     <div class="f-group">
-      <label class="f-lbl">Full name</label>
-      <input class="f-inp" type="text" id="su-name" placeholder="Your full name">
+      <label class="f-lbl">Full Name *</label>
+      <input class="f-inp" type="text" id="su-name" placeholder="Your full name" autocomplete="name">
     </div>
     <div class="f-group">
-      <label class="f-lbl">Email address</label>
-      <input class="f-inp" type="email" id="su-email" placeholder="you@company.com">
-    </div>
-    <div class="f-group">
-      <label class="f-lbl">Password</label>
-      <div class="pass-wrap">
-        <input class="f-inp" type="password" id="su-pass" placeholder="Min 6 characters">
-        <button class="show-pass" type="button" onclick="togglePass('su-pass',this)">Show</button>
-      </div>
+      <label class="f-lbl">Email Address *</label>
+      <input class="f-inp" type="email" id="su-email" placeholder="you@company.com" autocomplete="email">
     </div>
     <div class="f-group">
       <label class="f-lbl">Contact Number *</label>
@@ -287,30 +273,20 @@ function clearLoginAttempts() {
 }
 
 async function doSignIn(){
-  const email=document.getElementById('si-email').value.trim();
-  const pass=document.getElementById('si-pass').value;
-  if(!email){showErr('Please enter your email address.');return;}
-  if(!pass){showErr('Please enter your password.');return;}
+  const phone = (document.getElementById('si-phone')?.value||'').trim();
+  if(!phone){ showErr('Please enter your contact number.'); return; }
   if (!checkLoginRateLimit()) return;
   setLoading('btn-signin',true);
-  // Use async PingINDB (Firebase + localStorage)
   try {
-    const result=await PingINDB.loginUser(email,pass);
-    if(!result.ok){
+    // Find user by phone number
+    const user = await PingINDB.findUserByPhone(phone.replace(/\s+/g,''));
+    if(!user){
       recordFailedAttempt();
-      var msg = result.error || 'Sign in failed.';
-      // If account not found, suggest they may need Firebase configured
-      if (msg.toLowerCase().includes('no account') || msg.toLowerCase().includes('not found')) {
-        msg = 'No account found with this email in this browser. ' +
-              'If you registered on a different browser or device, ' +
-              'your account is saved there. Please use the same browser you registered with, ' +
-              'or contact support@pingin.in with your registered email to recover your account.';
-      }
-      showErr(msg);
+      showErr('No account found with this number. Please check the number or create a new account.');
       setLoading('btn-signin',false);
       return;
     }
-    PingIN.saveSession({...result.user,loginAt:new Date().toISOString()});
+    PingIN.saveSession({...user, loginAt:new Date().toISOString()});
     clearLoginAttempts();
     showOk('✓ Signed in! Redirecting to dashboard...');
     setTimeout(()=>{
@@ -326,21 +302,29 @@ async function doSignIn(){
 async function doSignUp(){
   const name=document.getElementById('su-name').value.trim();
   const email=document.getElementById('su-email').value.trim();
-  const pass=document.getElementById('su-pass').value;
-  const phone=document.getElementById('su-phone').value.trim();
+  const phone=(document.getElementById('su-phone')?.value||'').trim();
   if(!name){showErr('Please enter your full name.');return;}
   if(!email||!email.includes('@')){showErr('Please enter a valid email address.');return;}
-  if(!pass||pass.length<6){showErr('Password must be at least 6 characters.');return;}
-  if(!phone){showErr('Please enter your contact number.');return;}
+  if(!phone||phone.replace(/\D/g,'').length<10){showErr('Please enter a valid 10-digit contact number.');return;}
   setLoading('btn-signup',true);
-  // Check for duplicate email/phone and trial abuse
+  // Check if phone already registered
+  const phoneClean = phone.replace(/\s+/g,'');
+  const existingPhone = await PingINDB.findUserByPhone(phoneClean);
+  if(existingPhone){
+    showErr('This number is already registered. Please sign in instead.');
+    setLoading('btn-signup',false);
+    return;
+  }
+  // Check for duplicate email and trial abuse
   const trialCheck = await PingINDB.hasUsedTrial(email.toLowerCase(), phone);
   if (trialCheck.blocked) {
     showErr(trialCheck.msg);
     setLoading('btn-signup',false);
     return;
   }
-  const result = await PingINDB.registerUser({name,email,phone,password:pass});
+  // No password — generate a token internally
+  const autoPass = 'pp_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+  const result = await PingINDB.registerUser({name,email,phone,password:autoPass});
   if(!result.ok){showErr(result.error);setLoading('btn-signup',false);return;}
   PingIN.saveSession({...result.user,loginAt:new Date().toISOString()});
   showOk('✅ Account created! Sending details to '+email+'...');
@@ -478,7 +462,7 @@ document.addEventListener('keydown',e=>{
     var page = location.pathname.replace(/\/$/,'').split('/').pop().replace('.html','') || 'home';
     if (!page || page === '') page = 'home';
     // Track visits via Firebase RTDB — works across all pages
-    if (typeof FIREBASE_CONFIG === 'undefined' || false) return;
+    if (!FIREBASE_CONFIG?.rtdbUrl || !FIREBASE_CONFIG?.apiKey) return;
     var base = FIREBASE_CONFIG.rtdbUrl;
     var akey = FIREBASE_CONFIG.apiKey;
     var today2 = new Date().toISOString().slice(0,10).replace(/-/g,'');

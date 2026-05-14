@@ -628,10 +628,20 @@ function setupExtensionDownload(plan, info) {
 
   if (btnEl) {
     // Use fetch+blob for reliable download on GitHub Pages
-    // Direct href download — most reliable approach for GitHub Pages same-origin files
-    btnEl.onclick = null;
-    btnEl.href = ext.zip;
-    btnEl.setAttribute('download', ext.zip.split('/').pop());
+    // window.location.href triggers download for same-origin ZIP on GitHub Pages
+    btnEl.href = '#';
+    btnEl.removeAttribute('download');
+    btnEl.onclick = function(e) {
+      e.preventDefault();
+      // Create invisible anchor and click — most reliable cross-browser download
+      var a = document.createElement('a');
+      a.href = ext.zip;
+      a.download = ext.zip.split('/').pop();
+      a.style.display = 'none';
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(function(){ document.body.removeChild(a); }, 100);
+    };
     btnEl.style.background = plan === 'pro' || plan === 'annual'
       ? 'linear-gradient(135deg,#009B7D,#00D4AA)'
       : 'linear-gradient(135deg,#0055B5,#0099DD)';
@@ -818,7 +828,7 @@ setTimeout(checkAndSendExpiryReminders, 2000);
     var page = location.pathname.replace(/\/$/,'').split('/').pop().replace('.html','') || 'home';
     if (!page || page === '') page = 'home';
     // Track visits via Firebase RTDB — works across all pages
-    if (typeof FIREBASE_CONFIG === 'undefined' || false) return;
+    if (!FIREBASE_CONFIG?.rtdbUrl || !FIREBASE_CONFIG?.apiKey) return;
     var base = FIREBASE_CONFIG.rtdbUrl;
     var akey = FIREBASE_CONFIG.apiKey;
     var today2 = new Date().toISOString().slice(0,10).replace(/-/g,'');

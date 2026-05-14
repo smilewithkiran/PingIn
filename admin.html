@@ -601,13 +601,9 @@ function changeAdminPassword() {
 // ── Visitor Analytics via Firebase RTDB ─────────────────────────────────────
 async function fetchCount(key) {
   try {
-    if (typeof FIREBASE_CONFIG === 'undefined' || false) return 0;
-    const base = FIREBASE_CONFIG.rtdbUrl;
-    const akey = FIREBASE_CONFIG.apiKey;
-    const path = key.startsWith('pages/') ? key : (
-      key.startsWith('day-') || key.startsWith('week-') ? key : key
-    );
-    const r = await fetch(`${base}/analytics/${path}.json?auth=${akey}`);
+    if (!FIREBASE_CONFIG?.rtdbUrl || !FIREBASE_CONFIG?.apiKey) return 0;
+    const url = `${FIREBASE_CONFIG.rtdbUrl}/analytics/${key}.json?auth=${FIREBASE_CONFIG.apiKey}`;
+    const r = await fetch(url);
     if (!r.ok) return 0;
     const d = await r.json();
     return typeof d === 'number' ? d : 0;
