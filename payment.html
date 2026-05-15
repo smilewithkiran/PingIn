@@ -179,7 +179,7 @@
   <script src="js/firebase-config.js"></script>
   <script src="js/pingin-firebase.js"></script>
 <script>
-emailjs.init('OboQTWg4MMuVOJWWt');
+try{ if(typeof emailjs!=='undefined') emailjs.init('OboQTWg4MMuVOJWWt'); }catch(e){}
 
 const RZP_KEY = 'rzp_live_STQSX6OgVKJ1cm';
 

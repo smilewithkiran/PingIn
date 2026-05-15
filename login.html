@@ -214,7 +214,7 @@ body{min-height:100vh;display:flex;align-items:stretch;background:#0A0C10;overfl
   <script src="js/firebase-config.js"></script>
   <script src="js/pingin-firebase.js"></script>
 <script>
-emailjs.init('OboQTWg4MMuVOJWWt');
+try{ if(typeof emailjs!=='undefined') emailjs.init('OboQTWg4MMuVOJWWt'); }catch(e){}
 if (PingIN.isLoggedIn()) window.location.href = 'dashboard.html';
 
 function switchTab(tab) {

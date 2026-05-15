@@ -471,7 +471,7 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:#0A0C10;color:#E8
 
 <script src="js/pingin.js"></script>
 <script>
-try { emailjs.init('OboQTWg4MMuVOJWWt'); } catch(e) {}
+try { try{ if(typeof emailjs!=='undefined') emailjs.init('OboQTWg4MMuVOJWWt'); }catch(e){} } catch(e) {}
 
 // ── Admin password ──────────────────────────────────────────────────────────
 // Default: pingin@admin2026

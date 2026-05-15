@@ -261,10 +261,22 @@ code{background:rgba(255,255,255,.06);padding:2px 7px;border-radius:4px;font-siz
       <div id="plan-features-list" style="display:flex;flex-direction:column;gap:6px;font-size:13px;"></div>
     </div>
 
-    <!-- Download button — href set dynamically by JS -->
-    <a id="dl-btn-ext" href="#" class="dl-btn">
+    <!-- Static download links — one per plan, JS shows/hides correct one -->
+    <a id="dl-free"    class="dl-btn" href="pingin-extension-free.zip"    download="pingin-extension-free.zip"    style="display:none;background:linear-gradient(135deg,#0055B5,#0099DD)">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 15V7M8 11l4 4 4-4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 19h14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
-      <span id="dl-btn-label">Download Extension (ZIP)</span>
+      Download Free Trial Extension
+    </a>
+    <a id="dl-starter" class="dl-btn" href="pingin-extension-starter.zip" download="pingin-extension-starter.zip" style="display:none;background:linear-gradient(135deg,#0055B5,#0099DD)">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 15V7M8 11l4 4 4-4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 19h14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+      Download Starter Extension
+    </a>
+    <a id="dl-pro"     class="dl-btn" href="pingin-extension-pro.zip"     download="pingin-extension-pro.zip"     style="display:none;background:linear-gradient(135deg,#009B7D,#00D4AA)">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 15V7M8 11l4 4 4-4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 19h14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+      Download Pro Extension
+    </a>
+    <a id="dl-annual"  class="dl-btn" href="pingin-extension-annual.zip"  download="pingin-extension-annual.zip"  style="display:none;background:linear-gradient(135deg,#009B7D,#00D4AA)">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 15V7M8 11l4 4 4-4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 19h14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+      Download Annual Extension
     </a>
 
     <!-- No plan state -->
@@ -505,7 +517,7 @@ code{background:rgba(255,255,255,.06);padding:2px 7px;border-radius:4px;font-siz
   <script src="js/firebase-config.js"></script>
   <script src="js/pingin-firebase.js"></script>
 <script>
-emailjs.init('OboQTWg4MMuVOJWWt');
+try{ if(typeof emailjs!=='undefined') emailjs.init('OboQTWg4MMuVOJWWt'); }catch(e){}
 
 // ── Require login ─────────────────────────────────────────────────────────────
 PingIN.requireLogin();
@@ -517,12 +529,12 @@ const user    = PingIN.findUser(session?.email) || session;
 function initDash() {
   if (!user) { PingIN.signOut(); return; }
 
-  document.getElementById('d-name').textContent    = (user.name||'User').split(' ')[0];
-  document.getElementById('acct-name').textContent  = user.name  || '—';
-  document.getElementById('acct-email').textContent = user.email || '—';
-  document.getElementById('acct-phone').textContent = user.phone || '—';
-  document.getElementById('acct-key').textContent   = user.licenseKey || '—';
-  document.getElementById('acct-since').textContent = user.createdAt
+  (document.getElementById('d-name')||{}).textContent    = (user.name||'User').split(' ')[0];
+  (document.getElementById('acct-name')||{}).textContent  = user.name  || '—';
+  (document.getElementById('acct-email')||{}).textContent = user.email || '—';
+  (document.getElementById('acct-phone')||{}).textContent = user.phone || '—';
+  (document.getElementById('acct-key')||{}).textContent   = user.licenseKey || '—';
+  (document.getElementById('acct-since')||{}).textContent = user.createdAt
     ? new Date(user.createdAt).toLocaleDateString('en-IN', {day:'numeric',month:'short',year:'numeric'})
     : '—';
 
@@ -532,31 +544,31 @@ function initDash() {
 
   if (!user.plan || user.plan === 'none') {
     // No plan yet
-    document.getElementById('no-plan-state').style.display = 'block';
-    document.getElementById('key-section').style.display   = 'none';
-    document.getElementById('d-days').textContent          = '0';
-    document.getElementById('d-access').textContent        = '—';
-    document.getElementById('d-plan-name').textContent     = 'None';
-    document.getElementById('d-msgs').textContent          = '—';
-    document.getElementById('plan-badge').textContent      = 'No Plan';
-    document.getElementById('plan-badge').className        = 'plan-name-badge none';
-    document.getElementById('plan-card').className         = 'plan-card none';
-    document.getElementById('d-sub').textContent           = 'Start your free trial to begin!';
+    (document.getElementById('no-plan-state')||{}).style.display = 'block';
+    (document.getElementById('key-section')||{}).style.display   = 'none';
+    (document.getElementById('d-days')||{}).textContent          = '0';
+    (document.getElementById('d-access')||{}).textContent        = '—';
+    (document.getElementById('d-plan-name')||{}).textContent     = 'None';
+    document.getElementById('d-msgs')&&((document.getElementById('d-msgs')||{}).textContent='—');
+    (document.getElementById('plan-badge')||{}).textContent      = 'No Plan';
+    (document.getElementById('plan-badge')||{}).className        = 'plan-name-badge none';
+    (document.getElementById('plan-card')||{}).className         = 'plan-card none';
+    (document.getElementById('d-sub')||{}).textContent           = 'Start your free trial to begin!';
     setupExtensionDownload('none', null);
   } else if (info.expired) {
     // Expired
-    document.getElementById('no-plan-state').style.display = 'none';
-    document.getElementById('key-section').style.display   = 'block';
-    document.getElementById('d-key').textContent           = user.licenseKey || '—';
-    document.getElementById('d-days').textContent          = '0';
-    document.getElementById('d-days').className            = 'plan-stat-n red';
-    document.getElementById('d-access').textContent        = '—';
-    document.getElementById('d-plan-name').textContent     = info.planObj?.name || '—';
-    document.getElementById('d-msgs').textContent          = '—';
-    document.getElementById('plan-badge').textContent      = '⚠ Plan Expired';
-    document.getElementById('plan-badge').className        = 'plan-name-badge expired';
-    document.getElementById('plan-card').className         = 'plan-card expired';
-    document.getElementById('d-sub').textContent           = 'Your plan has expired. Please renew to continue.';
+    (document.getElementById('no-plan-state')||{}).style.display = 'none';
+    (document.getElementById('key-section')||{}).style.display   = 'block';
+    (document.getElementById('d-key')||{}).textContent           = user.licenseKey || '—';
+    (document.getElementById('d-days')||{}).textContent          = '0';
+    (document.getElementById('d-days')||{}).className            = 'plan-stat-n red';
+    (document.getElementById('d-access')||{}).textContent        = '—';
+    (document.getElementById('d-plan-name')||{}).textContent     = info.planObj?.name || '—';
+    document.getElementById('d-msgs')&&((document.getElementById('d-msgs')||{}).textContent='—');
+    (document.getElementById('plan-badge')||{}).textContent      = '⚠ Plan Expired';
+    (document.getElementById('plan-badge')||{}).className        = 'plan-name-badge expired';
+    (document.getElementById('plan-card')||{}).className         = 'plan-card expired';
+    (document.getElementById('d-sub')||{}).textContent           = 'Your plan has expired. Please renew to continue.';
     // Show expired banner
     const expBanner = document.getElementById('expiry-banner');
     expBanner.style.display = 'flex';
@@ -566,24 +578,24 @@ function initDash() {
     expBanner.innerHTML = `<span>❌ <strong>Your plan has expired!</strong> Renew now to continue using PingIN.</span><button onclick="renewNow()" style="padding:6px 14px;border-radius:6px;background:rgba(226,75,74,.15);border:1px solid rgba(226,75,74,.3);color:#F09595;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;">Renew Now</button>`;
   } else {
     // Active plan
-    document.getElementById('no-plan-state').style.display = 'none';
-    document.getElementById('key-section').style.display   = 'block';
-    document.getElementById('d-key').textContent           = user.licenseKey || '—';
-    document.getElementById('d-days').textContent          = info.daysLeft;
-    document.getElementById('d-days').className            = 'plan-stat-n ' + (info.daysLeft <= 3 ? 'amber' : 'blue');
+    (document.getElementById('no-plan-state')||{}).style.display = 'none';
+    (document.getElementById('key-section')||{}).style.display   = 'block';
+    (document.getElementById('d-key')||{}).textContent           = user.licenseKey || '—';
+    (document.getElementById('d-days')||{}).textContent          = info.daysLeft;
+    (document.getElementById('d-days')||{}).className            = 'plan-stat-n ' + (info.daysLeft <= 3 ? 'amber' : 'blue');
     const periodLabels = { free:'5 Days', starter:'15 Days', pro:'Monthly', annual:'1 Year' };
-    document.getElementById('d-access').textContent        = periodLabels[user.plan] || '—';
-    document.getElementById('d-plan-name').textContent     = info.planObj?.name || '—';
-    document.getElementById('d-msgs').textContent          = (msgLimits[user.plan] || '50') + ' / day';
-    document.getElementById('plan-badge').textContent      = '✓ ' + (info.planObj?.name || 'Active');
-    document.getElementById('plan-badge').className        = 'plan-name-badge' + (info.daysLeft <= 3 ? ' warning' : '');
-    document.getElementById('d-sub').textContent           = `Plan expires: ${new Date(user.planExpiry).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}`;
+    (document.getElementById('d-access')||{}).textContent        = periodLabels[user.plan] || '—';
+    (document.getElementById('d-plan-name')||{}).textContent     = info.planObj?.name || '—';
+    document.getElementById('d-msgs')&&((document.getElementById('d-msgs')||{}).textContent=(msgLimits[user.plan]||'50')+' / day');
+    (document.getElementById('plan-badge')||{}).textContent      = '✓ ' + (info.planObj?.name || 'Active');
+    (document.getElementById('plan-badge')||{}).className        = 'plan-name-badge' + (info.daysLeft <= 3 ? ' warning' : '');
+    (document.getElementById('d-sub')||{}).textContent           = `Plan expires: ${new Date(user.planExpiry).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}`;
 
     // 3-day warning
     if (info.daysLeft <= 3 && info.daysLeft > 0) {
       const banner = document.getElementById('expiry-banner');
       banner.style.display = 'flex';
-      document.getElementById('expiry-days').textContent = info.daysLeft;
+      (document.getElementById('expiry-days')||{}).textContent = info.daysLeft;
       // Expiry warning shown
     }
   }
@@ -596,74 +608,47 @@ function initDash() {
 }
 
 function setupExtensionDownload(plan, info) {
-  const btnEl   = document.getElementById('dl-btn-ext');
-  const labelEl = document.getElementById('dl-btn-label');
-  const subEl   = document.getElementById('dl-sub');
-  const featBox = document.getElementById('plan-feature-box');
-  const featList= document.getElementById('plan-features-list');
-  const noplan  = document.getElementById('dl-no-plan');
+  // Hide all download buttons first
+  ['dl-free','dl-starter','dl-pro','dl-annual'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
 
-  // ZIP filenames — must exist at GitHub repo root
-  const ZIPS = {
-    free:    'pingin-extension-free.zip',
-    starter: 'pingin-extension-starter.zip',
-    pro:     'pingin-extension-pro.zip',
-    annual:  'pingin-extension-annual.zip',
-  };
-  const LABELS = {
-    free:    'Download Free Trial Extension',
-    starter: 'Download Starter Extension',
-    pro:     'Download Pro Extension',
-    annual:  'Download Annual Extension',
-  };
-  const COLORS = {
-    free: 'linear-gradient(135deg,#0055B5,#0099DD)',
-    starter: 'linear-gradient(135deg,#0055B5,#0099DD)',
-    pro: 'linear-gradient(135deg,#009B7D,#00D4AA)',
-    annual: 'linear-gradient(135deg,#009B7D,#00D4AA)',
-  };
-  const FEATURES = {
+  var noplan = document.getElementById('dl-no-plan');
+  var featBox = document.getElementById('plan-feature-box');
+  var featList = document.getElementById('plan-features-list');
+  var subEl = document.getElementById('dl-sub');
+
+  if (!plan || plan === 'none') {
+    if (noplan) noplan.style.display = 'block';
+    return;
+  }
+  if (info && info.expired) {
+    if (noplan) { noplan.style.display = 'block'; noplan.innerHTML = '❌ Your plan has expired. <a href="pricing.html" style="color:#F09595;font-weight:700;">Renew now →</a>'; }
+    return;
+  }
+
+  // Show the correct plan's download link
+  var btnId = 'dl-' + plan;
+  if (!document.getElementById(btnId)) btnId = 'dl-free'; // fallback
+  var btn = document.getElementById(btnId);
+  if (btn) btn.style.display = 'inline-flex';
+
+  if (subEl) subEl.textContent = 'Your extension is ready — plan features are pre-activated inside.';
+
+  // Feature lists
+  var FEATURES = {
     free:    ['✅ Smart Search','✅ Boolean Builder','✅ Search History','✅ Candidate Notes','✅ CSV export','🔒 Developer Search — locked','🔒 AI Clone / JD / Predictive — locked'],
     starter: ['✅ Smart Search — unlimited','✅ Developer Search (GitHub + SO)','✅ 5 pages per search','✅ Boolean Builder','✅ JD Library','✅ Candidate Notes','✅ CSV + Excel export','🔒 AI Clone / JD / Predictive — locked'],
     pro:     ['✅ All 6 AI search modes','✅ Developer Search (GitHub + SO)','✅ Unlimited pages','✅ AI Clone Search','✅ AI JD Parsing','✅ Predictive Sourcing','✅ Boolean Builder','✅ JD Library','✅ Candidate Notes','✅ CSV + Excel export'],
     annual:  ['✅ EVERYTHING in Pro — all year','✅ All 6 AI modes','✅ Developer Search','✅ Unlimited pages','✅ Boolean Builder','✅ JD Library','✅ Candidate Notes','✅ Saves ₹4,400 vs 12× Pro'],
   };
-
-  if (!plan || plan === 'none') {
-    if (btnEl)  btnEl.style.display = 'none';
-    if (noplan) noplan.style.display = 'block';
-    return;
-  }
-
-  if (info && info.expired) {
-    if (btnEl)  btnEl.style.display = 'none';
-    if (noplan) { noplan.style.display = 'block'; noplan.innerHTML = '❌ Your plan has expired. <a href="pricing.html" style="color:#F09595;font-weight:700;">Renew now →</a>'; }
-    return;
-  }
-
-  var zipFile = ZIPS[plan] || ZIPS['free'];
-  var label   = LABELS[plan] || LABELS['free'];
-
-  if (btnEl) {
-    // Simple direct href + download attribute on the anchor
-    // Works for same-origin files on GitHub Pages
-    btnEl.href     = zipFile;
-    btnEl.setAttribute('download', zipFile);
-    btnEl.style.display    = 'inline-flex';
-    btnEl.style.background = COLORS[plan] || COLORS['free'];
-    btnEl.onclick = null; // let the native anchor handle it
-  }
-
-  if (labelEl) labelEl.textContent = label;
-  if (subEl)   subEl.textContent   = 'Your extension is ready — plan features are pre-activated inside.';
-
-  // Feature list
   if (featBox && featList) {
     featBox.style.display = 'block';
     var feats = FEATURES[plan] || FEATURES['free'];
     featList.innerHTML = feats.map(function(f) {
       var locked = f.startsWith('🔒');
-      return '<div style="display:flex;align-items:flex-start;gap:8px;color:' + (locked ? '#4A4E62' : '#E0E3F0') + ';font-size:12px;margin-bottom:4px;">' + f + '</div>';
+      return '<div style="color:' + (locked?'#4A4E62':'#E0E3F0') + ';font-size:12px;margin-bottom:4px;">' + f + '</div>';
     }).join('');
   }
 }
@@ -728,7 +713,7 @@ function startFreeTrial() {
 
 // ── Copy license key ──────────────────────────────────────────────────────────
 function copyKey() {
-  const key = document.getElementById('d-key').textContent;
+  const key = (document.getElementById('d-key')||{}).textContent;
   navigator.clipboard.writeText(key).then(() => {
     const btn = document.querySelector('.key-copy');
     const orig = btn.textContent;
@@ -832,13 +817,12 @@ setTimeout(checkAndSendExpiryReminders, 2000);
 <!-- PingIN Visitor Tracking -->
 <script>
 (function() {
+  // Page key from URL
+  var page = location.pathname.replace(/\/$/,'').split('/').pop().replace('.html','') || 'home';
+  if (!page || page === '') page = 'home';
+  // ── Page view tracking via Firebase RTDB ──────────────────────────────
   try {
-    // Page key from URL
-    var page = location.pathname.replace(/\/$/,'').split('/').pop().replace('.html','') || 'home';
-    if (!page || page === '') page = 'home';
-    // ── Page view tracking via Firebase RTDB ──────────────────────────────
-    try {
-      if (!window.FIREBASE_CONFIG || !FIREBASE_CONFIG.rtdbUrl || !FIREBASE_CONFIG.apiKey) return;
+    if (!window.FIREBASE_CONFIG || !FIREBASE_CONFIG.rtdbUrl || !FIREBASE_CONFIG.apiKey) return;
       var _rtdbBase = FIREBASE_CONFIG.rtdbUrl;
       var _rtdbKey  = FIREBASE_CONFIG.apiKey;
       var _today    = new Date().toISOString().slice(0,10).replace(/-/g,'');
@@ -862,7 +846,7 @@ setTimeout(checkAndSendExpiryReminders, 2000);
       _inc('pages/' + page);
       _inc('day-' + _today);
       _inc('week-' + _week);
-    } catch(e) {}
+  } catch(e) {}
 })();
 
 // ── How to Use Guide ─────────────────────────────────────────────
