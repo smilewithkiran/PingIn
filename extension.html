@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Chrome Extension — PingIN</title>
-<meta name="description" content="Download PingIN Chrome Extension — AI-powered recruiter tool with Smart Search, Clone Search, JD Parsing, Developer Search on GitHub & Stack Overflow.">
+<meta name="description" content="Download PingIN Chrome Extension — AI-powered recruiter tool with Smart Search, Clone Search, JD Parsing, GitHub & SO Search on GitHub & Stack Overflow.">
 <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
@@ -202,12 +202,12 @@
       </div>
     </div>
 
-    <!-- Developer Search NEW -->
+    <!-- GitHub & SO Search NEW -->
     <div class="feat-block dev reveal">
       <div class="feat-block-header">
         <div class="feat-block-icon">🐙</div>
         <div>
-          <div class="feat-block-title">Developer Search <span class="new-tag p">NEW v2.6</span></div>
+          <div class="feat-block-title">GitHub & SO Search <span class="new-tag p">NEW v2.6</span></div>
           <div class="feat-block-sub">Find developers where they actually live — GitHub and Stack Overflow. Verified by real code, commits and answers. No login needed. Completely free platforms.</div>
         </div>
       </div>
@@ -321,6 +321,8 @@
   </div>
 </footer>
 <script src="js/pingin.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/pingin-firebase.js"></script>
 <script src="js/nav.js"></script>
 <script>
 const obs=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('visible');obs.unobserve(x.target);}});},{threshold:.1});
@@ -494,12 +496,12 @@ document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
       </div>
     </div>
 
-    <!-- Developer Search NEW -->
+    <!-- GitHub & SO Search NEW -->
     <div class="feat-block dev reveal">
       <div class="feat-block-header">
         <div class="feat-block-icon">🐙</div>
         <div>
-          <div class="feat-block-title">Developer Search <span class="new-tag p">NEW v2.6</span></div>
+          <div class="feat-block-title">GitHub & SO Search <span class="new-tag p">NEW v2.6</span></div>
           <div class="feat-block-sub">Find developers where they actually live — GitHub and Stack Overflow. Verified by real code, commits and answers. No login needed. Completely free platforms.</div>
         </div>
       </div>
@@ -613,6 +615,8 @@ document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
   </div>
 </footer>
 <script src="js/pingin.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/pingin-firebase.js"></script>
 <script src="js/nav.js"></script>
 <script>
 const obs=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('visible');obs.unobserve(x.target);}});},{threshold:.1});
