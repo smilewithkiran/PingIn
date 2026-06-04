@@ -30,10 +30,10 @@ const PingIN = {
   },
   signOut() {
     localStorage.removeItem('pingin_session');
-    window.location.href = 'login.html';
+    window.location.href = 'index.html';
   },
   requireLogin() {
-    if (!this.isLoggedIn()) window.location.href = 'login.html';
+    if (!this.isLoggedIn()) window.location.href = 'index.html';
   },
 
   // ── User registration ───────────────────────────────────────────────────────
