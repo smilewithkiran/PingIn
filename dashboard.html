@@ -3,7 +3,29 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Dashboard — PingIN · v2.9.3</title>
+  <title>Dashboard — PingIN AI Recruiter</title>
+  <meta name="description" content="PingIN dashboard — manage your AI talent searches, view collected profiles, check your plan status.">
+  <meta name="keywords" content="PingIN dashboard">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="author" content="PingIN">
+  <link rel="canonical" href="https://pingin.in/dashboard.html">
+
+  <!-- Open Graph / Social Sharing -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://pingin.in/dashboard.html">
+  <meta property="og:title" content="PingIN Dashboard">
+  <meta property="og:description" content="Your PingIN AI recruiter dashboard.">
+  <meta property="og:image" content="https://pingin.in/images/og-pingin.png">
+  <meta property="og:site_name" content="PingIN">
+  <meta property="og:locale" content="en_IN">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@PingIN_AI">
+  <meta name="twitter:title" content="PingIN Dashboard">
+  <meta name="twitter:description" content="Your PingIN AI recruiter dashboard.">
+  <meta name="twitter:image" content="https://pingin.in/images/og-pingin.png">
+
 <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
@@ -74,7 +96,6 @@ code{background:rgba(255,255,255,.06);padding:2px 7px;border-radius:4px;font-siz
 .up-card-btn.outline{background:transparent;color:#8B8FA8;border:1px solid rgba(255,255,255,.1);}
 .up-card-btn.current-btn{background:rgba(0,119,181,.1);color:#1A9ADE;border:1px solid rgba(0,119,181,.2);}
 .popular-badge{font-size:9px;font-weight:700;background:rgba(255,153,0,.15);color:#EF9F27;padding:2px 8px;border-radius:100px;margin-bottom:6px;display:inline-block;}
-
 
 /* ── How to Use Guide ─────────────────────────────────────────── */
 .guide-card{background:#111318;border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:24px;margin-bottom:20px;}
@@ -300,7 +321,6 @@ code{background:rgba(255,255,255,.06);padding:2px 7px;border-radius:4px;font-siz
       <div class="setup-step"><div class="setup-num">4</div><div><div class="setup-title">Start Finding Talent!</div><div class="setup-desc">Your plan features are pre-activated — no license key needed. Just open LinkedIn and click the PingIN icon. 🚀</div></div></div>
     </div>
   </div>
-
 
   <!-- ── HOW TO USE GUIDE ── -->
   <div class="guide-card" id="how-to-use-guide">
@@ -736,8 +756,6 @@ function renewNow() {
   window.location.href = 'pricing.html';
 }
 
-
-
 // ── Expiry Reminder Emails ────────────────────────────────────────────────────
 // Checks plan expiry and sends reminder emails at 7 days, 3 days, and 0 days
 // Each reminder is sent only ONCE — tracked in localStorage
@@ -912,9 +930,6 @@ document.addEventListener('DOMContentLoaded', function() {
   // Small delay to let session load first
   setTimeout(initGuide, 600);
 });
-
-
-
 
 </script>
 </body>
