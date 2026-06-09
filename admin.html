@@ -708,7 +708,7 @@ function showAdmin() {
     if (wrap) wrap.style.display = 'flex';
   } catch(e) {}
   // Load data safely — errors won't break the admin panel
-  try { loadData(); } catch(e) { console.warn('loadData error:', e); }
+  try { loadData().catch(e => console.warn('loadData error:', e)); } catch(e) { console.warn('loadData sync error:', e); }
   try { loadVisitorStats(); } catch(e) { console.warn('visitor stats error:', e); }
 }
 
@@ -726,8 +726,30 @@ try { if (sessionStorage.getItem('pingin_admin') === '1') showAdmin(); } catch(e
 // ── Load data ──────────────────────────────────────────────────────────────────
 let allUsers = [];
 
-function loadData() {
-  try { allUsers = PingIN.getUsers(); } catch(e) { allUsers = []; }
+async function loadData() {
+  // Show loading state
+  const tbody = document.getElementById('users-tbody');
+  if (tbody) tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:24px;color:#4a5580;font-size:13px;">⏳ Loading users from database...</td></tr>';
+
+  try {
+    // Try Firebase first (all users across all devices)
+    if (typeof PingINDB !== 'undefined' && PingINDB.getAllUsers) {
+      const fbUsers = await PingINDB.getAllUsers();
+      if (fbUsers && fbUsers.length > 0) {
+        allUsers = fbUsers;
+        console.log('[Admin] Loaded', fbUsers.length, 'users from Firebase');
+      } else {
+        allUsers = PingIN.getUsers();
+        console.log('[Admin] Firebase empty — loaded', allUsers.length, 'users from localStorage');
+      }
+    } else {
+      allUsers = PingIN.getUsers();
+    }
+  } catch(e) {
+    console.warn('[Admin] Firebase load failed, using localStorage:', e);
+    try { allUsers = PingIN.getUsers(); } catch(e2) { allUsers = []; }
+  }
+
   try { renderStats();   } catch(e) {}
   try { renderUsers();   } catch(e) {}
   try { renderRevenue(); } catch(e) {}

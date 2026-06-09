@@ -43,6 +43,17 @@ export default {
         return new Response(JSON.stringify(result), { headers: CORS });
       }
 
+      if (action === 'searchSOUsers') {
+        const { tag, location, minRep, limit, excludeStudents, goldOnly } = body;
+        if (!tag) return new Response(JSON.stringify({ error: 'Missing tag' }), { status: 400, headers: CORS });
+        try {
+          const result = await searchSEDE(tag, location, minRep, limit, excludeStudents, goldOnly);
+          return new Response(JSON.stringify(result), { headers: CORS });
+        } catch(e) {
+          return new Response(JSON.stringify({ ok: false, error: e.message, tag }), { headers: CORS });
+        }
+      }
+
       return new Response(JSON.stringify({ error: 'Unknown action' }), { status: 400, headers: CORS });
 
     } catch (e) {
@@ -210,4 +221,94 @@ Return ONLY valid JSON:
   const text = data.content?.[0]?.text || '{}';
   const parsed = JSON.parse(text.replace(/\`\`\`json|\`\`\`/g, '').trim());
   return { ok: true, parsed };
+}
+
+// ── Stack Exchange API Search (official REST API) ──────────────────────────────
+async function searchSEDE(tag, location, minRep, limit, excludeStudents, goldOnly) {
+  const safeTag  = (tag || '').toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9#+.\-]/g,'').substring(0,50);
+  const locLower = (location || '').toLowerCase().trim();
+  const rowLimit = Math.max(5, Math.min(50, parseInt(limit) || 30));
+  const repMin   = Math.max(100, parseInt(minRep) || 500);
+
+  // Step 1: Get top answerers for the skill tag
+  const answersUrl = `https://api.stackexchange.com/2.3/tags/${safeTag}/top-answerers/all_time?` +
+    `site=stackoverflow&pagesize=100`;
+  const answersResp = await fetch(answersUrl, {
+    headers: { 'Accept-Encoding': 'gzip', 'User-Agent': 'PingIN-Recruiter/1.0' }
+  });
+  if (!answersResp.ok) throw new Error('SE API step1 error: ' + answersResp.status);
+  const answersData = await answersResp.json();
+  const items = answersData.items || [];
+  if (items.length === 0) return { ok: false, error: 'No top answerers found for tag: ' + safeTag };
+
+  // Step 2: Get user profiles with location + website
+  const userIds = items.map(u => u.user.user_id).slice(0, 100).join(';');
+  const usersUrl = `https://api.stackexchange.com/2.3/users/${userIds}?` +
+    `site=stackoverflow&order=desc&sort=reputation&pagesize=100&` +
+    `filter=!-*jbN-o8P3E5`;   // filter includes: location, website_url, badge_counts
+  const usersResp = await fetch(usersUrl, {
+    headers: { 'Accept-Encoding': 'gzip', 'User-Agent': 'PingIN-Recruiter/1.0' }
+  });
+  if (!usersResp.ok) throw new Error('SE API step2 error: ' + usersResp.status);
+  const usersData = await usersResp.json();
+  let users = usersData.items || [];
+
+  // ── Location filter (expand "India" to all major cities) ─────────────────────
+  const INDIA_CITIES = ['india','hyderabad','bengaluru','bangalore','mumbai','delhi','pune',
+    'chennai','kolkata','noida','gurgaon','gurugram','ahmedabad','jaipur','kochi',
+    'chandigarh','nagpur','bhopal','indore','surat','vadodara','lucknow','mysore'];
+
+  if (locLower) {
+    users = users.filter(u => {
+      const ul = (u.location || '').toLowerCase();
+      if (!ul) return false;          // no location = skip when filter set
+      if (ul.includes(locLower)) return true;
+      // Expand "india" to all known Indian cities
+      if (locLower === 'india') return INDIA_CITIES.some(c => ul.includes(c));
+      return false;
+    });
+  }
+
+  // Min reputation
+  users = users.filter(u => (u.reputation || 0) >= repMin);
+
+  // Gold badge filter
+  if (goldOnly) users = users.filter(u => (u.badge_counts?.gold || 0) > 0);
+
+  // Build answer count lookup
+  const answerLookup = {};
+  items.forEach(i => { answerLookup[i.user.user_id] = i.answer_count || 0; });
+
+  const profiles = users.slice(0, rowLimit).map(u => {
+    const website     = (u.website_url || '').trim();
+    const hasLinkedIn = website.toLowerCase().includes('linkedin.com');
+    const hasGitHub   = website.toLowerCase().includes('github.com');
+    const gold        = u.badge_counts?.gold   || 0;
+    const silver      = u.badge_counts?.silver || 0;
+    const answers     = answerLookup[u.user_id] || 0;
+    const rep         = u.reputation || 0;
+    const signalScore = rep + gold * 2000 + (answers > 100 ? 1000 : 0) + (hasLinkedIn ? 500 : 0);
+
+    return {
+      name:        u.display_name || 'Unknown',
+      reputation:  rep,
+      location:    u.location || '',
+      website,
+      profileUrl:  u.link || `https://stackoverflow.com/users/${u.user_id}`,
+      goldBadges:  gold,
+      silverBadges: silver,
+      totalAnswers: answers,
+      hasLinkedIn,
+      hasGitHub,
+      hasBlog:     !hasLinkedIn && !hasGitHub && website.length > 4,
+      linkedInUrl: hasLinkedIn ? website : '',
+      gitHubUrl:   hasGitHub  ? website : '',
+      signalScore,
+      source: 'stackoverflow',
+      status: 'pending',
+    };
+  });
+
+  profiles.sort((a, b) => b.signalScore - a.signalScore);
+  return { ok: true, profiles, count: profiles.length, tag: safeTag, location };
 }

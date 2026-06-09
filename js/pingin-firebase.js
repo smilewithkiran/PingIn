@@ -38,7 +38,7 @@ const PingINDB = {
       const passwordHash = await this.sha256(password);
       const user = {
         id: 'u_'+Date.now(), name:name.trim(), email:emailKey, phone:phoneClean,
-        passwordHash, plan:'none', trialUsed:false, trialStart:null,
+        passwordHash, plan:'free', trialUsed:false, trialStart:new Date().toISOString(),
         planExpiry:null, licenseKey:null, msgsToday:0,
         msgsDate:new Date().toDateString(), createdAt:new Date().toISOString(),
         updatedAt:new Date().toISOString(),
@@ -254,6 +254,53 @@ const PingINDB = {
       return { blocked:false };
     } catch(e) { return { blocked:false }; }
   },
+  // ── Sync extension user to Firebase (called after extension login/trial) ──────
+  async syncUserToFirebase(userObj) {
+    try {
+      if (!userObj || !userObj.email) return;
+      if (!(await this.isFirebaseReady())) return;
+      const emailKey = userObj.email.toLowerCase().trim();
+      const existing = await this.findUserByEmail(emailKey);
+      if (existing) {
+        // Update plan/trial data if changed
+        const updates = {};
+        if (userObj.plan && userObj.plan !== existing.plan) updates.plan = userObj.plan;
+        if (userObj.planExpiry) updates.planExpiry = userObj.planExpiry;
+        if (userObj.trialStart) updates.trialStart = userObj.trialStart;
+        if (userObj.licenseKey) updates.licenseKey = userObj.licenseKey;
+        updates.lastSeen = new Date().toISOString();
+        updates.updatedAt = new Date().toISOString();
+        if (Object.keys(updates).length > 0) {
+          await fbSet('users', emailKey, { ...existing, ...updates });
+        }
+      } else {
+        // New user — register them
+        const newUser = {
+          id: userObj.id || 'u_'+Date.now(),
+          name: userObj.name || '',
+          email: emailKey,
+          phone: userObj.phone || '',
+          plan: userObj.plan || 'free',
+          trialStart: userObj.trialStart || new Date().toISOString(),
+          planExpiry: userObj.planExpiry || null,
+          licenseKey: userObj.licenseKey || null,
+          createdAt: userObj.createdAt || new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          lastSeen: new Date().toISOString(),
+          source: 'extension',
+        };
+        await fbSet('users', emailKey, newUser);
+        const local = PingIN.getUsers();
+        if (!local.find(u => u.email === emailKey)) {
+          local.push(newUser); PingIN.saveUsers(local);
+        }
+      }
+      console.log('[PingINDB] User synced to Firebase:', emailKey);
+    } catch(e) {
+      console.warn('[PingINDB] syncUserToFirebase failed:', e.message);
+    }
+  },
+
 };
 
 console.log('[PingIN] PingINDB loaded ✓');
