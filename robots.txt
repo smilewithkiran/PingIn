@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+# Private / authenticated pages — exclude from crawling & indexing
+Disallow: /dashboard.html
+Disallow: /login.html
+Disallow: /payment.html
+Disallow: /admin.html
+
+Sitemap: https://pingin.in/sitemap.xml
